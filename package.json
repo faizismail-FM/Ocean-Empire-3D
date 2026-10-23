@@ -1,0 +1,47 @@
+{
+  "name": "ocean-empire-3d",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Ocean Empire 3D — a browser maritime simulator, empire builder and historical trade game.",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "check": "npm run typecheck && npm run lint && npm run test && npm run build"
+  },
+  "dependencies": {
+    "@react-three/drei": "^10.7.9",
+    "@react-three/fiber": "^9.8.2",
+    "@supabase/supabase-js": "^2.118.0",
+    "d3-geo": "^3.1.1",
+    "lucide-react": "^0.561.0",
+    "next": "^16.4.3",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "three": "^0.186.1",
+    "topojson-client": "^3.1.0",
+    "world-atlas": "^2.0.2",
+    "zod": "^4.1.0",
+    "zustand": "^5.0.16"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3.3.1",
+    "@tailwindcss/postcss": "^4.1.0",
+    "@types/d3-geo": "^3.1.0",
+    "@types/node": "^22",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/three": "^0.186.0",
+    "@types/topojson-client": "^3.1.5",
+    "@types/topojson-specification": "^1.0.5",
+    "eslint": "^9",
+    "eslint-config-next": "^16.4.3",
+    "tailwindcss": "^4.1.0",
+    "typescript": "^5",
+    "vitest": "^5.0.5"
+  }
+}
