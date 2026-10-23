@@ -25,7 +25,7 @@ export const MODERN_PORTS: PortRecord[] = [
     historical_polity: "Malaysia", polity_id: null, country: "Malaysia",
     historical_significance: "Malaysia's principal container gateway on the Strait of Malacca, comprising Northport, Southpoint and the Westports terminals on Pulau Indah.",
     supplies: ["electronics", "palm_oil", "furniture", "rubber_products"], demands: ["machinery", "consumer_goods", "auto_parts"],
-    default_access: "home", lane_nodes: ["malacca_mid"], sources: ["src_port_klang_authority"], size: "hub",
+    default_access: "home", lane_nodes: ["malacca_mid", "malacca_s"], sources: ["src_port_klang_authority"], size: "hub",
   }),
   port({
     id: "singapore", name: "Singapore", modern_reference_name: "Singapore", latitude: 1.264, longitude: 103.80,

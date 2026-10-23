@@ -64,6 +64,9 @@ describe("new game", () => {
     expect(ship.endurance).toBe(requireShipClass("feeder_1000").endurance_capacity);
     const offers = Object.values(s.contracts).filter((c) => c.origin_port_id === "port_klang" && c.status === "available");
     expect(offers.length).toBeGreaterThan(2);
+    const tutorial = offers.find((c) => c.mission);
+    expect(tutorial?.destination_port_id).toBe("singapore");
+    expect(s.sim_seconds).toBe(8 * 3600);
     for (const c of offers) expect(c.quantity).toBeLessThanOrEqual(1000);
     expect(s.treasury).toBe(6_000_000);
   });
@@ -178,7 +181,7 @@ describe("modern tutorial: Port Klang to Singapore", () => {
     expect(parseState({ ...arrived, treasury: "lots" }).ok).toBe(false);
   });
 
-  it("charges daily maintenance and expires old offers", () => {
+  it("charges daily maintenance, keeps the tutorial offer and expires old offers", () => {
     const catalog = getCatalog("modern_shipping_2024");
     let s = setPaused(newModern(), false);
     const before = s.treasury;
@@ -186,6 +189,8 @@ describe("modern tutorial: Port Klang to Singapore", () => {
     expect(s.treasury).toBeLessThan(before);
     expect(s.ledger.some((e) => e.category === "maintenance")).toBe(true);
     expect(s.date.day).not.toBe(8);
+    s = ensureContracts(catalog, s, "port_klang");
+    expect(Object.values(s.contracts).some((c) => c.mission && c.status === "available")).toBe(true);
   });
 });
 

@@ -1,9 +1,9 @@
 import { getCatalog, type ScenarioCatalog } from "@/data";
 import type { HistoricalEvent, Objective, PortInfrastructureKind, VesselClass } from "@/data/schemas";
-import { clamp, uid } from "@/lib/utils";
+import { clamp, formatMoneyExact, uid } from "@/lib/utils";
 import { advanceWaypoint, computeAutopilot } from "./autopilot";
 import { addSeconds, dateFromIso, SECONDS_PER_DAY, type GameDate } from "./calendar";
-import { cargoCapacity, cargoUsed, generateContractsForPort, validateAccept, type ContractContext } from "./contracts";
+import { buildTutorialContract, cargoCapacity, cargoUsed, generateContractsForPort, validateAccept, type ContractContext } from "./contracts";
 import { applyTransaction, canAfford, TransactionError } from "./economy";
 import { applyEvent, dueEvents } from "./events";
 import { distanceNm, type GeoPoint } from "./geo";
@@ -43,6 +43,8 @@ export interface NewGameOptions {
 
 export const MAX_NOTIFICATIONS = 60;
 const MAX_SUBSTEP_SECONDS = 120;
+/** New games begin at 08:00 so the first voyage starts in daylight. */
+export const START_CLOCK_SECONDS = 8 * 3600;
 
 function notify(state: GameState, kind: GameNotification["kind"], title: string, message: string, link?: string): GameState {
   const n: GameNotification = { id: uid("n"), sim_seconds: state.sim_seconds, kind, title, message, read: false, link };
@@ -126,7 +128,7 @@ export function createNewGame(options: NewGameOptions): GameState {
     },
     date: startDate,
     start_date: startDate,
-    sim_seconds: 0,
+    sim_seconds: START_CLOCK_SECONDS,
     time_scale: 60,
     paused: true,
     treasury,
@@ -152,6 +154,7 @@ export function createNewGame(options: NewGameOptions): GameState {
   };
 
   state = ensureContracts(catalog, state, scenario.home_port_id);
+  state = ensureTutorialContract(catalog, state);
   state = notify(state, "info", `${scenario.title}`, scenario.mode === "modern" ? "Your first ship is berthed at Port Klang. Accept a contract on the Trade screen, then set sail for Singapore." : `Your house begins at ${catalog.portMap.get(scenario.home_port_id)?.name}. Accept a cargo contract, then sail with the monsoon.`);
   return state;
 }
@@ -185,7 +188,7 @@ export function ensureContracts(catalog: ScenarioCatalog, state: GameState, port
   const contracts: Record<string, Contract> = {};
   let hasCurrent = false;
   for (const [id, c] of Object.entries(state.contracts)) {
-    if (c.status === "available" && c.origin_port_id === portId) {
+    if (c.status === "available" && c.origin_port_id === portId && !c.mission) {
       if (c.generation_key === currentKey) {
         hasCurrent = true;
         contracts[id] = c;
@@ -203,6 +206,34 @@ export function ensureContracts(catalog: ScenarioCatalog, state: GameState, port
     if (!contracts[c.id]) contracts[c.id] = c;
   }
   return { ...state, contracts };
+}
+
+/**
+ * Guarantee that the tutorial objective's destination has an offer at the home port at the
+ * start of a campaign, so the first voyage is always available.
+ */
+export function ensureTutorialContract(catalog: ScenarioCatalog, state: GameState): GameState {
+  const tutorial = catalog.scenario.objectives.find((o) => o.tutorial && o.condition.type === "contracts_completed_with_port");
+  if (!tutorial || tutorial.condition.type !== "contracts_completed_with_port") return state;
+  const destId = tutorial.condition.port_id;
+  const exists = Object.values(state.contracts).some((c) => c.status === "available" && c.origin_port_id === state.empire.home_port_id && c.destination_port_id === destId);
+  if (exists) return state;
+  const origin = catalog.portMap.get(state.empire.home_port_id);
+  const destination = catalog.portMap.get(destId);
+  if (!origin || !destination) return state;
+  const mods = computeModifiers(catalog, state);
+  const ctx: ContractContext = {
+    catalog,
+    state,
+    fleet_capacity: fleetCapacity(catalog, state, mods),
+    payment_multiplier: mods.contract_payment_multiplier,
+    extra_contracts: 0,
+    event_price_mods: mods.event_price_mods,
+    year: state.date.year,
+  };
+  const contract = buildTutorialContract(ctx, origin, destination);
+  if (!contract) return state;
+  return { ...state, contracts: { ...state.contracts, [contract.id]: contract } };
 }
 
 export function acceptContract(catalog: ScenarioCatalog, state: GameState, contractId: string, shipId: string): GameState {
@@ -381,7 +412,7 @@ export function dockShip(catalog: ScenarioCatalog, state: GameState, shipId: str
   const fuelCost = voyage ? Math.round(voyage.fuel_used * catalog.scenario.fuel_price_per_unit) : 0;
   if (fuelCost > 0) {
     expenses += fuelCost; // already paid at refuelling; reported for information
-    notes.push(`${catalog.scenario.features.fuel ? "Fuel" : "Provisions"} consumed: about ${Math.round(voyage?.fuel_used ?? 0)} ${catalog.scenario.fuel_unit_label} (${fuelCost} at current prices).`);
+    notes.push(`${catalog.scenario.features.fuel ? "Fuel" : "Provisions"} consumed: about ${Math.round(voyage?.fuel_used ?? 0)} ${catalog.scenario.fuel_unit_label}, worth ${formatMoneyExact(fuelCost, catalog.scenario.currency)} ${catalog.scenario.currency.symbol ? "" : catalog.scenario.currency.code} at current prices.`);
   }
 
   const report: VoyageRecord = {
@@ -805,15 +836,22 @@ export function tickGame(catalog: ScenarioCatalog, state: GameState, dtSim: numb
     next = { ...next, contracts };
 
     // Historical events.
+    const sandbox = next.empire.rules === "sandbox";
     for (const event of dueEvents(catalog, next)) {
-      next = applyEvent(next, event);
-      next = notify(next, "event", event.title, `${event.summary}${event.effects.length > 0 && event.effects[0]?.type !== "notice" ? " Simulated consequences now apply." : ""}`, "/play/history");
+      if (sandbox) {
+        // Alternate history: the documented event is announced, its effects are not applied.
+        next = { ...next, applied_events: [...next.applied_events, event.id] };
+        next = notify(next, "event", event.title, `${event.summary} (Alternate-history sandbox: no gameplay effect applied.)`, "/play/history");
+      } else {
+        next = applyEvent(next, event);
+        next = notify(next, "event", event.title, `${event.summary}${event.effects.length > 0 && event.effects[0]?.type !== "notice" ? " Simulated consequences now apply." : ""}`, "/play/history");
+      }
       events.push({ type: "historical_event", event });
       if (next.campaign.status !== "active") events.push({ type: "campaign_ended", status: next.campaign.status });
     }
-    // Campaign end by date.
+    // Campaign end by date (historical rules only).
     const endDate = dateFromIso(catalog.scenario.end_date);
-    if (next.campaign.status === "active" && next.date.year > endDate.year) {
+    if (!sandbox && next.campaign.status === "active" && next.date.year > endDate.year) {
       next = { ...next, paused: true, campaign: { status: "historical_end", ended_sim_seconds: next.sim_seconds, end_note: "The campaign period has ended." } };
       events.push({ type: "campaign_ended", status: "historical_end" });
     }
