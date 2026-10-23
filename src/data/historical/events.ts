@@ -1,0 +1,163 @@
+import type { HistoricalEventInput as HistoricalEvent } from "../schemas";
+
+const SIM_NOTE = "Gameplay effects are a simulation of plausible commercial consequences, not a documented economic record.";
+
+/**
+ * Documented historical events. The simulation applies the listed `effects` on the trigger
+ * date; the interface always labels those effects as simulated consequences.
+ */
+export const HISTORICAL_EVENTS: HistoricalEvent[] = [
+  // Ninth century
+  {
+    id: "evt_belitung_wreck", title: "Loss of the Belitung ship",
+    date_or_date_range: { start: 826, end: 830, approximate: true, note: "Dated by an inscribed Changsha bowl of 826 CE; the wreck occurred soon after." },
+    trigger_date: null, location: "Off Belitung Island, Indonesia", involved_polities: ["civ_abbasid", "civ_tang"],
+    summary: "A sewn-plank ship of Arab or Indian construction sank with a cargo of tens of thousands of Chinese ceramics, gold and silver objects, discovered in 1998.",
+    historical_significance: "The earliest direct archaeological evidence of a Western Indian Ocean ship trading with China.",
+    evidence_status: "established", sources: ["src_flecker_2001", "src_shipwrecked_2010"], effects: [],
+  },
+  {
+    id: "evt_samarra_capital", title: "The caliphs rule from Samarra",
+    date_or_date_range: { start: 836, end: 892 }, trigger_date: null, location: "Samarra, Iraq", involved_polities: ["civ_abbasid"],
+    summary: "Caliph al-Muʿtaṣim moved the court and Turkish guard regiments to Samarra in 836; the caliphs resided there until 892.",
+    historical_significance: "Sets the political context of the campaign's start: a caliphate governed from a new capital with growing military influence at court.",
+    evidence_status: "established", sources: ["src_kennedy_caliphates"], effects: [],
+  },
+  {
+    id: "evt_tharisappalli_plates", title: "Tharisappalli copper plates granted at Kollam",
+    date_or_date_range: { start: 849, end: 849 }, trigger_date: null, location: "Kollam, Kerala", involved_polities: ["civ_chera_venad"],
+    summary: "Ayyan Adikal, chief of Venad, granted land and privileges to a Syrian Christian church at Kollam, with merchant guilds as witnesses and signatures in Arabic, Pahlavi and Hebrew scripts.",
+    historical_significance: "Shows Kollam as a cosmopolitan port with Middle Eastern merchant communities at the start of the campaign.",
+    evidence_status: "established", sources: ["src_narayanan_perumals", "src_malekandathil_2010"], effects: [],
+  },
+  {
+    id: "evt_akhbar_compiled", title: "Accounts of China and India compiled",
+    date_or_date_range: { start: 851, end: 851, approximate: true }, trigger_date: "0851-06-01", location: "Siraf / Basra", involved_polities: ["civ_abbasid"],
+    summary: "The first book of the Akhbār al-Ṣīn wa-l-Hind, traditionally linked to the merchant Sulaymān, records the sea route from the Gulf to Khanfu and the customs of Chinese and Indian ports.",
+    historical_significance: "The single most detailed ninth-century description of the trade this campaign simulates.",
+    evidence_status: "established", sources: ["src_abu_zayd"], effects: [{ type: "notice" }],
+    effects_note: "No gameplay effect; the encyclopedia entry becomes available.",
+  },
+  {
+    id: "evt_routes_book", title: "Ibn Khurradadhbih describes the sea route to China",
+    date_or_date_range: { start: 870, end: 870, approximate: true }, trigger_date: "0870-01-01", location: "Baghdad / Samarra", involved_polities: ["civ_abbasid"],
+    summary: "The postmaster-geographer's Book of Routes and Realms lists the stages from the Gulf to Kūlam Malī, Sri Lanka, Kalah and the Chinese ports.",
+    historical_significance: "Independent confirmation of the route structure used by the game's sea lanes.",
+    evidence_status: "established", sources: ["src_ibn_khurradadhbih"], effects: [{ type: "notice" }],
+  },
+  {
+    id: "evt_zanj_revolt", title: "Zanj revolt in lower Iraq",
+    date_or_date_range: { start: 869, end: 883 }, trigger_date: "0869-09-01", location: "Marshes south of Basra", involved_polities: ["civ_abbasid"],
+    summary: "A rebellion led by ʿAlī ibn Muḥammad mobilised enslaved East Africans and others in the Basra marshes and controlled much of lower Iraq for fourteen years.",
+    historical_significance: "Severely disrupted the Basra region and the river approach to Baghdad until the rebels' defeat in 883.",
+    evidence_status: "established", sources: ["src_popovic_zanj", "src_kennedy_caliphates"],
+    effects: [{ type: "port_fee_modifier", port_id: "port_basra", multiplier: 1.8 }],
+    effects_note: SIM_NOTE,
+  },
+  {
+    id: "evt_basra_sacked_871", title: "Basra sacked by the Zanj",
+    date_or_date_range: { start: 871, end: 871 }, trigger_date: "0871-09-07", location: "Basra", involved_polities: ["civ_abbasid"],
+    summary: "Zanj forces took and plundered Basra in September 871, with great loss of life.",
+    historical_significance: "A catastrophe for the caliphate's chief port; trade shifted toward Siraf and the Omani coast.",
+    evidence_status: "established", sources: ["src_popovic_zanj"],
+    effects: [{ type: "port_access", port_id: "port_basra", access: "closed" }],
+    effects_note: `${SIM_NOTE} Basra reopens when the revolt ends.`,
+  },
+  {
+    id: "evt_zanj_defeated", title: "Zanj revolt defeated",
+    date_or_date_range: { start: 883, end: 883 }, trigger_date: "0883-08-11", location: "al-Mukhtara, lower Iraq", involved_polities: ["civ_abbasid"],
+    summary: "Abbasid forces under al-Muwaffaq captured the rebel capital and killed its leader in August 883.",
+    historical_significance: "Restored caliphal control of lower Iraq and the approaches to Basra.",
+    evidence_status: "established", sources: ["src_popovic_zanj", "src_kennedy_caliphates"],
+    effects: [{ type: "port_access", port_id: "port_basra", access: "open" }, { type: "port_fee_modifier", port_id: "port_basra", multiplier: 1.2 }],
+    effects_note: SIM_NOTE,
+  },
+  {
+    id: "evt_guangzhou_879", title: "Huang Chao's rebels sack Guangzhou",
+    date_or_date_range: { start: 878, end: 879 }, trigger_date: "0879-01-01", location: "Guangzhou (Khanfu)", involved_polities: ["civ_tang", "civ_abbasid"],
+    summary: "The rebel army of Huang Chao captured Guangzhou; Abu Zayd reports a massacre of the city's Muslim, Jewish, Christian and Zoroastrian merchants and the burning of mulberry groves.",
+    historical_significance: "Abu Zayd states that direct voyages from the Gulf to China declined afterwards, with Kalah becoming the meeting point for Arab and Chinese ships.",
+    evidence_status: "established", sources: ["src_abu_zayd", "src_wang_gungwu_nanhai"],
+    effects: [{ type: "port_access", port_id: "port_khanfu", access: "closed" }, { type: "good_price_modifier", good_id: "good_chinese_ceramics", multiplier: 1.5 }],
+    effects_note: `${SIM_NOTE} The casualty figures given by Abu Zayd are not independently verifiable.`,
+  },
+  {
+    id: "evt_oman_reconquest_893", title: "Abbasid reconquest of Oman",
+    date_or_date_range: { start: 893, end: 893 }, trigger_date: "0893-01-01", location: "Oman", involved_polities: ["civ_abbasid", "civ_oman_ibadi"],
+    summary: "An Abbasid expedition under Muḥammad ibn Nūr ended the Ibadi imamate and brought Oman under direct caliphal administration.",
+    historical_significance: "Changed the political status of Suhar, the campaign's main Omani port.",
+    evidence_status: "established", sources: ["src_kennedy_caliphates"],
+    effects: [{ type: "relation_change", polity_id: "civ_oman_ibadi", delta: -20 }, { type: "port_fee_modifier", port_id: "port_suhar", multiplier: 1.2 }],
+    effects_note: SIM_NOTE,
+  },
+  {
+    id: "evt_siraf_earthquake", title: "Earthquake and decline at Siraf",
+    date_or_date_range: { start: 977, end: 977, approximate: true, note: "Reported by medieval authors; exact date and damage uncertain." },
+    trigger_date: null, location: "Siraf", involved_polities: ["civ_abbasid"],
+    summary: "Later medieval writers mention an earthquake at Siraf around 977 and the port's decline in favour of Kish.",
+    historical_significance: "Explains why Siraf, dominant in 850, later fell into ruin; outside the campaign window.",
+    evidence_status: "uncertain", sources: ["src_whitehouse_siraf"], effects: [],
+  },
+  // Fifteenth century
+  {
+    id: "evt_melaka_founding", title: "Foundation of Melaka",
+    date_or_date_range: { start: 1400, end: 1403, approximate: true, note: "Conventional date; first firm record is the Ming mission of 1403." },
+    trigger_date: null, location: "Melaka", involved_polities: ["civ_melaka", "civ_srivijaya", "civ_majapahit"],
+    summary: "Parameswara, a prince from Palembang, settled at Melaka after being driven from Temasek (Singapore) and sought Ming protection against Siam and Java.",
+    historical_significance: "The founding of the entrepôt the campaign is set in. Narrative details come from the Sejarah Melayu and Portuguese accounts and differ in detail.",
+    evidence_status: "scholarly_interpretation", sources: ["src_andaya_malaysia", "src_wolters_1970", "src_sejarah_melayu"], effects: [],
+  },
+  {
+    id: "evt_zheng_he_voyages", title: "Zheng He's treasure fleets call at Melaka",
+    date_or_date_range: { start: 1405, end: 1433 }, trigger_date: null, location: "Melaka and the Indian Ocean", involved_polities: ["civ_ming", "civ_melaka"],
+    summary: "Seven Ming expeditions under the admiral Zheng He sailed to Southeast Asia, India, Arabia and East Africa; Melaka served as a depot and received Ming recognition of its ruler.",
+    historical_significance: "Ming support secured Melaka's early independence from Siam and Java.",
+    evidence_status: "established", sources: ["src_dreyer_zheng_he", "src_ma_huan"], effects: [],
+  },
+  {
+    id: "evt_ma_huan_visit", title: "Ma Huan describes Melaka",
+    date_or_date_range: { start: 1413, end: 1433 }, trigger_date: null, location: "Melaka", involved_polities: ["civ_ming", "civ_melaka"],
+    summary: "The Muslim interpreter Ma Huan, who sailed with Zheng He, described Melaka's tin currency, its river, stockaded Chinese depot and trade goods in the Yingya Shenglan (1433).",
+    historical_significance: "A key eyewitness source for early Melaka.",
+    evidence_status: "established", sources: ["src_ma_huan"], effects: [],
+  },
+  {
+    id: "evt_mansur_shah_accession", title: "Accession of Sultan Mansur Shah",
+    date_or_date_range: { start: 1459, end: 1459, approximate: true }, trigger_date: null, location: "Melaka", involved_polities: ["civ_melaka"],
+    summary: "Mansur Shah succeeded Muzaffar Shah; his reign (c. 1459–1477) is remembered in the Sejarah Melayu as Melaka's golden age, with the bendahara Tun Perak as chief minister.",
+    historical_significance: "Sets the campaign's starting political context.",
+    evidence_status: "scholarly_interpretation", sources: ["src_andaya_malaysia", "src_sejarah_melayu"], effects: [],
+  },
+  {
+    id: "evt_alauddin_accession", title: "Accession of Sultan Alauddin Riayat Shah",
+    date_or_date_range: { start: 1477, end: 1477, approximate: true }, trigger_date: "1477-06-01", location: "Melaka", involved_polities: ["civ_melaka"],
+    summary: "Alauddin Riayat Shah succeeded his father Mansur Shah and reigned until 1488.",
+    historical_significance: "Continuity of the sultanate under Tun Perak's ministry.",
+    evidence_status: "scholarly_interpretation", sources: ["src_andaya_malaysia"], effects: [{ type: "notice" }],
+  },
+  {
+    id: "evt_mahmud_accession", title: "Accession of Sultan Mahmud Shah",
+    date_or_date_range: { start: 1488, end: 1488 }, trigger_date: "1488-06-01", location: "Melaka", involved_polities: ["civ_melaka"],
+    summary: "Mahmud Shah, the last sultan of Melaka, came to the throne in 1488.",
+    historical_significance: "His reign saw the arrival of the Portuguese.",
+    evidence_status: "established", sources: ["src_andaya_malaysia"], effects: [{ type: "notice" }],
+  },
+  {
+    id: "evt_sequeira_1509", title: "Diogo Lopes de Sequeira reaches Melaka",
+    date_or_date_range: { start: 1509, end: 1509 }, trigger_date: "1509-09-11", location: "Melaka", involved_polities: ["civ_melaka"],
+    summary: "The first Portuguese fleet arrived at Melaka in September 1509; after initial trade, relations broke down and several Portuguese were seized.",
+    historical_significance: "The prelude to the Portuguese conquest two years later.",
+    evidence_status: "established", sources: ["src_andaya_malaysia", "src_reid_1993"],
+    effects: [{ type: "good_price_modifier", good_id: "good_cloves", multiplier: 1.25 }, { type: "good_price_modifier", good_id: "good_pepper", multiplier: 1.2 }],
+    effects_note: SIM_NOTE,
+  },
+  {
+    id: "evt_albuquerque_1511", title: "Portuguese capture of Melaka",
+    date_or_date_range: { start: 1511, end: 1511 }, trigger_date: "1511-08-24", location: "Melaka", involved_polities: ["civ_melaka"],
+    summary: "Afonso de Albuquerque's fleet took the city in August 1511 after weeks of fighting; Sultan Mahmud withdrew to the interior and later to Johor.",
+    historical_significance: "Ended the Melaka Sultanate and redirected Southeast Asian trade toward new centres such as Aceh and Johor.",
+    evidence_status: "established", sources: ["src_andaya_malaysia", "src_reid_1993", "src_pires_suma"],
+    effects: [{ type: "campaign_end", outcome: "historical_end" }],
+    effects_note: "The campaign ends at the historical capture of the city. Your results up to this date are preserved.",
+  },
+];
