@@ -12,7 +12,10 @@
  *      Vercel project and triggers a production redeploy from `main`.
  *
  * Required environment:
- *   SUPABASE_ACCESS_TOKEN  personal access token (supabase.com → Account → Access Tokens)
+ *   SUPABASE_ACCESS_TOKEN  personal access token (supabase.com → Account → Access Tokens).
+ *                          Set it to "proxy" when an outbound proxy injects the Authorization
+ *                          header for api.supabase.com (e.g. a Claude cloud network secret);
+ *                          the script then sends no Authorization header of its own.
  * Optional:
  *   SUPABASE_ORG_ID        organisation id; defaults to the first organisation on the token
  *   SUPABASE_REGION        default "ap-southeast-1" (Singapore)
@@ -45,7 +48,7 @@ if (!token) {
 async function api(method, route, body) {
   const res = await fetch(`${SUPABASE_API}${route}`, {
     method,
-    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+    headers: { ...(token === "proxy" ? {} : { Authorization: `Bearer ${token}` }), "Content-Type": "application/json" },
     body: body === undefined ? undefined : JSON.stringify(body),
   });
   const text = await res.text();
