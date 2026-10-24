@@ -49,7 +49,16 @@ Manual:
 2. Enable **Anonymous sign-ins** under Authentication → Providers.
 3. Copy `.env.example` to `.env.local` and fill in `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` (for Vercel, add the same two variables in the project settings and redeploy).
 
-Only the public anon key is used client-side; rows are protected by row-level security and owned by the anonymous user. Never put a service-role key in a `NEXT_PUBLIC_` variable.
+Only the public anon key is used client-side; rows are protected by row-level security. Never put a service-role key in a `NEXT_PUBLIC_` variable.
+
+### Accounts and cross-device saves
+
+With Supabase configured, every browser first gets an anonymous Supabase identity so its saves can be mirrored. To keep saves across devices, players sign in with their email from the main menu or Settings → Account: the game emails a sign-in link (no password), and opening that link on a device signs it in. An anonymous identity is upgraded in place when possible, so existing saves keep their ids; otherwise the device's local saves are uploaded to the account on sign-in (re-identified if their ids already belong to an old anonymous identity). The Continue list merges local and account saves and loads whichever copy is newer.
+
+Operational notes:
+- Supabase's built-in email service is limited to a couple of emails per hour per project and is meant for development. For real players configure a custom SMTP provider under Authentication → SMTP Settings; that also unlocks custom email templates (for example a code the player can type instead of a link).
+- The project's Site URL and redirect allow-list must include the deployed origin (`https://ocean-empire-3d.vercel.app/**`) for the links to land on the game; `scripts/setup-supabase.mjs` does not set these, see Authentication → URL Configuration.
+- Sign-in links use the implicit flow so a link opened from a mail app's browser still works on that device.
 
 ### Deploying to Vercel
 

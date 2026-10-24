@@ -8,6 +8,7 @@ import { getPersistence } from "@/persistence";
 import { useGameStore } from "@/store/game-store";
 import { useSettingsStore, type QualityLevel } from "@/store/settings-store";
 import { Button, ConfirmDialog, KeyValue, Panel } from "@/components/ui";
+import { AccountPanel } from "@/components/game/AccountPanel";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -81,7 +82,11 @@ export default function SettingsPage() {
             <Button size="sm" variant="secondary" onClick={() => { void saveGame(); quitToMenu(); router.push("/"); }}>Save & quit to menu</Button>
             <Button size="sm" variant="danger" onClick={() => setConfirmReset(true)}><Trash2 size={14} /> Reset this game</Button>
           </div>
-          <p className="mt-3 text-xs text-foam/50">Saves live in this browser{getPersistence().hasRemote ? " and are mirrored to Supabase" : ""}. Export a JSON file to move progress between devices.</p>
+          <p className="mt-3 text-xs text-foam/50">Saves live in this browser{getPersistence().hasRemote ? " and are mirrored to Supabase" : ""}. Export a JSON file to move progress by hand.</p>
+          <div className="mt-4 border-t border-white/10 pt-4">
+            <div className="label-caps mb-2">Account</div>
+            <AccountPanel />
+          </div>
         </Panel>
       </div>
       <ConfirmDialog
