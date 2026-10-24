@@ -35,9 +35,19 @@ No environment variables are needed to play. Saves are kept in the browser (`loc
 
 ### Optional Supabase sync
 
+Automated: with a Supabase personal access token exported as `SUPABASE_ACCESS_TOKEN`, run
+
+```bash
+node scripts/setup-supabase.mjs
+```
+
+It creates (or reuses) a project named `ocean-empire-3d`, applies the migration, enables anonymous sign-ins and prints the two public variables. If `VERCEL_TOKEN`, `VERCEL_PROJECT` and `VERCEL_TEAM_SLUG` are also set it writes them to the Vercel project and redeploys production. The script has not yet been exercised against a live Supabase account; see its header for the API calls it makes.
+
+Manual:
+
 1. Create a Supabase project and run `supabase/migrations/0001_init.sql` in the SQL editor.
 2. Enable **Anonymous sign-ins** under Authentication → Providers.
-3. Copy `.env.example` to `.env.local` and fill in `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY`.
+3. Copy `.env.example` to `.env.local` and fill in `NEXT_PUBLIC_SUPABASE_URL` and `NEXT_PUBLIC_SUPABASE_ANON_KEY` (for Vercel, add the same two variables in the project settings and redeploy).
 
 Only the public anon key is used client-side; rows are protected by row-level security and owned by the anonymous user. Never put a service-role key in a `NEXT_PUBLIC_` variable.
 
