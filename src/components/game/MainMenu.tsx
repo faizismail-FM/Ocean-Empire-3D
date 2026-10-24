@@ -10,6 +10,7 @@ import type { SaveSummary } from "@/engine/state";
 import { formatMoney } from "@/lib/utils";
 import { useGameStore } from "@/store/game-store";
 import { Badge, Button, ConfirmDialog } from "@/components/ui";
+import { AccountPanel } from "./AccountPanel";
 
 const ENTRIES = [
   { href: "/new", label: "New Game", icon: Play, description: "Choose a scenario and found your empire or company." },
@@ -96,6 +97,9 @@ export function MainMenu() {
             ) : (
               <p className="mt-3 text-sm text-foam/60">No saved games yet. Start a new game to begin; progress is saved in this browser automatically.</p>
             )}
+            <div className="mt-4 border-t border-white/10 pt-3">
+              <AccountPanel compact />
+            </div>
             {current && (
               <div className="mt-4 border-t border-white/10 pt-3 text-xs text-foam/60">
                 A game is open: <span className="text-foam">{current.empire.name}</span>.{" "}
