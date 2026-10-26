@@ -21,10 +21,12 @@ varying float vHeight;
 varying float vFade;
 void main() {
   vec4 world = modelMatrix * vec4(position, 1.0);
-  // Displacement fades out towards the edge of the inner sheet so it meets the flat
-  // outer sheet without a step.
-  float r = max(abs(position.x), abs(position.y));
-  float fade = uDisplace * (1.0 - smoothstep(${(INNER_HALF * 0.78).toFixed(1)}, ${INNER_HALF.toFixed(1)}, r));
+  // Displacement fades out with distance from the ship: beyond a few hundred metres the
+  // triangles are smaller than a pixel at grazing angles and displaced crests would
+  // hide and reveal troughs from frame to frame (horizon shimmer). Shading alone carries
+  // the waves there, and the sheet meets the flat outer sheet without a step.
+  float r = length(position.xy);
+  float fade = uDisplace * (1.0 - smoothstep(${(INNER_HALF * 0.45).toFixed(1)}, ${(INNER_HALF * 0.94).toFixed(1)}, r));
   float h = waveHeight(world.xz) * fade;
   world.y += h;
   vWorldPos = world.xyz;
