@@ -367,8 +367,8 @@ export function SailingHUD() {
             </select>
           </label>
 
-          {ship.status === "docked" && ship.route.length >= 2 && (
-            <Button size="sm" onClick={() => depart(ship.id)}>
+          {ship.status === "docked" && (
+            <Button size="sm" onClick={() => depart(ship.id)} disabled={ship.route.length < 2} title={ship.route.length < 2 ? "Choose a destination first" : "Leave port and follow the plotted route"}>
               <Anchor size={14} /> Depart
             </Button>
           )}
