@@ -132,6 +132,9 @@ const vec4 SWELL_DX0 = ${vec4(SWELL.slice(0, 4).map((w) => w.direction[0]))};
 const vec4 SWELL_DX1 = ${vec4(SWELL.slice(4, 8).map((w) => w.direction[0]))};
 const vec4 SWELL_DZ0 = ${vec4(SWELL.slice(0, 4).map((w) => w.direction[1]))};
 const vec4 SWELL_DZ1 = ${vec4(SWELL.slice(4, 8).map((w) => w.direction[1]))};
+const vec4 SWELL_LEN0 = ${vec4(SWELL.slice(0, 4).map((w) => w.wavelength))};
+const vec4 SWELL_LEN1 = ${vec4(SWELL.slice(4, 8).map((w) => w.wavelength))};
+const vec3 RIP_LEN = ${vec3(RIPPLES.map((w) => w.wavelength))};
 const vec3 RIP_A = ${vec3(RIPPLES.map((w) => w.amplitude))};
 const vec3 RIP_K = ${vec3(RIPPLES.map((w) => waveNumber(w.wavelength)))};
 const vec3 RIP_DX = ${vec3(RIPPLES.map((w) => w.direction[0]))};
@@ -143,15 +146,27 @@ float waveHeight(vec2 p) {
   return (dot(SWELL_A0, sin(ph0)) + dot(SWELL_A1, sin(ph1))) * uAmp;
 }
 
-/* Gradient (dh/dx, dh/dz) of swell plus ripples; detail scales the ripple contribution. */
-vec2 waveSlope(vec2 p, float detail) {
+/*
+ * Gradient (dh/dx, dh/dz) of swell plus ripples for per-pixel lighting. px is the size
+ * of one screen pixel in metres at this point of the surface: a wave that spans fewer
+ * than a few pixels cannot be shaded faithfully and would only alias into flicker, so
+ * each component is faded out as it approaches that limit.
+ */
+vec4 waveWeight4(vec4 len, float px) {
+  return 1.0 - smoothstep(len * 0.12, len * 0.4, vec4(px));
+}
+vec3 waveWeight3(vec3 len, float px) {
+  return 1.0 - smoothstep(len * 0.12, len * 0.4, vec3(px));
+}
+
+vec2 waveSlope(vec2 p, float px) {
   vec4 ph0 = (SWELL_DX0 * p.x + SWELL_DZ0 * p.y) * SWELL_K0 + uSwellPhase0;
   vec4 ph1 = (SWELL_DX1 * p.x + SWELL_DZ1 * p.y) * SWELL_K1 + uSwellPhase1;
-  vec4 d0 = SWELL_A0 * SWELL_K0 * cos(ph0);
-  vec4 d1 = SWELL_A1 * SWELL_K1 * cos(ph1);
+  vec4 d0 = SWELL_A0 * SWELL_K0 * cos(ph0) * waveWeight4(SWELL_LEN0, px);
+  vec4 d1 = SWELL_A1 * SWELL_K1 * cos(ph1) * waveWeight4(SWELL_LEN1, px);
   vec2 slope = vec2(dot(d0, SWELL_DX0) + dot(d1, SWELL_DX1), dot(d0, SWELL_DZ0) + dot(d1, SWELL_DZ1));
   vec3 rphase = (RIP_DX * p.x + RIP_DZ * p.y) * RIP_K + uRipplePhase;
-  vec3 rd = RIP_A * RIP_K * cos(rphase) * detail;
+  vec3 rd = RIP_A * RIP_K * cos(rphase) * waveWeight3(RIP_LEN, px);
   slope += vec2(dot(rd, RIP_DX), dot(rd, RIP_DZ));
   return slope * uAmp;
 }

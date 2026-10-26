@@ -54,10 +54,10 @@ void main() {
   float dist = length(toCam);
   vec3 viewDir = toCam / dist;
 
-  // Per-pixel normal from the analytic wave gradient. Ripples fade with distance so the
-  // far water does not alias into noise.
-  float detail = 1.0 - smoothstep(60.0, 420.0, dist);
-  vec2 slope = waveSlope(vWorldPos.xz, detail);
+  // Per-pixel normal from the analytic wave gradient, filtered by the pixel footprint
+  // (metres per screen pixel) so sub-pixel waves do not shimmer as the camera moves.
+  float px = max(fwidth(vWorldPos.x), fwidth(vWorldPos.z));
+  vec2 slope = waveSlope(vWorldPos.xz, px);
   vec3 n = normalize(vec3(-slope.x, 1.0, -slope.y));
 
   float ndv = max(dot(n, viewDir), 0.0);
@@ -67,16 +67,19 @@ void main() {
   // of the waves (a cheap stand-in for subsurface scattering).
   float crest = clamp(vHeight / max(uAmp * 0.9, 0.05) * 0.5 + 0.5, 0.0, 1.0);
   float sunFacing = max(dot(n, uSunDir), 0.0);
-  vec3 body = mix(uDeep, uShallow, crest * 0.3 + sunFacing * 0.08);
+  vec3 body = mix(uDeep, uShallow, crest * 0.22 + sunFacing * 0.06);
   body *= 0.72 + 0.28 * uSunStrength;
 
   // Reflection of the sky, strongest at grazing angles.
   vec3 color = mix(body, uSky, fresnel * 0.65);
 
-  // Sun: a tight glitter term on the detailed normal plus a soft wide glow.
+  // Sun: a glitter term whose highlight widens as the pixel footprint grows (so the far
+  // water gets a calm sun path rather than one-pixel sparks), plus a soft wide glow.
   vec3 halfDir = normalize(uSunDir + viewDir);
   float ndh = max(dot(n, halfDir), 0.0);
-  float glitter = pow(ndh, 700.0) * 0.6;
+  float wide = smoothstep(0.15, 2.5, px);
+  float shininess = mix(360.0, 40.0, wide);
+  float glitter = pow(ndh, shininess) * mix(0.55, 0.12, wide);
   float glow = pow(ndh, 48.0) * 0.08;
   color += uSunColor * (glitter + glow) * uSunStrength;
 
