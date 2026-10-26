@@ -33,9 +33,9 @@ export const SWELL: WaveParams[] = [
 
 /** Normal-only ripples (shading detail, no displacement). */
 export const RIPPLES: WaveParams[] = [
-  { amplitude: 0.03, wavelength: 6.5, direction: [0.6, 0.8] },
-  { amplitude: 0.02, wavelength: 3.7, direction: [-0.9, 0.436] },
-  { amplitude: 0.012, wavelength: 2.1, direction: [0.2, -0.98] },
+  { amplitude: 0.022, wavelength: 6.5, direction: [0.6, 0.8] },
+  { amplitude: 0.012, wavelength: 3.7, direction: [-0.9, 0.436] },
+  { amplitude: 0.006, wavelength: 2.1, direction: [0.2, -0.98] },
 ];
 
 export const WAVES: WaveParams[] = [...SWELL, ...RIPPLES];
