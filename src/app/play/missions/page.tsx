@@ -5,6 +5,7 @@ import { evaluateCondition } from "@/engine/objectives";
 import { cn, formatMoneyExact, formatNumber } from "@/lib/utils";
 import { useGameStore } from "@/store/game-store";
 import { Badge, Panel, ProgressBar } from "@/components/ui";
+import { HelpTip } from "@/components/game/Guide";
 
 const BASIS: Record<string, { label: string; tone: "green" | "gold" | "purple"; text: string }> = {
   documented: { label: "Documented", tone: "green", text: "Inspired by an event or practice that is documented in the sources." },
@@ -22,7 +23,7 @@ export default function MissionsPage() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-3xl">Missions</h1>
+          <div className="flex items-center gap-2"><h1 className="text-3xl">Missions</h1><HelpTip section="goal" /></div>
           <p className="text-sm text-foam/60">{done} of {objectives.length} complete. Objectives are checked continuously; rewards are paid once.</p>
         </div>
         <ProgressBar value={done} max={objectives.length} className="w-48" tone="gold" />

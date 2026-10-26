@@ -15,12 +15,13 @@ import { ProceduralShip } from "./ProceduralShip";
 import { geoToScene, headingToRotationY, getSceneFrame } from "./scene-state";
 import { PortScenery, RouteLine, TrafficShips, WaypointBuoy } from "./Scenery";
 import { BowFoam, Wake } from "./Wake";
-import { waveSample } from "./waves";
+import { advanceWavePhases, waveSample } from "./waves";
 
 const QUALITY = {
-  low: { dpr: [1, 1] as [number, number], shadows: false, oceanSegments: 64, shadowMap: 1024 },
-  medium: { dpr: [1, 1.5] as [number, number], shadows: true, oceanSegments: 128, shadowMap: 2048 },
-  high: { dpr: [1, 2] as [number, number], shadows: true, oceanSegments: 192, shadowMap: 4096 },
+  // Ocean segments tessellate the 1.4 km sheet around the ship: 140 → 10 m cells, 280 → 5 m, 400 → 3.5 m.
+  low: { dpr: [1, 1] as [number, number], shadows: false, oceanSegments: 140, shadowMap: 1024 },
+  medium: { dpr: [1, 1.5] as [number, number], shadows: true, oceanSegments: 280, shadowMap: 2048 },
+  high: { dpr: [1, 2] as [number, number], shadows: true, oceanSegments: 400, shadowMap: 4096 },
 };
 
 const REBASE_DISTANCE_M = 15_000;
@@ -39,7 +40,7 @@ export function SailingScene() {
       dpr={q.dpr}
       shadows={q.shadows ? { type: THREE.PCFSoftShadowMap } : false}
       camera={{ fov: 55, near: 1, far: 20000, position: [0, 60, 220] }}
-      gl={{ antialias: true, powerPreference: "high-performance", logarithmicDepthBuffer: true }}
+      gl={{ antialias: true, powerPreference: "high-performance" }}
       onCreated={({ gl }) => {
         gl.toneMapping = THREE.ACESFilmicToneMapping;
         gl.toneMappingExposure = 0.78;
@@ -69,7 +70,7 @@ function FrameUpdater() {
   const night = useMemo(() => new THREE.Color("#2a3f63"), []);
   const sunWarm = useMemo(() => new THREE.Color("#ffb070"), []);
   const sunDay = useMemo(() => new THREE.Color("#fff3d6"), []);
-  const waveClock = useRef(0);
+  const started = useRef(false);
 
   useFrame((_, dt) => {
     const frame = getSceneFrame();
@@ -81,16 +82,26 @@ function FrameUpdater() {
     if (!ship) return;
     const cls = catalog.ships.find((c) => c.id === ship.class_id);
 
-    // Floating origin: keep scene coordinates small.
+    // Floating origin: keep scene coordinates small. The wave phases absorb the jump so
+    // the water does not visibly snap when the origin moves.
+    const before = { x: frame.ship.x, z: frame.ship.z };
     const local = geoToScene(frame.origin, ship.position);
     if (Math.hypot(local.x, local.z) > REBASE_DISTANCE_M || (frame.origin.lat === 0 && frame.origin.lon === 0)) {
       frame.origin = { ...ship.position };
     }
     const p = geoToScene(frame.origin, ship.position);
+    const sceneDelta = started.current ? { x: p.x - before.x, z: p.z - before.z } : { x: 0, z: 0 };
+    started.current = true;
 
-    // Wave clock runs in real time (waves should not flicker at high time scales).
-    if (!state.paused) waveClock.current += dt;
-    frame.waveTime = waveClock.current;
+    // Real-time step: what the ship would cover this frame at its actual speed. The wave
+    // field and the wake move relative to the ship by this amount, whatever the time scale.
+    const realDt = state.paused ? 0 : dt;
+    const h = (ship.heading * Math.PI) / 180;
+    const mps = ship.speed_knots * 0.514444;
+    frame.realStep.x = Math.sin(h) * mps * realDt;
+    frame.realStep.z = -Math.cos(h) * mps * realDt;
+    advanceWavePhases(frame.wavePhases, realDt, sceneDelta, frame.realStep);
+    frame.waveClock += realDt;
     frame.paused = state.paused;
     frame.timeScale = state.time_scale;
     frame.simSeconds = state.sim_seconds;
@@ -99,22 +110,24 @@ function FrameUpdater() {
     frame.wind = wind;
     frame.waveAmp = 0.5 + Math.min(1.2, wind.speed_knots / 22);
 
-    // Ride the waves: sample height and slope under the hull, damped by vessel size.
+    // Ride the waves: sample height and slope under the hull, damped by vessel size and
+    // low-pass filtered so the hull answers the sea with some inertia.
     const length = cls?.length_m ?? 100;
-    const sample = waveSample(p.x, p.z, frame.waveTime, frame.waveAmp);
+    const sample = waveSample(p.x, p.z, frame.wavePhases, frame.waveAmp);
     const damp = Math.min(1, 40 / length);
+    const inertia = 1 - Math.exp(-realDt * (length > 120 ? 1.6 : 2.8));
     frame.ship.x = p.x;
     frame.ship.z = p.z;
     frame.ship.heading = ship.heading;
     frame.ship.speed = ship.speed_knots;
     frame.ship.length = length;
-    frame.ship.y = sample.height * damp;
-    const h = (ship.heading * Math.PI) / 180;
+    frame.ship.y += (sample.height * damp - frame.ship.y) * inertia;
     // Slope along and across the heading.
     const along = sample.slopeX * Math.sin(h) - sample.slopeZ * Math.cos(h);
     const across = sample.slopeX * Math.cos(h) + sample.slopeZ * Math.sin(h);
-    frame.ship.pitch = -along * damp * 0.9;
-    frame.ship.roll = across * damp * 1.2 + (ship.rudder * ship.speed_knots * 0.004);
+    const heel = ship.rudder * Math.min(ship.speed_knots, 25) * 0.004;
+    frame.ship.pitch += (-along * damp * 0.9 - frame.ship.pitch) * inertia;
+    frame.ship.roll += (across * damp * 1.2 + heel - frame.ship.roll) * inertia;
 
     // Time of day from the simulated clock (never fully dark so the scene stays readable).
     const hour = ((state.sim_seconds % 86400) + 86400) % 86400 / 3600;
@@ -150,8 +163,8 @@ function Lighting({ shadowMap, shadows }: { shadowMap: number; shadows: boolean 
   });
   return (
     <>
-      <hemisphereLight args={["#9fc9ea", "#0b2a44", 0.55]} />
-      <ambientLight intensity={0.12} />
+      <hemisphereLight args={["#9fc9ea", "#0b2a44", 0.7]} />
+      <ambientLight intensity={0.18} />
       <directionalLight
         ref={light}
         castShadow={shadows}

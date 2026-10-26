@@ -134,8 +134,8 @@ export function WaypointBuoy({ waypoint }: { waypoint: Waypoint }) {
     const p = geoToScene(frame.origin, waypoint);
     const d = Math.hypot(p.x - frame.ship.x, p.z - frame.ship.z);
     g.visible = d < 12_000;
-    g.position.set(p.x, waveHeight(p.x, p.z, frame.waveTime, frame.waveAmp), p.z);
-    g.rotation.z = Math.sin(frame.waveTime * 1.3) * 0.08;
+    g.position.set(p.x, waveHeight(p.x, p.z, frame.wavePhases, frame.waveAmp), p.z);
+    g.rotation.z = Math.sin(frame.waveClock * 1.3) * 0.08;
   });
   return (
     <group ref={group}>
@@ -221,7 +221,7 @@ function TrafficShip({ offsetX, offsetZ, heading, speed, length, model }: { offs
     const dz = pos.current.z - frame.ship.z;
     if (Math.abs(dx) > 7000) pos.current.x = frame.ship.x - Math.sign(dx) * 6500;
     if (Math.abs(dz) > 7000) pos.current.z = frame.ship.z - Math.sign(dz) * 6500;
-    g.position.set(pos.current.x, waveHeight(pos.current.x, pos.current.z, frame.waveTime, frame.waveAmp) * 0.4, pos.current.z);
+    g.position.set(pos.current.x, waveHeight(pos.current.x, pos.current.z, frame.wavePhases, frame.waveAmp) * 0.4, pos.current.z);
     g.rotation.y = -h;
   });
   return (

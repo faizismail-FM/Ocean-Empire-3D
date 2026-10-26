@@ -12,6 +12,7 @@ import type { Contract } from "@/engine/state";
 import { cn, formatMoney, formatMoneyExact, formatNumber } from "@/lib/utils";
 import { useGameStore } from "@/store/game-store";
 import { Badge, Button, EmptyState, Panel, SimulatedBadge, Tabs } from "@/components/ui";
+import { HelpTip } from "@/components/game/Guide";
 
 type Tab = "contracts" | "market" | "active";
 
@@ -43,7 +44,7 @@ export function TradeScreen() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-3xl">Trade</h1>
+          <div className="flex items-center gap-2"><h1 className="text-3xl">Trade</h1><HelpTip section="trade" /></div>
           <p className="text-sm text-foam/60">Contracts pay on delivery. Market cargo is bought and sold at local prices. <SimulatedBadge className="ml-1 align-middle" /></p>
         </div>
         <div className="flex flex-wrap items-center gap-2">

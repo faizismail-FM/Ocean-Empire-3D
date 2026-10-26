@@ -7,6 +7,7 @@ import { cn, formatMoney, formatMoneyExact } from "@/lib/utils";
 import { useGameStore } from "@/store/game-store";
 import { Badge, Button, EvidenceBadge, Panel } from "@/components/ui";
 import { SourceList } from "@/components/game/SourceList";
+import { HelpTip } from "@/components/game/Guide";
 
 const BRANCH_LABEL: Record<string, string> = {
   shipbuilding: "Shipbuilding",
@@ -28,7 +29,7 @@ export default function TechnologyPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-3xl">{catalog.scenario.mode === "modern" ? "Capabilities" : "Technology & know-how"}</h1>
+        <div className="flex items-center gap-2"><h1 className="text-3xl">{catalog.scenario.mode === "modern" ? "Capabilities" : "Technology & know-how"}</h1><HelpTip section="technology" /></div>
         <p className="max-w-3xl text-sm text-foam/60">
           This tree belongs to <strong className="text-foam/80">{catalog.scenario.title}</strong> only. It describes capabilities your house can acquire in this period, not a universal history of invention; each entry notes what is documented and what is a gameplay abstraction.
         </p>

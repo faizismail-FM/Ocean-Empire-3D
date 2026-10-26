@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
-import { Anchor, BookOpen, Compass, Container, Hammer, Play, RotateCcw, Settings, Ship, Trash2 } from "lucide-react";
+import { Anchor, BookOpen, BookOpenText, Compass, Container, Play, RotateCcw, Settings, Trash2 } from "lucide-react";
 import { ALL_SCENARIOS, getScenario } from "@/data";
 import { formatGameDate } from "@/engine/calendar";
 import type { SaveSummary } from "@/engine/state";
@@ -16,9 +16,8 @@ const ENTRIES = [
   { href: "/new", label: "New Game", icon: Play, description: "Choose a scenario and found your empire or company." },
   { href: "/new?mode=historical", label: "Historical Campaigns", icon: Compass, description: "Siraf in 850 CE and Melaka in 1460 CE, with sources." },
   { href: "/new?mode=modern", label: "Modern Shipping Empire", icon: Container, description: "Build a container line from a single feeder ship." },
+  { href: "/guide", label: "How to Play", icon: BookOpenText, description: "The core loop, sailing controls, time, trade and ports." },
   { href: "/encyclopedia", label: "Civilization Encyclopedia", icon: BookOpen, description: "Ports, ships, goods, events and their evidence." },
-  { href: "/play/fleet?tab=shipyard", label: "Shipyard", icon: Hammer, description: "Build or buy vessels for the current game." },
-  { href: "/play/fleet", label: "Fleet Management", icon: Ship, description: "Inspect, assign and maintain your ships." },
   { href: "/play/settings", label: "Settings", icon: Settings, description: "Graphics quality, controls and saves." },
 ];
 

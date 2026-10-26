@@ -2,7 +2,7 @@
 
 A standalone browser game that combines a 3D ship simulator, a maritime empire builder, historical trade campaigns, fleet management and a source-backed historical encyclopedia. Built with Next.js (App Router), TypeScript, React Three Fiber, Tailwind CSS and Zustand. It runs entirely in the browser with no paid APIs; Supabase persistence is optional.
 
-The full design brief is in `docs/MASTER_PROMPT.md`. This repository implements the **first playable release** described in its Part 16: three complete scenarios, a working 3D ocean with controllable vessels, a global port map, contracts and economy, ship purchasing, port development, technology, diplomacy, missions, save/restore, and the encyclopedia.
+The full design brief is in `docs/MASTER_PROMPT.md`. This repository implements the **first playable release** described in its Part 16: three complete scenarios, a working 3D ocean with controllable vessels, a global port map, contracts and economy, ship purchasing, port development, technology, diplomacy, missions, save/restore, and the encyclopedia. A player guide (`/guide`, also opened with `?` in the sailing view and from the `?` buttons on each screen) explains the core loop, controls, time scale, trade, fleet and ports.
 
 ## Scenarios
 
@@ -112,7 +112,7 @@ Design rules kept throughout:
 
 ## Performance notes
 
-Quality presets (low / medium / high) control device pixel ratio, shadows and ocean tessellation. The 3D scene reads game state through a per-frame shared record rather than React re-renders; the HUD updates at about 8 Hz. The simulation integrates ship movement in substeps of at most 120 simulated seconds so high time acceleration does not skip waypoints. Frame rates depend on hardware and have not been benchmarked; no specific figure is claimed.
+Quality presets (low / medium / high) control device pixel ratio, shadows and ocean tessellation (10 m, 5 m or 3.5 m cells on the 1.4 km displaced sheet around the ship; a flat sheet carries the water to the fog). The ocean is a sum of eight swell components that displace the mesh plus three ripple components that only perturb per-pixel normals. Every component keeps its own phase: each frame the phases advance by real time and by the difference between the ship's real-speed movement and its scene movement, so the water passes the hull at the ship's actual speed at any time scale and the wake, bobbing and glitter never degrade into noise at 60× or 3600×. The wake is stored relative to the ship and recedes at real speed for the same reason. The 3D scene reads game state through a per-frame shared record rather than React re-renders; the HUD updates at about 8 Hz. The simulation integrates ship movement in substeps of at most 120 simulated seconds so high time acceleration does not skip waypoints. Frame rates depend on hardware and have not been benchmarked; no specific figure is claimed.
 
 ## Verification
 

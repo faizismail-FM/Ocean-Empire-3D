@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Anchor, Camera, ChevronLeft, ChevronRight, Compass as CompassIcon, Gauge, Globe2, Minus, Pause, Play, Plus, RotateCcw, Save, Ship, Wind, X, Zap, ZapOff } from "lucide-react";
+import { Anchor, Camera, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Compass as CompassIcon, Gauge, Globe2, HelpCircle, Minus, Pause, Play, Plus, RotateCcw, Save, Ship, Wind, X, Zap, ZapOff } from "lucide-react";
 import type { VesselClass } from "@/data/schemas";
 import { cargoCapacity, cargoUsed } from "@/engine/contracts";
 import { formatClock, formatDuration, formatGameDate } from "@/engine/calendar";
@@ -13,13 +13,13 @@ import { remainingDistanceNm } from "@/engine/routing";
 import { estimateVoyageSeconds } from "@/engine/ship";
 import type { GameState, ShipState } from "@/engine/state";
 import { windForDate } from "@/engine/wind";
+import { TIME_SCALES, timeScaleHint, timeScaleLabel } from "@/lib/time-scale";
 import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { useGameStore } from "@/store/game-store";
 import { useSettingsStore } from "@/store/settings-store";
 import { viewState } from "@/components/three/scene-state";
-import { Badge, Button, SimulatedBadge } from "@/components/ui";
-
-const TIME_SCALES = [1, 10, 60, 600, 3600];
+import { Badge, Button } from "@/components/ui";
+import { GuideOverlay } from "@/components/game/Guide";
 
 /** Subscribe to the store at a modest rate so the HUD does not re-render 60 times a second. */
 function useThrottledState(intervalMs = 120): GameState | null {
@@ -71,6 +71,8 @@ export function SailingHUD() {
   const cycleCamera = useSettingsStore((s) => s.cycleCamera);
   const showHints = useSettingsStore((s) => s.showTutorialHints);
   const [menuOpen, setMenuOpen] = useState(false);
+  const [guideOpen, setGuideOpen] = useState(false);
+  const [cardExpanded, setCardExpanded] = useState(false);
   const rudderHeld = useRef<"port" | "starboard" | null>(null);
 
   const ship: ShipState | undefined = state?.active_ship_id ? state.ships[state.active_ship_id] : undefined;
@@ -142,6 +144,10 @@ export function SailingHUD() {
         case "r":
           viewState.reset();
           break;
+        case "?":
+        case "h":
+          setGuideOpen((v) => !v);
+          break;
         case "escape":
           setMenuOpen((v) => !v);
           break;
@@ -190,33 +196,45 @@ export function SailingHUD() {
   });
   const hint = tutorialHint(state, ship, catalog.scenario.mode);
 
+  const speedKmh = ship.speed_knots * 1.852;
+  const statusLabel = ship.status === "docked" ? `Docked · ${here?.name ?? ""}` : ship.status === "drifting" ? "Drifting" : "Under way";
+
   return (
     <div className="pointer-events-none absolute inset-0 select-none text-foam">
-      {/* Top-left: ship card */}
-      <div className="hud-glass pointer-events-auto absolute left-3 top-3 w-80 p-3 text-sm">
+      {/* Top-left: ship card (collapsible on small screens) */}
+      <div className="hud-glass pointer-events-auto absolute left-3 right-3 top-3 p-3 text-sm md:right-auto md:w-80">
         <div className="flex items-start justify-between gap-2">
-          <div>
-            <div className="text-base font-semibold leading-tight">{ship.name}</div>
-            <div className="text-xs text-foam/60">{cls.name_or_class}</div>
+          <div className="min-w-0">
+            <div className="truncate text-base font-semibold leading-tight">{ship.name}</div>
+            <div className="truncate text-xs text-foam/60">{cls.name_or_class}</div>
           </div>
-          <SimulatedBadge />
+          <div className="flex items-center gap-2">
+            <span className={cn("rounded-md px-1.5 py-0.5 text-[0.65rem] uppercase tracking-wider", ship.status === "docked" ? "bg-white/10 text-foam/70" : ship.status === "drifting" ? "bg-coral-400/20 text-coral-400" : "bg-emerald-400/15 text-emerald-300")}>{statusLabel}</span>
+            <button onClick={() => setCardExpanded((v) => !v)} className="rounded-md p-1 text-foam/50 hover:bg-white/10 hover:text-foam md:hidden" aria-label={cardExpanded ? "Collapse ship details" : "Expand ship details"}>
+              {cardExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
+            </button>
+          </div>
         </div>
-        <div className="mt-2 grid grid-cols-2 gap-x-3 gap-y-1 font-mono text-xs">
-          <HudRow label="Speed" value={`${ship.speed_knots.toFixed(1)} kn`} />
+        <div className="mt-2 grid grid-cols-3 gap-2 font-mono text-xs md:hidden">
+          <MiniStat label="Speed" value={`${ship.speed_knots.toFixed(1)} kn`} />
+          <MiniStat label="Heading" value={`${Math.round(ship.heading).toString().padStart(3, "0")}°`} />
+          <MiniStat label="ETA" value={eta ? formatDuration(eta) : "—"} />
+        </div>
+        <div className={cn("mt-2 grid-cols-2 gap-x-3 gap-y-1 font-mono text-xs md:grid", cardExpanded ? "grid" : "hidden")}>
+          <HudRow label="Speed" value={`${ship.speed_knots.toFixed(1)} kn · ${speedKmh.toFixed(0)} km/h`} wide />
           <HudRow label="Heading" value={`${Math.round(ship.heading).toString().padStart(3, "0")}° ${compassLabel(ship.heading)}`} />
-          <HudRow label="Position" value={formatCoordinate(ship.position)} wide />
-          <HudRow label="Status" value={ship.status === "docked" ? `Docked · ${here?.name ?? ""}` : ship.status} wide />
+          <HudRow label="Position" value={formatCoordinate(ship.position)} />
           <HudRow label="Destination" value={destPort?.name ?? "—"} wide />
           <HudRow label="Remaining" value={remaining > 0 ? `${formatNumber(remaining)} nm` : "—"} />
           <HudRow label="ETA" value={eta ? formatDuration(eta) : "—"} />
-          <HudRow label="Waypoint" value={nextWp ? `${Math.min(ship.waypoint_index, ship.route.length - 1) + (ship.status === "docked" ? 0 : 0)}/${ship.route.length - 1} ${nextWp.label ?? ""}` : "—"} wide />
+          <HudRow label="Next waypoint" value={nextWp ? `${nextWp.label ?? `${Math.min(ship.waypoint_index, ship.route.length - 1) + 1} of ${ship.route.length - 1}`}` : "—"} wide />
           <HudRow label="Cargo" value={`${formatNumber(used)}/${formatNumber(capacity)} ${cls.cargo_unit}`} />
           <HudRow label={enduranceLabel} value={`${formatNumber(ship.endurance, 0)}/${formatNumber(cls.endurance_capacity)} ${enduranceUnit}`} warn={ship.endurance / cls.endurance_capacity < 0.2} />
           <HudRow label="Autopilot" value={ship.autopilot ? "engaged" : "manual"} />
-          <HudRow label="Condition" value={`${Math.round(ship.condition)}%`} />
+          <HudRow label="Condition" value={`${Math.round(ship.condition)}%`} warn={ship.condition < 40} />
         </div>
         {total > 0 && (
-          <div className="mt-2">
+          <div className={cn("mt-2", !cardExpanded && "hidden md:block")}>
             <div className="flex justify-between text-[0.65rem] text-foam/60"><span>Voyage progress</span><span>{Math.round(progress * 100)}%</span></div>
             <div className="mt-0.5 h-1 w-full rounded bg-white/10"><div className="h-full rounded bg-cyan-400" style={{ width: `${progress * 100}%` }} /></div>
           </div>
@@ -224,28 +242,23 @@ export function SailingHUD() {
       </div>
 
       {/* Top-center: compass tape */}
-      <div className="pointer-events-none absolute left-1/2 top-3 hidden -translate-x-1/2 md:block">
+      <div className="pointer-events-none absolute left-1/2 top-3 hidden -translate-x-1/2 lg:block">
         <CompassTape heading={ship.heading} bearing={bearingToDest} windFrom={wind?.from ?? null} />
       </div>
 
-      {/* Top-right: clock, time scale, environment */}
-      <div className="hud-glass pointer-events-auto absolute right-3 top-3 w-64 p-3 text-xs">
+      {/* Top-right: clock, time scale, environment (desktop) */}
+      <div className="hud-glass pointer-events-auto absolute right-3 top-3 hidden w-64 p-3 text-xs md:block">
         <div className="flex items-center justify-between">
           <div>
             <div className="text-sm">{formatGameDate(state.date)}</div>
-            <div className="font-mono text-foam/60">{formatClock(state.sim_seconds)} simulated</div>
+            <div className="font-mono text-foam/60">{formatClock(state.sim_seconds)}</div>
           </div>
-          <button onClick={togglePaused} className={cn("rounded-md p-2", state.paused ? "bg-gold-400/20 text-gold-300" : "bg-cyan-400/15 text-cyan-300")} title="Space">
+          <button onClick={togglePaused} className={cn("rounded-md p-2", state.paused ? "bg-gold-400/20 text-gold-300" : "bg-cyan-400/15 text-cyan-300")} title={state.paused ? "Resume (Space)" : "Pause (Space)"} aria-label={state.paused ? "Resume" : "Pause"}>
             {state.paused ? <Play size={16} /> : <Pause size={16} />}
           </button>
         </div>
-        <div className="mt-2 flex gap-1">
-          {TIME_SCALES.map((t) => (
-            <button key={t} onClick={() => setTimeScale(t)} className={cn("flex-1 rounded px-1 py-1 font-mono", state.time_scale === t ? "bg-cyan-400/25 text-cyan-300" : "bg-white/5 text-foam/60 hover:bg-white/10")}>
-              {t >= 3600 ? "1h/s" : t >= 60 ? `${t / 60}m/s` : `${t}×`}
-            </button>
-          ))}
-        </div>
+        <TimeScaleButtons value={state.time_scale} onChange={setTimeScale} className="mt-2" />
+        <div className="mt-1 text-[0.68rem] text-foam/55">{state.paused ? "Paused" : timeScaleHint(state.time_scale)}</div>
         {wind && (
           <div className={cn("mt-2 flex items-center gap-2 rounded-md px-2 py-1", inIrons ? "bg-coral-400/15 text-coral-400" : "bg-white/5 text-foam/80")}>
             <Wind size={14} style={{ transform: `rotate(${wind.from + 180}deg)` }} />
@@ -255,15 +268,14 @@ export function SailingHUD() {
           </div>
         )}
         <div className="mt-2 flex items-center justify-between text-foam/70">
-          <span className="flex items-center gap-1"><Camera size={12} /> {camera} camera</span>
+          <span className="flex items-center gap-1 capitalize"><Camera size={12} /> {camera} camera</span>
           <span className="font-mono text-gold-300">{formatMoney(state.treasury, catalog.scenario.currency)}</span>
         </div>
-        <div className="mt-1 text-[0.65rem] text-foam/45">Lighting follows the simulated clock (simplified; never fully dark).</div>
       </div>
 
       {/* Tutorial hint */}
       {showHints && hint && !state.tutorial.dismissed && (
-        <div className="hud-glass pointer-events-auto absolute left-3 top-[23.5rem] w-80 border-gold-400/40 p-3 text-xs">
+        <div className="hud-glass pointer-events-auto absolute bottom-[12.5rem] left-3 right-3 border-gold-400/40 p-3 text-xs md:bottom-auto md:right-auto md:top-[22.5rem] md:w-80">
           <div className="flex items-start justify-between gap-2">
             <div>
               <div className="label-caps text-gold-300">Next step</div>
@@ -280,91 +292,102 @@ export function SailingHUD() {
       )}
 
       {/* Bottom-center controls */}
-      <div className="hud-glass pointer-events-auto absolute bottom-3 left-1/2 flex w-[min(96vw,900px)] -translate-x-1/2 flex-wrap items-center gap-3 p-3">
-        <div className="flex items-center gap-2">
-          <Gauge size={16} className="text-cyan-300" />
-          <div className="w-36">
-            <div className="flex justify-between text-[0.65rem] text-foam/60"><span>{isSail ? "Sail" : "Throttle"}</span><span className="font-mono">{Math.round(ship.throttle * 100)}%</span></div>
-            <input type="range" min={0} max={100} step={5} value={Math.round(ship.throttle * 100)} onChange={(e) => manual({ throttle: Number(e.target.value) / 100 })} disabled={ship.status === "docked"} className="w-full" aria-label="Throttle" />
-          </div>
-          <div className="hidden text-[0.6rem] text-foam/40 lg:block">W / S</div>
-        </div>
-
-        <div className="flex items-center gap-1">
-          <button
-            className={cn("rounded-md border border-white/10 p-2 hover:bg-white/10", ship.rudder < -0.1 && "bg-cyan-400/20")}
-            onPointerDown={() => manual({ rudder: -1 })}
-            onPointerUp={() => !ship.autopilot && setControls(ship.id, { rudder: 0 })}
-            onPointerLeave={() => !ship.autopilot && ship.rudder !== 0 && setControls(ship.id, { rudder: 0 })}
-            disabled={ship.status === "docked"}
-            aria-label="Steer to port (A)"
-          >
-            <ChevronLeft size={16} />
+      <div className="hud-glass pointer-events-auto absolute bottom-3 left-1/2 w-[min(96vw,900px)] -translate-x-1/2 p-3">
+        {/* Mobile-only clock and time scale */}
+        <div className="mb-2 flex items-center gap-2 text-xs md:hidden">
+          <button onClick={togglePaused} className={cn("rounded-md p-1.5", state.paused ? "bg-gold-400/20 text-gold-300" : "bg-cyan-400/15 text-cyan-300")} aria-label={state.paused ? "Resume" : "Pause"}>
+            {state.paused ? <Play size={14} /> : <Pause size={14} />}
           </button>
-          <div className="w-16 text-center">
-            <div className="text-[0.65rem] text-foam/60">Rudder</div>
-            <div className="font-mono text-xs">{ship.rudder === 0 ? "midships" : `${Math.abs(Math.round(ship.rudder * 35))}° ${ship.rudder < 0 ? "port" : "stbd"}`}</div>
-          </div>
-          <button
-            className={cn("rounded-md border border-white/10 p-2 hover:bg-white/10", ship.rudder > 0.1 && "bg-cyan-400/20")}
-            onPointerDown={() => manual({ rudder: 1 })}
-            onPointerUp={() => !ship.autopilot && setControls(ship.id, { rudder: 0 })}
-            onPointerLeave={() => !ship.autopilot && ship.rudder !== 0 && setControls(ship.id, { rudder: 0 })}
-            disabled={ship.status === "docked"}
-            aria-label="Steer to starboard (D)"
-          >
-            <ChevronRight size={16} />
-          </button>
-          <div className="hidden text-[0.6rem] text-foam/40 lg:block">A / D</div>
+          <TimeScaleButtons value={state.time_scale} onChange={setTimeScale} className="flex-1" />
+          <span className="font-mono text-foam/60">{formatClock(state.sim_seconds)}</span>
         </div>
+        <div className="flex flex-wrap items-center gap-3">
+          <div className="flex items-center gap-2">
+            <Gauge size={16} className="text-cyan-300" />
+            <div className="w-36">
+              <div className="flex justify-between text-[0.65rem] text-foam/60"><span>{isSail ? "Sail" : "Throttle"}</span><span className="font-mono">{Math.round(ship.throttle * 100)}%</span></div>
+              <input type="range" min={0} max={100} step={5} value={Math.round(ship.throttle * 100)} onChange={(e) => manual({ throttle: Number(e.target.value) / 100 })} disabled={ship.status === "docked"} className="w-full" aria-label="Throttle" />
+            </div>
+            <div className="hidden text-[0.6rem] text-foam/40 lg:block">W / S</div>
+          </div>
 
-        <button
-          onClick={() => ship.status !== "docked" && setControls(ship.id, { autopilot: !ship.autopilot, rudder: 0 })}
-          disabled={ship.status === "docked" || ship.route.length < 2}
-          className={cn("flex items-center gap-1.5 rounded-md border px-3 py-2 text-xs", ship.autopilot ? "border-emerald-400/40 bg-emerald-400/15 text-emerald-300" : "border-white/10 hover:bg-white/10")}
-          title={ship.route.length < 2 ? "Set a destination to enable autopilot" : undefined}
-        >
-          {ship.autopilot ? <Zap size={14} /> : <ZapOff size={14} />} Autopilot
-        </button>
+          <div className="flex items-center gap-1">
+            <button
+              className={cn("rounded-md border border-white/10 p-2 hover:bg-white/10", ship.rudder < -0.1 && "bg-cyan-400/20")}
+              onPointerDown={() => manual({ rudder: -1 })}
+              onPointerUp={() => !ship.autopilot && setControls(ship.id, { rudder: 0 })}
+              onPointerLeave={() => !ship.autopilot && ship.rudder !== 0 && setControls(ship.id, { rudder: 0 })}
+              disabled={ship.status === "docked"}
+              aria-label="Steer to port (A)"
+            >
+              <ChevronLeft size={16} />
+            </button>
+            <div className="w-16 text-center">
+              <div className="text-[0.65rem] text-foam/60">Rudder</div>
+              <div className="font-mono text-xs">{ship.rudder === 0 ? "midships" : `${Math.abs(Math.round(ship.rudder * 35))}° ${ship.rudder < 0 ? "port" : "stbd"}`}</div>
+            </div>
+            <button
+              className={cn("rounded-md border border-white/10 p-2 hover:bg-white/10", ship.rudder > 0.1 && "bg-cyan-400/20")}
+              onPointerDown={() => manual({ rudder: 1 })}
+              onPointerUp={() => !ship.autopilot && setControls(ship.id, { rudder: 0 })}
+              onPointerLeave={() => !ship.autopilot && ship.rudder !== 0 && setControls(ship.id, { rudder: 0 })}
+              disabled={ship.status === "docked"}
+              aria-label="Steer to starboard (D)"
+            >
+              <ChevronRight size={16} />
+            </button>
+            <div className="hidden text-[0.6rem] text-foam/40 lg:block">A / D</div>
+          </div>
 
-        <label className="flex items-center gap-1.5 text-xs text-foam/70">
-          <CompassIcon size={14} />
-          <select
-            value={destination?.port_id ?? ""}
-            onChange={(e) => {
-              if (e.target.value) setDestination(ship.id, e.target.value);
-            }}
-            className="max-w-[11rem] py-1.5 text-xs"
-            aria-label="Destination"
+          <button
+            onClick={() => ship.status !== "docked" && setControls(ship.id, { autopilot: !ship.autopilot, rudder: 0 })}
+            disabled={ship.status === "docked" || ship.route.length < 2}
+            className={cn("flex items-center gap-1.5 rounded-md border px-3 py-2 text-xs", ship.autopilot ? "border-emerald-400/40 bg-emerald-400/15 text-emerald-300" : "border-white/10 hover:bg-white/10")}
+            title={ship.route.length < 2 ? "Set a destination to enable autopilot" : ship.autopilot ? "Autopilot engaged: click to take the helm" : "Resume the plotted route"}
           >
-            <option value="">Destination…</option>
-            {openPorts.map((p) => (
-              <option key={p.id} value={p.id}>
-                {p.name} ({formatNumber(distanceNm(ship.position, { lat: p.latitude, lon: p.longitude }))} nm)
-              </option>
-            ))}
-          </select>
-        </label>
+            {ship.autopilot ? <Zap size={14} /> : <ZapOff size={14} />} Autopilot
+          </button>
 
-        {ship.status === "docked" && ship.route.length >= 2 && (
-          <Button size="sm" onClick={() => depart(ship.id)}>
-            <Anchor size={14} /> Depart
-          </Button>
-        )}
-
-        <div className="ml-auto flex items-center gap-1">
-          <button onClick={cycleCamera} className="rounded-md border border-white/10 p-2 text-xs hover:bg-white/10" title="Cycle camera (C)"><Camera size={14} /></button>
-          <button onClick={() => viewState.zoom(-1)} className="rounded-md border border-white/10 p-2 hover:bg-white/10" title="Zoom in (+)"><Plus size={14} /></button>
-          <button onClick={() => viewState.zoom(1)} className="rounded-md border border-white/10 p-2 hover:bg-white/10" title="Zoom out (−)"><Minus size={14} /></button>
-          <button onClick={() => viewState.reset()} className="rounded-md border border-white/10 p-2 hover:bg-white/10" title="Reset camera (R)"><RotateCcw size={14} /></button>
-          {Object.keys(state.ships).length > 1 && (
-            <select value={ship.id} onChange={(e) => setActiveShip(e.target.value)} className="py-1.5 text-xs" aria-label="Active ship">
-              {Object.values(state.ships).map((s) => (
-                <option key={s.id} value={s.id}>{s.name}</option>
+          <label className="flex items-center gap-1.5 text-xs text-foam/70">
+            <CompassIcon size={14} />
+            <select
+              value={destination?.port_id ?? ""}
+              onChange={(e) => {
+                if (e.target.value) setDestination(ship.id, e.target.value);
+              }}
+              className="max-w-[11rem] py-1.5 text-xs"
+              aria-label="Destination"
+            >
+              <option value="">Destination…</option>
+              {openPorts.map((p) => (
+                <option key={p.id} value={p.id}>
+                  {p.name} ({formatNumber(distanceNm(ship.position, { lat: p.latitude, lon: p.longitude }))} nm)
+                </option>
               ))}
             </select>
+          </label>
+
+          {ship.status === "docked" && ship.route.length >= 2 && (
+            <Button size="sm" onClick={() => depart(ship.id)}>
+              <Anchor size={14} /> Depart
+            </Button>
           )}
-          <button onClick={() => setMenuOpen(true)} className="rounded-md border border-white/10 px-3 py-2 text-xs hover:bg-white/10" title="Menu (Esc)">Menu</button>
+
+          <div className="ml-auto flex items-center gap-1">
+            <button onClick={cycleCamera} className="rounded-md border border-white/10 p-2 text-xs hover:bg-white/10" title="Cycle camera (C)" aria-label="Cycle camera"><Camera size={14} /></button>
+            <button onClick={() => viewState.zoom(-1)} className="rounded-md border border-white/10 p-2 hover:bg-white/10" title="Zoom in (+)" aria-label="Zoom in"><Plus size={14} /></button>
+            <button onClick={() => viewState.zoom(1)} className="rounded-md border border-white/10 p-2 hover:bg-white/10" title="Zoom out (−)" aria-label="Zoom out"><Minus size={14} /></button>
+            <button onClick={() => viewState.reset()} className="hidden rounded-md border border-white/10 p-2 hover:bg-white/10 sm:block" title="Reset camera (R)" aria-label="Reset camera"><RotateCcw size={14} /></button>
+            {Object.keys(state.ships).length > 1 && (
+              <select value={ship.id} onChange={(e) => setActiveShip(e.target.value)} className="py-1.5 text-xs" aria-label="Active ship">
+                {Object.values(state.ships).map((s) => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
+                ))}
+              </select>
+            )}
+            <button onClick={() => setGuideOpen(true)} className="rounded-md border border-white/10 p-2 hover:bg-white/10" title="How to play (?)" aria-label="How to play"><HelpCircle size={14} /></button>
+            <button onClick={() => setMenuOpen(true)} className="rounded-md border border-white/10 px-3 py-2 text-xs hover:bg-white/10" title="Menu (Esc)">Menu</button>
+          </div>
         </div>
       </div>
 
@@ -378,6 +401,7 @@ export function SailingHUD() {
               <Button variant="secondary" onClick={async () => { await saveGame(); setMenuOpen(false); }}><Save size={14} /> Save game</Button>
               <Button variant="secondary" onClick={() => router.push("/play/world")}><Globe2 size={14} /> World map</Button>
               <Button variant="secondary" onClick={() => router.push("/play/fleet")}><Ship size={14} /> Fleet</Button>
+              <Button variant="secondary" onClick={() => { setMenuOpen(false); setGuideOpen(true); }}><HelpCircle size={14} /> How to play</Button>
               <Button variant="secondary" onClick={() => router.push("/play/settings")}>Settings</Button>
               <Button variant="ghost" onClick={() => router.push("/")}>Main menu</Button>
             </div>
@@ -386,12 +410,35 @@ export function SailingHUD() {
         </div>
       )}
 
+      <GuideOverlay open={guideOpen} onClose={() => setGuideOpen(false)} initial="sailing" />
+
       {/* Drifting / out of endurance banner */}
       {ship.status === "drifting" && (
         <div className="pointer-events-auto absolute left-1/2 top-24 -translate-x-1/2 rounded-lg border border-coral-400/50 bg-coral-400/15 px-4 py-2 text-sm text-coral-400">
           Out of fuel: the ship is drifting. <Badge tone="coral">no propulsion</Badge>
         </div>
       )}
+    </div>
+  );
+}
+
+function MiniStat({ label, value }: { label: string; value: string }) {
+  return (
+    <div className="rounded-md bg-white/5 px-2 py-1">
+      <div className="text-[0.6rem] uppercase tracking-wider text-foam/50">{label}</div>
+      <div className="text-foam">{value}</div>
+    </div>
+  );
+}
+
+function TimeScaleButtons({ value, onChange, className }: { value: number; onChange: (scale: number) => void; className?: string }) {
+  return (
+    <div className={cn("flex gap-1", className)} role="group" aria-label="Simulation speed">
+      {TIME_SCALES.map((t) => (
+        <button key={t} onClick={() => onChange(t)} title={timeScaleHint(t)} className={cn("flex-1 rounded px-1 py-1 font-mono text-xs", value === t ? "bg-cyan-400/25 text-cyan-300" : "bg-white/5 text-foam/60 hover:bg-white/10")}>
+          {timeScaleLabel(t)}
+        </button>
+      ))}
     </div>
   );
 }
@@ -441,8 +488,8 @@ function tutorialHint(state: GameState, ship: ShipState, mode: "historical" | "m
   if (ship.status === "docked") {
     if (!hasContractCargo) return { text: mode === "modern" ? "Accept a container contract bound for Singapore, then come back here." : "Accept a cargo contract at your home port, then return to the helm.", link: { href: "/play/trade", label: "Open contracts" } };
     if (ship.route.length < 2) return { text: "Cargo is aboard. Choose the contract's destination in the Destination list to plot a route." };
-    return { text: "Route plotted. Press Depart. The autopilot follows the sea lanes; use 60× or faster to pass the time." };
+    return { text: "Route plotted. Press Depart. The autopilot follows the sea lanes; set 60× or faster to pass the voyage." };
   }
-  if (ship.autopilot) return { text: "Under way. Try C to cycle cameras, +/− to zoom, or take the helm with W/S and A/D. Arrival docks you automatically and pays the contract." };
+  if (ship.autopilot) return { text: "Under way. Press C to change camera, + and − to zoom, or take the helm with W/S and A/D. Arrival docks the ship and pays the contract. Press ? for the guide." };
   return { text: "Manual control. Steer toward the buoy or re-engage the autopilot to follow the planned route." };
 }
