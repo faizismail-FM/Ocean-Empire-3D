@@ -67,7 +67,7 @@ void main() {
   // of the waves (a cheap stand-in for subsurface scattering).
   float crest = clamp(vHeight / max(uAmp * 0.9, 0.05) * 0.5 + 0.5, 0.0, 1.0);
   float sunFacing = max(dot(n, uSunDir), 0.0);
-  vec3 body = mix(uDeep, uShallow, crest * 0.22 + sunFacing * 0.06);
+  vec3 body = mix(uDeep, uShallow, crest * 0.1 + sunFacing * 0.04);
   body *= 0.72 + 0.28 * uSunStrength;
 
   // Reflection of the sky, strongest at grazing angles.
@@ -78,9 +78,9 @@ void main() {
   vec3 halfDir = normalize(uSunDir + viewDir);
   float ndh = max(dot(n, halfDir), 0.0);
   float wide = smoothstep(0.15, 2.5, px);
-  float shininess = mix(360.0, 40.0, wide);
-  float glitter = pow(ndh, shininess) * mix(0.55, 0.12, wide);
-  float glow = pow(ndh, 48.0) * 0.08;
+  float shininess = mix(140.0, 30.0, wide);
+  float glitter = pow(ndh, shininess) * mix(0.26, 0.1, wide);
+  float glow = pow(ndh, 24.0) * 0.07;
   color += uSunColor * (glitter + glow) * uSunStrength;
 
   // Faint foam streaks on the highest crests only.

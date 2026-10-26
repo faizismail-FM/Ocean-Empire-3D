@@ -29,9 +29,11 @@ void main() {
   // Two bright shoulders where the hull pushes water aside, a calmer centre line.
   float shoulders = smoothstep(0.15, 0.55, x) * (1.0 - smoothstep(0.7, 1.0, x));
   float centre = (1.0 - smoothstep(0.0, 0.35, x)) * 0.45;
-  float streak = 0.8 + 0.2 * sin(vUv2.y * 90.0 + x * 9.0);
+  // Streaks keyed to the segment age, which is continuous, rather than the strip index, which shifts whenever a sample is added or dropped.
+  float streak = 0.85 + 0.15 * sin(vAge * 70.0 + x * 9.0);
   float fade = (1.0 - vAge) * (1.0 - vAge);
-  float alpha = (shoulders + centre) * streak * fade * 0.6;
+  // Newest segments fade in so the strip does not pop at the stern when a sample is added.
+  float alpha = (shoulders + centre) * streak * fade * 0.6 * smoothstep(0.0, 0.05, vAge);
   gl_FragColor = vec4(0.92, 0.97, 1.0, alpha);
 }
 `;
@@ -165,7 +167,7 @@ export function BowFoam() {
     const bx = s.x + Math.sin(h) * s.length * 0.46;
     const bz = s.z - Math.cos(h) * s.length * 0.46;
     const speedFactor = Math.min(1, s.speed / 12);
-    const flicker = 0.9 + 0.1 * Math.sin(frame.waveClock * 7.3);
+    const flicker = 0.96 + 0.04 * Math.sin(frame.waveClock * 3.1);
     m.position.set(bx, waveHeight(bx, bz, frame.wavePhases, frame.waveAmp) + 0.35, bz);
     m.rotation.set(-Math.PI / 2, 0, -h);
     m.scale.set(Math.max(0.01, s.length * 0.1 * speedFactor * flicker), Math.max(0.01, s.length * 0.16 * speedFactor), 1);
