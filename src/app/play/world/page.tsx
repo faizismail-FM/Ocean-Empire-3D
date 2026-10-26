@@ -2,7 +2,8 @@
 
 import { useRouter } from "next/navigation";
 import { useState } from "react";
-import { Layers } from "lucide-react";
+import { ChevronRight, Layers } from "lucide-react";
+import { HelpTip } from "@/components/game/Guide";
 import { DEFAULT_LAYERS, WorldMap, type MapLayers } from "@/components/map/WorldMap";
 import { PortDetailPanel } from "@/components/game/PortDetailPanel";
 import { Badge, Button, Panel } from "@/components/ui";
@@ -68,7 +69,7 @@ export default function WorldPage() {
             <PortDetailPanel portId={selected} onClose={() => setSelected(null)} />
           </Panel>
         ) : (
-          <Panel title="Operations" subtitle="Select a port to inspect it, or a ship to take the helm.">
+          <Panel title={<span className="flex items-center gap-2">Operations <HelpTip section="loop" /></span>} subtitle="Select a ship to take the helm, or a port to inspect it.">
             <div className="space-y-2">
               {ships.map((ship) => {
                 const cls = catalog.ships.find((c) => c.id === ship.class_id);
@@ -96,12 +97,18 @@ export default function WorldPage() {
               })}
             </div>
             <div className="mt-4 label-caps">Ports in this scenario</div>
-            <div className="mt-1 grid grid-cols-2 gap-1">
-              {catalog.ports.map((p) => (
-                <button key={p.id} onClick={() => setSelected(p.id)} className="truncate rounded px-2 py-1 text-left text-xs text-foam/70 hover:bg-white/5 hover:text-foam">
-                  {p.name}
-                </button>
-              ))}
+            <div className="mt-1 grid gap-1 sm:grid-cols-2">
+              {catalog.ports.map((p) => {
+                const access = state.ports[p.id]?.access ?? p.default_access;
+                const dot = access === "home" ? "bg-gold-300" : access === "agreement" ? "bg-emerald-300" : access === "open" ? "bg-cyan-300" : access === "restricted" ? "bg-coral-400" : "bg-foam/30";
+                return (
+                  <button key={p.id} onClick={() => setSelected(p.id)} title={`${p.name} · ${access}`} className="group flex items-center gap-2 rounded-md border border-transparent px-2 py-1.5 text-left text-xs text-foam/75 hover:border-cyan-300/30 hover:bg-white/5 hover:text-foam">
+                    <span className={cn("h-1.5 w-1.5 shrink-0 rounded-full", dot)} />
+                    <span className="truncate">{p.name}</span>
+                    <ChevronRight size={12} className="ml-auto shrink-0 text-foam/30 group-hover:text-cyan-300" />
+                  </button>
+                );
+              })}
             </div>
           </Panel>
         )}

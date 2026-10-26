@@ -9,6 +9,7 @@ import { useGameStore } from "@/store/game-store";
 import { useSettingsStore, type QualityLevel } from "@/store/settings-store";
 import { Button, ConfirmDialog, KeyValue, Panel } from "@/components/ui";
 import { AccountPanel } from "@/components/game/AccountPanel";
+import { HelpTip } from "@/components/game/Guide";
 
 export default function SettingsPage() {
   const router = useRouter();
@@ -32,7 +33,7 @@ export default function SettingsPage() {
 
   return (
     <div className="space-y-4">
-      <h1 className="text-3xl">Settings</h1>
+      <div className="flex items-center gap-2"><h1 className="text-3xl">Settings</h1><HelpTip section="saves" /></div>
       <div className="grid gap-4 md:grid-cols-2">
         <Panel title="Graphics" subtitle="Applies to the 3D sailing scene.">
           <div className="flex gap-2">
@@ -45,9 +46,9 @@ export default function SettingsPage() {
           <KeyValue
             className="mt-3 text-xs"
             items={[
-              ["Low", "No shadows, 64-segment ocean, pixel ratio 1"],
-              ["Medium", "Soft shadows, 128-segment ocean, pixel ratio up to 1.5"],
-              ["High", "Soft shadows, 192-segment ocean, pixel ratio up to 2"],
+              ["Low", "No shadows, 10 m ocean mesh, pixel ratio 1"],
+              ["Medium", "Soft shadows, 5 m ocean mesh, pixel ratio up to 1.5"],
+              ["High", "Soft shadows, 3.5 m ocean mesh, pixel ratio up to 2"],
             ]}
           />
           <p className="mt-2 text-xs text-foam/50">Frame rates depend on your hardware; no specific rate is guaranteed.</p>

@@ -3,12 +3,13 @@
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
+import { headingDifference } from "@/engine/geo";
 import { getSceneFrame } from "./scene-state";
 import { waveHeight } from "./waves";
 
-const MAX_SAMPLES = 70;
-const SAMPLE_INTERVAL = 0.25; // seconds of real time between samples
-const WAKE_LIFETIME_SIM = 420; // simulated seconds a wake segment persists
+const MAX_SAMPLES = 90;
+const SAMPLE_INTERVAL = 0.2; // real seconds between samples
+const WAKE_LIFETIME = 75; // real seconds a wake segment persists
 
 const VERTEX = /* glsl */ `
 attribute float aAge;
@@ -24,22 +25,34 @@ const FRAGMENT = /* glsl */ `
 varying float vAge;
 varying vec2 vUv2;
 void main() {
-  float edge = 1.0 - smoothstep(0.55, 1.0, abs(vUv2.x * 2.0 - 1.0));
-  float streak = 0.75 + 0.25 * sin(vUv2.y * 40.0 + vUv2.x * 6.0);
-  float alpha = (1.0 - vAge) * (1.0 - vAge) * edge * streak * 0.55;
-  gl_FragColor = vec4(0.9, 0.96, 1.0, alpha);
+  float x = abs(vUv2.x * 2.0 - 1.0);
+  // Two bright shoulders where the hull pushes water aside, a calmer centre line.
+  float shoulders = smoothstep(0.15, 0.55, x) * (1.0 - smoothstep(0.7, 1.0, x));
+  float centre = (1.0 - smoothstep(0.0, 0.35, x)) * 0.45;
+  float streak = 0.8 + 0.2 * sin(vUv2.y * 90.0 + x * 9.0);
+  float fade = (1.0 - vAge) * (1.0 - vAge);
+  float alpha = (shoulders + centre) * streak * fade * 0.6;
+  gl_FragColor = vec4(0.92, 0.97, 1.0, alpha);
 }
 `;
 
+interface WakeSample {
+  /** Offset from the ship in scene metres (world-aligned, ship-centred frame). */
+  x: number;
+  z: number;
+  born: number;
+  heading: number;
+}
+
 /**
- * Foam trail that follows the ship's actual track (not a sprite glued to the stern):
- * positions are sampled from the ship's real movement, so turns leave a curved wake.
+ * Foam trail that follows the ship's track. Samples are kept relative to the ship and
+ * recede by the ship's real-time movement each frame, so the trail looks the same whether
+ * the simulation runs at 1× or 3600×, and turns still leave a curved wake.
  */
 export function Wake() {
   const mesh = useRef<THREE.Mesh>(null);
-  const samples = useRef<Array<{ x: number; z: number; t: number; heading: number }>>([]);
+  const samples = useRef<WakeSample[]>([]);
   const lastSample = useRef(0);
-  const clock = useRef(0);
 
   const geometry = useMemo(() => {
     const geo = new THREE.BufferGeometry();
@@ -56,52 +69,75 @@ export function Wake() {
     geo.setDrawRange(0, 0);
     return geo;
   }, []);
-
   const material = useMemo(() => new THREE.ShaderMaterial({ vertexShader: VERTEX, fragmentShader: FRAGMENT, transparent: true, depthWrite: false, side: THREE.DoubleSide, blending: THREE.NormalBlending }), []);
 
-  useFrame((_, dt) => {
+  useFrame(() => {
     const frame = getSceneFrame();
     const m = mesh.current;
     if (!m) return;
-    clock.current += dt;
     const s = frame.ship;
     const list = samples.current;
+    const now = frame.waveClock;
 
-    // Emit a new sample from the stern when the ship moves. Samples are stamped with
-    // simulated time so the wake ages with the game clock: at high time acceleration the
-    // trail simply shortens instead of stretching to the horizon.
-    if (clock.current - lastSample.current > SAMPLE_INTERVAL && !frame.paused) {
-      lastSample.current = clock.current;
+    // Existing samples recede at the ship's real speed.
+    if (!frame.paused) {
+      for (const p of list) {
+        p.x -= frame.realStep.x;
+        p.z -= frame.realStep.z;
+      }
+    }
+    while (list.length > 0 && now - list[0]!.born > WAKE_LIFETIME) list.shift();
+
+    // Emit a new sample at the stern while the ship is making way.
+    if (now - lastSample.current > SAMPLE_INTERVAL && !frame.paused && s.speed > 0.3) {
+      lastSample.current = now;
       const h = (s.heading * Math.PI) / 180;
-      const sternX = s.x - Math.sin(h) * s.length * 0.48;
-      const sternZ = s.z + Math.cos(h) * s.length * 0.48;
+      const sternX = -Math.sin(h) * s.length * 0.48;
+      const sternZ = Math.cos(h) * s.length * 0.48;
       const last = list[list.length - 1];
-      if (s.speed > 0.3 && (!last || Math.hypot(last.x - sternX, last.z - sternZ) > 0.5)) {
-        list.push({ x: sternX, z: sternZ, t: frame.simSeconds, heading: s.heading });
+      // Under time acceleration a turn completes within a few samples, and the stern
+      // swinging round would leave a sideways smear; start a fresh trail instead.
+      if (last && Math.abs(headingDifference(s.heading, last.heading)) > 8) list.length = 0;
+      if (!last || list.length === 0 || Math.hypot(last.x - sternX, last.z - sternZ) > 0.8) {
+        list.push({ x: sternX, z: sternZ, born: now, heading: s.heading });
         if (list.length > MAX_SAMPLES) list.shift();
       }
     }
-    while (list.length > 0 && frame.simSeconds - list[0]!.t > WAKE_LIFETIME_SIM) list.shift();
-    // A floating-origin rebase moves everything; drop samples that are implausibly far away.
-    while (list.length > 0 && Math.hypot(list[0]!.x - s.x, list[0]!.z - s.z) > 20_000) list.shift();
 
     const pos = geometry.getAttribute("position") as THREE.BufferAttribute;
     const uv = geometry.getAttribute("uv") as THREE.BufferAttribute;
     const age = geometry.getAttribute("aAge") as THREE.BufferAttribute;
     const n = list.length;
-    const baseWidth = Math.max(1.5, s.length * 0.055);
+    const baseWidth = Math.max(1.2, s.length * 0.05);
     for (let i = 0; i < n; i++) {
       const p = list[i]!;
-      const a = Math.min(1, Math.max(0, (frame.simSeconds - p.t) / WAKE_LIFETIME_SIM));
-      const width = baseWidth + a * s.length * 0.22 + Math.min(s.speed, 20) * 0.15;
-      const h = (p.heading * Math.PI) / 180;
-      // perpendicular to the heading
-      const px = Math.cos(h) * width;
-      const pz = Math.sin(h) * width;
-      const y1 = waveHeight(p.x - px, p.z - pz, frame.waveTime, frame.waveAmp) + 0.35;
-      const y2 = waveHeight(p.x + px, p.z + pz, frame.waveTime, frame.waveAmp) + 0.35;
-      pos.setXYZ(i * 2, p.x - px, y1, p.z - pz);
-      pos.setXYZ(i * 2 + 1, p.x + px, y2, p.z + pz);
+      const a = Math.min(1, Math.max(0, (now - p.born) / WAKE_LIFETIME));
+      // The wake spreads as it ages, like a real Kelvin wake, and widens with speed.
+      const width = baseWidth + a * s.length * 0.3 + Math.min(s.speed, 20) * 0.12;
+      // Orient each cross-section along the local track (from its neighbours) rather than
+      // the heading recorded at emission: at high time acceleration the ship can turn far
+      // between two closely spaced samples, and stored headings would twist the strip.
+      const prev = list[Math.max(0, i - 1)]!;
+      const next = list[Math.min(n - 1, i + 1)]!;
+      let tx = next.x - prev.x;
+      let tz = next.z - prev.z;
+      const tl = Math.hypot(tx, tz);
+      if (tl < 0.3) {
+        const h = (p.heading * Math.PI) / 180;
+        tx = -Math.sin(h);
+        tz = Math.cos(h);
+      } else {
+        tx /= tl;
+        tz /= tl;
+      }
+      const px = -tz * width;
+      const pz = tx * width;
+      const wx = s.x + p.x;
+      const wz = s.z + p.z;
+      const y1 = waveHeight(wx - px, wz - pz, frame.wavePhases, frame.waveAmp) + 0.3;
+      const y2 = waveHeight(wx + px, wz + pz, frame.wavePhases, frame.waveAmp) + 0.3;
+      pos.setXYZ(i * 2, wx - px, y1, wz - pz);
+      pos.setXYZ(i * 2 + 1, wx + px, y2, wz + pz);
       uv.setXY(i * 2, 0, i / Math.max(1, n - 1));
       uv.setXY(i * 2 + 1, 1, i / Math.max(1, n - 1));
       age.setX(i * 2, a);
@@ -117,7 +153,7 @@ export function Wake() {
   return <mesh ref={mesh} geometry={geometry} material={material} frustumCulled={false} renderOrder={2} />;
 }
 
-/** Bow foam: a small bright patch scaled by speed. */
+/** Bow foam: a bright patch at the stem that grows with speed and flickers slightly. */
 export function BowFoam() {
   const mesh = useRef<THREE.Mesh>(null);
   useFrame(() => {
@@ -126,13 +162,14 @@ export function BowFoam() {
     if (!m) return;
     const s = frame.ship;
     const h = (s.heading * Math.PI) / 180;
-    const bx = s.x + Math.sin(h) * s.length * 0.47;
-    const bz = s.z - Math.cos(h) * s.length * 0.47;
+    const bx = s.x + Math.sin(h) * s.length * 0.46;
+    const bz = s.z - Math.cos(h) * s.length * 0.46;
     const speedFactor = Math.min(1, s.speed / 12);
-    m.position.set(bx, waveHeight(bx, bz, frame.waveTime, frame.waveAmp) + 0.4, bz);
+    const flicker = 0.9 + 0.1 * Math.sin(frame.waveClock * 7.3);
+    m.position.set(bx, waveHeight(bx, bz, frame.wavePhases, frame.waveAmp) + 0.35, bz);
     m.rotation.set(-Math.PI / 2, 0, -h);
-    m.scale.set(Math.max(0.01, s.length * 0.12 * speedFactor), Math.max(0.01, s.length * 0.2 * speedFactor), 1);
-    (m.material as THREE.MeshBasicMaterial).opacity = 0.5 * speedFactor;
+    m.scale.set(Math.max(0.01, s.length * 0.1 * speedFactor * flicker), Math.max(0.01, s.length * 0.16 * speedFactor), 1);
+    (m.material as THREE.MeshBasicMaterial).opacity = 0.45 * speedFactor;
   });
   return (
     <mesh ref={mesh} renderOrder={3}>

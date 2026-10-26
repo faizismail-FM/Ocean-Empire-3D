@@ -18,6 +18,7 @@ import { cn, formatMoney, formatMoneyExact, formatNumber } from "@/lib/utils";
 import { useGameStore } from "@/store/game-store";
 import { Badge, Button, ConfirmDialog, EvidenceBadge, KeyValue, Modal, Panel, ProgressBar, Stat, Tabs } from "@/components/ui";
 import { SourceList } from "./SourceList";
+import { HelpTip } from "@/components/game/Guide";
 
 type Tab = "fleet" | "shipyard" | "voyages";
 
@@ -33,7 +34,7 @@ export function FleetScreen() {
     <div className="space-y-4">
       <div className="flex flex-wrap items-end justify-between gap-3">
         <div>
-          <h1 className="text-3xl">Fleet</h1>
+          <div className="flex items-center gap-2"><h1 className="text-3xl">Fleet</h1><HelpTip section="fleet" /></div>
           <p className="text-sm text-foam/60">{ships.length} vessel{ships.length === 1 ? "" : "s"} · {ships.filter((s) => s.status !== "docked").length} at sea</p>
         </div>
         <Tabs<Tab>

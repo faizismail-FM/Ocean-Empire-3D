@@ -1,6 +1,7 @@
 import * as THREE from "three";
 import type { GeoPoint } from "@/engine/geo";
 import type { Wind } from "@/engine/wind";
+import { createWavePhases, type WavePhases } from "./waves";
 
 /**
  * Per-frame scene state shared between 3D components without React re-renders. The
@@ -12,7 +13,15 @@ export interface SceneFrame {
   origin: GeoPoint;
   /** Player ship position in scene metres (x east, z south). */
   ship: { x: number; z: number; heading: number; speed: number; length: number; y: number; pitch: number; roll: number };
-  waveTime: number;
+  /**
+   * Metres the ship would have covered this frame at its real speed (not time-scaled).
+   * Effects that should look right at any time acceleration (wake, foam) move by this.
+   */
+  realStep: { x: number; z: number };
+  /** Per-component wave phases; see waves.ts for why these replace a shared clock. */
+  wavePhases: WavePhases;
+  /** Real seconds the scene has been animating (buoy rocking, foam flicker). */
+  waveClock: number;
   waveAmp: number;
   wind: Wind;
   sunDir: THREE.Vector3;
@@ -29,7 +38,9 @@ export interface SceneFrame {
 const frame: SceneFrame = {
   origin: { lat: 0, lon: 0 },
   ship: { x: 0, z: 0, heading: 0, speed: 0, length: 100, y: 0, pitch: 0, roll: 0 },
-  waveTime: 0,
+  realStep: { x: 0, z: 0 },
+  wavePhases: createWavePhases(),
+  waveClock: 0,
   waveAmp: 1,
   wind: { from: 0, speed_knots: 0 },
   sunDir: new THREE.Vector3(0.3, 0.6, 0.4).normalize(),

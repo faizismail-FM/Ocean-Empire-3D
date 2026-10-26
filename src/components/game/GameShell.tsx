@@ -3,8 +3,9 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
-import { Bell, BookOpen, Building2, Coins, Globe2, Handshake, Hourglass, Landmark, ListChecks, Menu, Pause, Play, Save, ScrollText, Settings, Ship, Store, Target, Waves, X } from "lucide-react";
+import { Bell, BookOpen, BookOpenText, Building2, Coins, Globe2, Handshake, Hourglass, Landmark, ListChecks, Menu, Pause, Play, Save, ScrollText, Settings, Ship, Store, Target, Waves, X } from "lucide-react";
 import { formatClock, formatGameDate } from "@/engine/calendar";
+import { TIME_SCALES, timeScaleHint, timeScaleLabel } from "@/lib/time-scale";
 import { cn, formatMoney } from "@/lib/utils";
 import { useGameStore } from "@/store/game-store";
 import { Badge, Button, LinkButton } from "@/components/ui";
@@ -13,8 +14,6 @@ import { SimulationRunner } from "./SimulationRunner";
 import { Toasts } from "./Toasts";
 import { VoyageReportModal } from "./VoyageReportModal";
 import { CampaignEndModal } from "./CampaignEndModal";
-
-const TIME_SCALES = [1, 10, 60, 600, 3600];
 
 interface NavItem {
   href: string;
@@ -106,6 +105,9 @@ export function GameShell({ children }: { children: ReactNode }) {
                 );
               })}
               <div className="mt-3 border-t border-white/5 pt-3">
+                <Link href="/guide" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-foam/60 hover:bg-white/5 hover:text-foam">
+                  <BookOpenText size={16} /> How to play
+                </Link>
                 <Link href="/encyclopedia" className="flex items-center gap-3 rounded-lg px-3 py-2 text-sm text-foam/60 hover:bg-white/5 hover:text-foam">
                   <BookOpen size={16} /> Encyclopedia
                 </Link>
@@ -171,8 +173,8 @@ function TopBar({ onMenu }: { onMenu: () => void }) {
               {state.paused ? <Play size={14} /> : <Pause size={14} />}
             </button>
             {TIME_SCALES.map((t) => (
-              <button key={t} onClick={() => setTimeScale(t)} className={cn("hidden rounded-md px-1.5 py-1 font-mono text-xs sm:block", state.time_scale === t ? "bg-cyan-400/20 text-cyan-300" : "text-foam/55 hover:bg-white/10")} title={`${t}× simulation speed`}>
-                {t >= 3600 ? "1h/s" : t >= 60 ? `${t / 60}m/s` : `${t}×`}
+              <button key={t} onClick={() => setTimeScale(t)} className={cn("hidden rounded-md px-1.5 py-1 font-mono text-xs sm:block", state.time_scale === t ? "bg-cyan-400/20 text-cyan-300" : "text-foam/55 hover:bg-white/10")} title={timeScaleHint(t)}>
+                {timeScaleLabel(t)}
               </button>
             ))}
           </div>
@@ -205,8 +207,8 @@ function TopBar({ onMenu }: { onMenu: () => void }) {
           <Button size="sm" variant="secondary" onClick={async () => { setSaving(true); await saveGame(); setSaving(false); }} disabled={saving} title={lastSavedAt ? `Last saved ${new Date(lastSavedAt).toLocaleTimeString()}` : "Save game"}>
             <Save size={14} /> <span className="hidden sm:inline">{saving ? "Saving…" : "Save"}</span>
           </Button>
-          <Link href="/play/missions" className="hidden items-center gap-1 text-xs text-foam/60 hover:text-foam xl:flex">
-            <ListChecks size={14} /> {Object.values(state.objectives).filter((o) => o.status === "completed").length}/{catalog.scenario.objectives.length}
+          <Link href="/play/missions" className="hidden items-center gap-1 text-xs text-foam/60 hover:text-foam xl:flex" title="Missions completed">
+            <ListChecks size={14} /> {Object.values(state.objectives).filter((o) => o.status === "completed").length}/{catalog.scenario.objectives.length} missions
           </Link>
         </div>
       </div>

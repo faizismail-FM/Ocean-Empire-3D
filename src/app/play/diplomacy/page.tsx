@@ -7,6 +7,7 @@ import { canPerformDiplomacy, diplomacyCost, type DiplomaticAction } from "@/eng
 import { formatMoney } from "@/lib/utils";
 import { useGameStore } from "@/store/game-store";
 import { Badge, Button, EvidenceBadge, Panel, ProgressBar, SimulatedBadge } from "@/components/ui";
+import { HelpTip } from "@/components/game/Guide";
 
 const ACTIONS: Array<{ id: DiplomaticAction; label: string; icon: typeof Gift; text: string }> = [
   { id: "gift", label: "Send gifts", icon: Gift, text: "An embassy with presents improves relations (+8). Once a month per polity." },
@@ -26,7 +27,7 @@ export default function DiplomacyPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-3xl">Diplomacy</h1>
+        <div className="flex items-center gap-2"><h1 className="text-3xl">Diplomacy</h1><HelpTip section="diplomacy" /></div>
         <p className="max-w-3xl text-sm text-foam/60">
           Relations represent your house&apos;s commercial standing with each power, not the policy of the {getCivilization(catalog.scenario.player_polity_id ?? "")?.canonical_name ?? "polity"} itself. Historical relationships are drawn from the sources; the numbers and actions are gameplay abstractions. <SimulatedBadge className="ml-1 align-middle" />
         </p>

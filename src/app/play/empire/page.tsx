@@ -11,6 +11,7 @@ import { formatMoney, formatMoneyExact, formatNumber } from "@/lib/utils";
 import { useGameStore } from "@/store/game-store";
 import { Badge, Panel, ProgressBar, SimulatedBadge, Stat } from "@/components/ui";
 import { EmblemIcon } from "@/components/game/NewGameWizard";
+import { HelpTip } from "@/components/game/Guide";
 
 export default function EmpirePage() {
   const state = useGameStore((s) => s.state)!;
@@ -38,7 +39,7 @@ export default function EmpirePage() {
           <EmblemIcon symbol={state.empire.emblem.symbol} color={state.empire.emblem.color} size={30} />
         </span>
         <div>
-          <h1 className="text-3xl">{state.empire.name}</h1>
+          <div className="flex items-center gap-2"><h1 className="text-3xl">{state.empire.name}</h1><HelpTip section="loop" /></div>
           <div className="text-sm text-foam/60">{state.empire.motto ?? catalog.scenario.subtitle}</div>
           <div className="mt-1 flex flex-wrap gap-1">
             <Badge tone="purple">Fictional {isHistorical ? "house" : "company"}</Badge>

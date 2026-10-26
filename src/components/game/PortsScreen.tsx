@@ -9,6 +9,7 @@ import { cn, formatMoney, formatMoneyExact } from "@/lib/utils";
 import { useGameStore } from "@/store/game-store";
 import { Badge, Button, Panel, ProgressBar } from "@/components/ui";
 import { PortDetailPanel } from "./PortDetailPanel";
+import { HelpTip } from "@/components/game/Guide";
 
 export function PortsScreen() {
   const params = useSearchParams();
@@ -29,7 +30,7 @@ export function PortsScreen() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-3xl">Ports</h1>
+        <div className="flex items-center gap-2"><h1 className="text-3xl">Ports</h1><HelpTip section="ports" /></div>
         <p className="text-sm text-foam/60">
           {catalog.scenario.mode === "modern" ? "Lease and expand terminal facilities at ports you have called at." : "Develop your home port and ports where you hold a trade agreement. Territory is not for sale; access is negotiated."}
         </p>

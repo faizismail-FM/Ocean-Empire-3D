@@ -8,6 +8,7 @@ import { cn } from "@/lib/utils";
 import { useGameStore } from "@/store/game-store";
 import { Badge, EvidenceBadge, Panel } from "@/components/ui";
 import { SourceList } from "@/components/game/SourceList";
+import { HelpTip } from "@/components/game/Guide";
 
 export default function HistoryPage() {
   const state = useGameStore((s) => s.state)!;
@@ -18,7 +19,7 @@ export default function HistoryPage() {
   return (
     <div className="space-y-4">
       <div>
-        <h1 className="text-3xl">History</h1>
+        <div className="flex items-center gap-2"><h1 className="text-3xl">History</h1><HelpTip section="history" /></div>
         <p className="max-w-3xl text-sm text-foam/60">The documented timeline of <strong className="text-foam/80">{catalog.scenario.title}</strong>. Events marked as applied have affected your game as a simulation of plausible consequences; the record of what happened is never altered by play.</p>
       </div>
       <div className="grid gap-4 lg:grid-cols-[1fr_340px]">
