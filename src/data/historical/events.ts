@@ -92,11 +92,11 @@ export const HISTORICAL_EVENTS: HistoricalEvent[] = [
   },
   {
     id: "evt_siraf_earthquake", title: "Earthquake and decline at Siraf",
-    date_or_date_range: { start: 977, end: 977, approximate: true, note: "Reported by medieval authors; exact date and damage uncertain." },
+    date_or_date_range: { start: 977, end: 977, approximate: true, note: "The earthquake is reported by medieval authors and dated to 977 in the excavation literature; its share in the decline is debated." },
     trigger_date: null, location: "Siraf", involved_polities: ["civ_abbasid"],
-    summary: "Later medieval writers mention an earthquake at Siraf around 977 and the port's decline in favour of Kish.",
-    historical_significance: "Explains why Siraf, dominant in 850, later fell into ruin; outside the campaign window.",
-    evidence_status: "uncertain", sources: ["src_whitehouse_siraf"], effects: [],
+    summary: "Medieval writers mention an earthquake at Siraf around 977, after which trade moved to Kish (Qais). Al-Muqaddasī, writing at the end of the tenth century, still praised the city's houses while noting that many inhabitants had already left.",
+    historical_significance: "Explains why Siraf, dominant in 850, later fell into ruin; outside the campaign window. Wilkinson treats the earthquake as the turning point, while a 2020 geoarchaeological study attributes the decline to rising sea level and coastal erosion degrading the harbour between about 850 and 1000.",
+    evidence_status: "scholarly_interpretation", sources: ["src_whitehouse_siraf", "src_wilkinson_1974"], effects: [],
   },
   // Fifteenth century
   {

@@ -1,13 +1,12 @@
 import type { HistoricalSource } from "../schemas";
 
 /**
- * Bibliography for every historical claim in the game. Records were compiled from the
- * implementer's knowledge of the literature without live library access; entries flagged
- * `verify_details` should have page numbers, editions and URLs checked before the
- * encyclopedia is presented as authoritative. No citation here is invented, but
- * bibliographic details may be imperfect. See docs/RESEARCH_NOTES.md.
+ * Bibliography for every historical claim in the game. Records were first compiled from
+ * the implementer's knowledge of the literature; the entries that were recorded from
+ * memory were then checked against library catalogues, publisher pages and published
+ * reviews (October 2026), and the checked details are noted on each entry. No citation
+ * here is invented. See docs/RESEARCH_NOTES.md for what was verified and how.
  */
-const VERIFY = "Bibliographic details recorded from memory during initial implementation; verify edition and pages.";
 
 export const SOURCES: HistoricalSource[] = [
   // Indian Ocean & Abbasid-era maritime trade
@@ -35,8 +34,8 @@ export const SOURCES: HistoricalSource[] = [
   {
     id: "src_whitehouse_siraf", title: "Excavations at Sīrāf: First Interim Report",
     author_or_institution: "David Whitehouse, British Institute of Persian Studies", publication_year: 1968,
-    source_type: "archaeological_report", url_or_reference: "Iran 6, pp. 1–22 (further interim reports in Iran 7–12, 1969–1974)", related_records: ["port_siraf", "evt_siraf_earthquake"],
-    notes: VERIFY,
+    source_type: "archaeological_report", url_or_reference: "Iran 6 (1968), pp. 1–22; further interim reports in Iran 7–12 (1969–1974)", related_records: ["port_siraf", "evt_siraf_earthquake"],
+    notes: "Volume and page range confirmed against bibliographic listings; Whitehouse's excavation notebooks are also online at the Corning Museum of Glass.",
   },
   {
     id: "src_chaudhuri_1985", title: "Trade and Civilisation in the Indian Ocean: An Economic History from the Rise of Islam to 1750",
@@ -82,7 +81,8 @@ export const SOURCES: HistoricalSource[] = [
   {
     id: "src_carswell_mantai", title: "Mantai: City by the Sea",
     author_or_institution: "John Carswell, Siran Deraniyagala and Alan Graham (eds.)", publication_year: 2013,
-    source_type: "archaeological_report", url_or_reference: "Linden Soft Verlag", related_records: ["port_mantai", "civ_anuradhapura"], notes: VERIFY,
+    source_type: "archaeological_report", url_or_reference: "Linden Soft Verlag, Aichwald, 2013; 552 pp. with CD; ISBN 978-3-929290-39-4", related_records: ["port_mantai", "civ_anuradhapura"],
+    notes: "Publisher, year, extent and ISBN confirmed from WorldCat and the reviews in Antiquity and the Journal of Islamic Archaeology. Reports the 1980–1984 excavations, cut short by the civil war.",
   },
   {
     id: "src_tibbetts_1979", title: "A Study of the Arabic Texts Containing Material on South-East Asia",
@@ -108,12 +108,14 @@ export const SOURCES: HistoricalSource[] = [
   {
     id: "src_malekandathil_2010", title: "Maritime India: Trade, Religion and Polity in the Indian Ocean",
     author_or_institution: "Pius Malekandathil", publication_year: 2010,
-    source_type: "book", url_or_reference: "Primus Books", related_records: ["port_kollam", "civ_chera_venad", "good_pepper"], notes: VERIFY,
+    source_type: "book", url_or_reference: "Primus Books, Delhi, 2010; 211 pp.; ISBN 93-80607-01-6", related_records: ["port_kollam", "civ_chera_venad", "good_pepper"],
+    notes: "Publisher and extent confirmed from WorldCat and the Itinerario review. Some reviews give the subtitle as 'Trade, Religion and Politics'; the publisher uses 'Polity'. A revised paperback appeared in 2013.",
   },
   {
     id: "src_narayanan_perumals", title: "Perumals of Kerala: Brahmin Oligarchy and Ritual Monarchy",
     author_or_institution: "M. G. S. Narayanan", publication_year: 2013,
-    source_type: "book", url_or_reference: "CosmoBooks (revised edition; original 1996)", related_records: ["civ_chera_venad", "port_kollam", "evt_tharisappalli_plates"], notes: VERIFY,
+    source_type: "book", url_or_reference: "CosmoBooks, Thrissur, 2013 (revised edition, 512 pp.; ISBN 81-88765-07-4); first published 1996", related_records: ["civ_chera_venad", "port_kollam", "evt_tharisappalli_plates"],
+    notes: "The 2013 edition is confirmed from library catalogues. Sources disagree on the publisher of the 1996 edition (Calicut University Press or Current Books, Thrissur); the 2013 edition is the one cited.",
   },
   {
     id: "src_wang_gungwu_nanhai", title: "The Nanhai Trade: The Early History of Chinese Trade in the South China Sea",
@@ -176,12 +178,26 @@ export const SOURCES: HistoricalSource[] = [
   {
     id: "src_thomaz_1993", title: "The Malay Sultanate of Melaka",
     author_or_institution: "Luís Filipe F. R. Thomaz, in Anthony Reid (ed.), Southeast Asia in the Early Modern Era: Trade, Power, and Belief", publication_year: 1993,
-    source_type: "book", url_or_reference: "Cornell University Press, pp. 69–90", related_records: ["civ_melaka", "tech_shahbandar", "port_melaka"], notes: VERIFY,
+    source_type: "book", url_or_reference: "Cornell University Press, Ithaca, 1993 (Asia, East by South series), pp. 69–90", related_records: ["civ_melaka", "tech_shahbandar", "port_melaka"],
+    notes: "Volume confirmed from the publisher's catalogue record; the page range rests on a single reading-list citation and should be checked against the table of contents when the book is to hand.",
   },
   {
     id: "src_winstedt_maritime_laws", title: "The Maritime Laws of Malacca",
     author_or_institution: "R. O. Winstedt and P. E. de Josselin de Jong", publication_year: 1956,
-    source_type: "journal_article", url_or_reference: "Journal of the Malayan Branch of the Royal Asiatic Society 29(3)", related_records: ["tech_maritime_code"], notes: VERIFY,
+    source_type: "journal_article", url_or_reference: "Journal of the Malayan Branch of the Royal Asiatic Society 29(3), August 1956, pp. 22–59", related_records: ["tech_maritime_code"],
+    notes: "Issue and page range confirmed from several secondary citations; one stray citation gives pp. 28–49 and is treated as an error. The Royal Asiatic Society holds a manuscript of the laws dated AH 1066 / AD 1656 presented by Winstedt.",
+  },
+  {
+    id: "src_geniza_kalah", title: "Kalah (place entry)",
+    author_or_institution: "Princeton Geniza Lab, Princeton University", publication_year: null,
+    source_type: "institution", url_or_reference: "https://geniza.princeton.edu/en/places/kalah/", related_records: ["port_kalah"],
+    notes: "Summarises the location debate: scholars have argued over Kalah's site since 1718 and fall into three camps, two of them placing it between Phuket and Klang; Goitein's identification with Kedah is described as somewhat arbitrary.",
+  },
+  {
+    id: "src_wilkinson_1974", title: "Agricultural Decline in the Siraf Region, Iran",
+    author_or_institution: "T. J. Wilkinson", publication_year: 1974,
+    source_type: "journal_article", url_or_reference: "Paléorient 2(1); doi:10.3406/paleo.1974.4177", related_records: ["evt_siraf_earthquake", "port_siraf"],
+    notes: "Dates the earthquake to 977 and describes the diversion of trade to Qais (Kish); a 2020 geoarchaeological study instead attributes the decline to sea-level rise and coastal erosion between about 850 and 1000.",
   },
   // Modern shipping
   {
