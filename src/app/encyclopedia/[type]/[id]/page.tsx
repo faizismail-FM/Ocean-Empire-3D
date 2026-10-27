@@ -7,6 +7,7 @@ import { formatYear } from "@/engine/calendar";
 import { ENCYCLOPEDIA_TYPES, isEncyclopediaType, listEntries, recordsCiting } from "@/lib/encyclopedia";
 import { Badge, EvidenceBadge, KeyValue } from "@/components/ui";
 import { SourceList } from "@/components/game/SourceList";
+import { HistoryAssistant } from "@/components/game/HistoryAssistant";
 
 export function generateStaticParams() {
   return ENCYCLOPEDIA_TYPES.flatMap((t) => listEntries(t.id).map((e) => ({ type: t.id, id: e.id })));
@@ -36,6 +37,7 @@ export default async function EntryPage({ params }: { params: Promise<{ type: st
       <p className="mt-1 text-foam/60">{entry.subtitle}</p>
       <div className="mt-6 space-y-6">
         <Body type={type} id={id} />
+        {type !== "sources" && <HistoryAssistant type={type} id={id} title={entry.title} />}
         {type !== "sources" && (
           <section>
             <h2 className="text-xl">Sources</h2>
