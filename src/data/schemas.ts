@@ -320,6 +320,26 @@ export const PolityRelationSchema = z.object({
 });
 export type PolityRelation = z.infer<typeof PolityRelationSchema>;
 
+/**
+ * An AI-controlled trading power that operates its own fleet in a scenario. Rivals are
+ * gameplay inventions: even where a name is inspired by a historical community, the
+ * house itself, its ships and its decisions are fictional.
+ */
+export const RivalDefinitionSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  /** Polity whose ports count as home waters for calling rights; null for modern companies. */
+  polity_id: z.string().nullable(),
+  home_port_id: z.string(),
+  color: z.string(),
+  /** How the rival trades: expansive rivals grab the best-paying contracts and grow fast; cautious ones stay close to home. */
+  personality: z.enum(["expansive", "steady", "cautious"]),
+  ship_class_ids: z.array(z.string()).min(1),
+  starting_ships: z.number().int().min(1),
+  note: z.string(),
+});
+export type RivalDefinition = z.infer<typeof RivalDefinitionSchema>;
+
 export const WindRegimeSchema = z.object({
   /** Month (1-12) → [direction wind comes FROM in degrees, speed in knots]. */
   monthly: z.array(z.tuple([z.number(), z.number()])).length(12),
@@ -345,6 +365,7 @@ export const ScenarioSchema = z.object({
   player_entity_note: z.string(),
   playable_polities: z.array(z.string()),
   ai_polities: z.array(PolityRelationSchema),
+  rivals: z.array(RivalDefinitionSchema).default([]),
   region: z.string(),
   map_bounds: z.object({ west: z.number(), south: z.number(), east: z.number(), north: z.number() }),
   summary: z.string(),

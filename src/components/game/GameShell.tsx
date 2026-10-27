@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
-import { Bell, BookOpen, BookOpenText, Building2, Coins, Globe2, Handshake, Hourglass, Landmark, ListChecks, Menu, Pause, Play, Save, ScrollText, Settings, Ship, Store, Target, Waves, X } from "lucide-react";
+import { Bell, BookOpen, BookOpenText, Building2, Coins, Globe2, Handshake, Hourglass, Landmark, ListChecks, Menu, Pause, Play, Save, ScrollText, Settings, Ship, Store, Swords, Target, Waves, X } from "lucide-react";
 import { formatClock, formatGameDate } from "@/engine/calendar";
 import { TIME_SCALES, timeScaleHint, timeScaleLabel } from "@/lib/time-scale";
 import { cn, formatMoney } from "@/lib/utils";
@@ -20,6 +20,8 @@ interface NavItem {
   label: string;
   icon: typeof Globe2;
   feature?: "diplomacy" | "technology" | "territory";
+  /** Only shown when the scenario defines AI trading powers. */
+  rivals?: boolean;
 }
 
 const NAV: NavItem[] = [
@@ -31,6 +33,7 @@ const NAV: NavItem[] = [
   { href: "/play/ports", label: "Ports", icon: Building2 },
   { href: "/play/technology", label: "Technology", icon: ScrollText, feature: "technology" },
   { href: "/play/diplomacy", label: "Diplomacy", icon: Handshake, feature: "diplomacy" },
+  { href: "/play/rivals", label: "Rivals", icon: Swords, rivals: true },
   { href: "/play/history", label: "History", icon: BookOpen },
   { href: "/play/missions", label: "Missions", icon: Target },
   { href: "/play/settings", label: "Settings", icon: Settings },
@@ -86,7 +89,7 @@ export function GameShell({ children }: { children: ReactNode }) {
   }
 
   const features = catalog.scenario.features;
-  const nav = NAV.filter((n) => !n.feature || features[n.feature]);
+  const nav = NAV.filter((n) => (!n.feature || features[n.feature]) && (!n.rivals || catalog.scenario.rivals.length > 0));
 
   return (
     <div className={cn("flex min-h-screen flex-col", isSail && "h-screen overflow-hidden")}>

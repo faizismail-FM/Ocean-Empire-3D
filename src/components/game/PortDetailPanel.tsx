@@ -6,6 +6,7 @@ import { BookOpen, Navigation, Store, Building2, X } from "lucide-react";
 import { getInfrastructureDefinition } from "@/data/infrastructure";
 import { getCivilization } from "@/data";
 import { portFee } from "@/engine/portdev";
+import { marketShare, rivalDefinition, rivalFeeMultiplier } from "@/engine/rivals";
 import { computeModifiers } from "@/engine/modifiers";
 import { formatCoordinate } from "@/engine/geo";
 import { formatMoneyExact } from "@/lib/utils";
@@ -27,7 +28,8 @@ export function PortDetailPanel({ portId, onClose, compact = false }: { portId: 
   const active = state.active_ship_id ? state.ships[state.active_ship_id] : null;
   const activeClass = active ? catalog.ships.find((c) => c.id === active.class_id) : null;
   const mods = computeModifiers(catalog, state);
-  const fee = activeClass ? portFee(catalog, state, portId, activeClass.cargo_capacity, mods.port_fee_multiplier) : null;
+  const fee = activeClass ? portFee(catalog, state, portId, activeClass.cargo_capacity, mods.port_fee_multiplier * rivalFeeMultiplier(catalog, state, portId)) : null;
+  const competition = marketShare(state, portId).filter((m) => m.calls > 0);
   const offers = Object.values(state.contracts).filter((c) => c.status === "available" && c.origin_port_id === portId);
   const shipsHere = Object.values(state.ships).filter((s) => s.docked_port_id === portId);
   const canSail = active && !(active.status === "docked" && active.docked_port_id === portId) && (ps.access === "open" || ps.access === "home" || ps.access === "agreement");
@@ -97,6 +99,24 @@ export function PortDetailPanel({ portId, onClose, compact = false }: { portId: 
           </div>
         )}
       </div>
+
+      {competition.length > 0 && (
+        <div className="mt-3">
+          <div className="label-caps mb-1">Traffic share</div>
+          <div className="flex flex-wrap gap-1">
+            {competition.map((m) => {
+              const def = m.rival_id ? rivalDefinition(catalog, m.rival_id) : null;
+              return (
+                <Badge key={m.rival_id ?? "player"} tone={m.rival_id ? "neutral" : "gold"} title={`${m.calls} call${m.calls === 1 ? "" : "s"} recorded`}>
+                  {def?.name ?? (m.rival_id ? m.rival_id : "Your house")} {Math.round(m.share * 100)}%
+                </Badge>
+              );
+            })}
+          </div>
+          {rivalFeeMultiplier(catalog, state, portId) > 1 && <p className="mt-1 text-xs text-coral-400/80">A rival dominates this port: terminal charges are 10% higher for you.</p>}
+          {rivalFeeMultiplier(catalog, state, portId) < 1 && <p className="mt-1 text-xs text-emerald-300/80">Partner&apos;s home port: your fees here are 10% lower.</p>}
+        </div>
+      )}
 
       {!compact && (
         <div className="mt-3">

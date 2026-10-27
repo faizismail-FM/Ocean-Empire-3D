@@ -197,7 +197,7 @@ export function SailingHUD() {
   const hint = tutorialHint(state, ship, catalog.scenario.mode);
 
   const speedKmh = ship.speed_knots * 1.852;
-  const statusLabel = ship.status === "docked" ? `Docked · ${here?.name ?? ""}` : ship.status === "drifting" ? "Drifting" : "Under way";
+  const statusLabel = ship.status === "docked" ? "Docked" : ship.status === "drifting" ? "Drifting" : "Under way";
 
   return (
     <div className="pointer-events-none absolute inset-0 select-none text-foam">
@@ -209,7 +209,7 @@ export function SailingHUD() {
             <div className="truncate text-xs text-foam/60">{cls.name_or_class}</div>
           </div>
           <div className="flex items-center gap-2">
-            <span className={cn("rounded-md px-1.5 py-0.5 text-[0.65rem] uppercase tracking-wider", ship.status === "docked" ? "bg-white/10 text-foam/70" : ship.status === "drifting" ? "bg-coral-400/20 text-coral-400" : "bg-emerald-400/15 text-emerald-300")}>{statusLabel}</span>
+            <span className={cn("whitespace-nowrap rounded-md px-1.5 py-0.5 text-[0.65rem] uppercase tracking-wider", ship.status === "docked" ? "bg-white/10 text-foam/70" : ship.status === "drifting" ? "bg-coral-400/20 text-coral-400" : "bg-emerald-400/15 text-emerald-300")}>{statusLabel}</span>
             <button onClick={() => setCardExpanded((v) => !v)} className="rounded-md p-1 text-foam/50 hover:bg-white/10 hover:text-foam md:hidden" aria-label={cardExpanded ? "Collapse ship details" : "Expand ship details"}>
               {cardExpanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
             </button>
@@ -224,7 +224,8 @@ export function SailingHUD() {
           <HudRow label="Speed" value={`${ship.speed_knots.toFixed(1)} kn · ${speedKmh.toFixed(0)} km/h`} wide />
           <HudRow label="Heading" value={`${Math.round(ship.heading).toString().padStart(3, "0")}° ${compassLabel(ship.heading)}`} />
           <HudRow label="Position" value={formatCoordinate(ship.position)} />
-          <HudRow label="Destination" value={destPort?.name ?? "—"} wide />
+          <HudRow label={ship.status === "docked" ? "Port" : "Destination"} value={ship.status === "docked" ? here?.name ?? "—" : destPort?.name ?? "—"} wide />
+          {ship.status === "docked" && <HudRow label="Destination" value={destPort?.name ?? "—"} wide />}
           <HudRow label="Remaining" value={remaining > 0 ? `${formatNumber(remaining)} nm` : "—"} />
           <HudRow label="ETA" value={eta ? formatDuration(eta) : "—"} />
           <HudRow label="Next waypoint" value={nextWp ? `${nextWp.label ?? `${Math.min(ship.waypoint_index, ship.route.length - 1) + 1} of ${ship.route.length - 1}`}` : "—"} wide />

@@ -4,6 +4,7 @@ import { create } from "zustand";
 import { getCatalog, type ScenarioCatalog } from "@/data";
 import type { PortInfrastructureKind } from "@/data/schemas";
 import * as rules from "@/engine/game";
+import { performRivalAction, type RivalAction } from "@/engine/rivals";
 import type { GameEvent, NewGameOptions } from "@/engine/game";
 import { parseState, summarizeState } from "@/engine/save";
 import type { GameState, SaveSummary, ShipState } from "@/engine/state";
@@ -65,6 +66,7 @@ interface GameStore {
   developPort: (portId: string, kind: PortInfrastructureKind) => boolean;
   research: (techId: string) => boolean;
   diplomacy: (polityId: string, action: rules.DiplomaticAction) => boolean;
+  rivalAction: (rivalId: string, action: RivalAction) => boolean;
   ensureContracts: (portId: string) => void;
   dismissReport: () => void;
   markNotificationsRead: () => void;
@@ -224,6 +226,7 @@ export const useGameStore = create<GameStore>()((set, get) => {
     developPort: (portId, kind) => apply((c, s) => rules.developPort(c, s, portId, kind), { kind: "success", title: "Construction complete" }),
     research: (techId) => apply((c, s) => rules.researchTechnology(c, s, techId)),
     diplomacy: (polityId, action) => apply((c, s) => rules.performDiplomacy(c, s, polityId, action)),
+    rivalAction: (rivalId, action) => apply((c, s) => performRivalAction(c, s, rivalId, action)),
     ensureContracts: (portId) => {
       const { state, catalog } = get();
       if (!state || !catalog) return;

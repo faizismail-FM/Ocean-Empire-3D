@@ -14,6 +14,7 @@ import { Ocean } from "./Ocean";
 import { ProceduralShip } from "./ProceduralShip";
 import { geoToScene, headingToRotationY, getSceneFrame } from "./scene-state";
 import { PortScenery, RouteLine, TrafficShips, WaypointBuoy } from "./Scenery";
+import { RivalTraffic } from "./RivalTraffic";
 import { BowFoam, Wake } from "./Wake";
 import { advanceWavePhases, waveSample } from "./waves";
 
@@ -57,6 +58,7 @@ export function SailingScene() {
       <NavigationAids />
       <NearbyPorts />
       <TrafficShips era={scenario.era} seed={String(seed)} />
+      <RivalTraffic />
       <CameraRig mode={camera} />
     </Canvas>
   );

@@ -6,6 +6,7 @@ import { addSeconds, dateFromIso, SECONDS_PER_DAY, type GameDate } from "./calen
 import { buildTutorialContract, cargoCapacity, cargoUsed, generateContractsForPort, validateAccept, type ContractContext } from "./contracts";
 import { applyTransaction, canAfford, TransactionError } from "./economy";
 import { applyEvent, dueEvents } from "./events";
+import { createRivalStates, noteCompetition, rivalFeeMultiplier, tickRivals, rivalDefinition } from "./rivals";
 import { distanceNm, type GeoPoint } from "./geo";
 import { marketPrice, marketStock } from "./market";
 import { computeModifiers, type Modifiers } from "./modifiers";
@@ -28,7 +29,9 @@ export type GameEvent =
   | { type: "objective_completed"; objective: Objective }
   | { type: "historical_event"; event: HistoricalEvent }
   | { type: "campaign_ended"; status: GameState["campaign"]["status"] }
-  | { type: "endurance_empty"; ship_id: string };
+  | { type: "endurance_empty"; ship_id: string }
+  | { type: "rival_contract_taken"; rival_id: string; contract_id: string; port_id: string }
+  | { type: "rival_partnership_ended"; rival_id: string };
 
 export interface NewGameOptions {
   scenario_id: string;
@@ -143,6 +146,7 @@ export function createNewGame(options: NewGameOptions): GameState {
     achievements: [],
     diplomacy,
     market: {},
+    rivals: createRivalStates(catalog, seed, START_CLOCK_SECONDS),
     applied_events: [],
     notifications: [],
     tutorial: { step: 0, completed: false, dismissed: false },
@@ -248,11 +252,11 @@ export function acceptContract(catalog: ScenarioCatalog, state: GameState, contr
     ...ship,
     cargo: [...ship.cargo, { good_id: contract.good_id, quantity: contract.quantity, contract_id: contract.id, bought_at: null }],
   };
-  return {
+  return noteCompetition(catalog, {
     ...state,
     ships: { ...state.ships, [shipId]: updatedShip },
     contracts: { ...state.contracts, [contractId]: { ...contract, status: "accepted", assigned_ship_id: shipId } },
-  };
+  }, contract);
 }
 
 export function abandonContract(catalog: ScenarioCatalog, state: GameState, contractId: string): GameState {
@@ -371,7 +375,7 @@ export function dockShip(catalog: ScenarioCatalog, state: GameState, shipId: str
   let next: GameState = { ...state };
 
   // Port fees are a running cost: charged even if the treasury dips below zero.
-  const fee = portFee(catalog, next, portId, cls.cargo_capacity, mods.port_fee_multiplier);
+  const fee = portFee(catalog, next, portId, cls.cargo_capacity, mods.port_fee_multiplier * rivalFeeMultiplier(catalog, next, portId));
   if (fee > 0) {
     next = applyTransaction(next, -fee, "port_fee", `Port fees at ${port.name}`, { ship_id: shipId, port_id: portId, allow_negative: true });
     expenses += fee;
@@ -806,6 +810,27 @@ export function tickGame(catalog: ScenarioCatalog, state: GameState, dtSim: numb
     }
   }
   next = { ...next, ships: { ...next.ships, ...ships } };
+
+  // AI trading powers sail the same lanes and work the same contract board.
+  const rivalTick = tickRivals(catalog, next, dtSim);
+  next = rivalTick.state;
+  for (const ev of rivalTick.events) {
+    const def = rivalDefinition(catalog, ev.rival_id);
+    const name = def?.name ?? ev.rival_id;
+    if (ev.type === "rival_contract_taken") {
+      events.push({ type: "rival_contract_taken", rival_id: ev.rival_id, contract_id: ev.contract.id, port_id: ev.port_id });
+      // Only worth a notification where the player is actually trading.
+      const playerHere = ev.port_id === next.empire.home_port_id || Object.values(next.ships).some((sh) => sh.docked_port_id === ev.port_id);
+      if (playerHere) {
+        const good = catalog.goodMap.get(ev.contract.good_id);
+        const dest = catalog.portMap.get(ev.contract.destination_port_id);
+        next = notify(next, "info", `${name} took a contract`, `${ev.contract.quantity} ${good?.name ?? ev.contract.good_id} from ${catalog.portMap.get(ev.port_id)?.name ?? ev.port_id} to ${dest?.name ?? ev.contract.destination_port_id} is no longer on offer.`, "/play/rivals");
+      }
+    } else if (ev.type === "rival_partnership_ended") {
+      events.push(ev);
+      next = notify(next, "warning", `${name} ended the partnership`, "Relations fell too far for the agreement to hold. Courtesies can rebuild them.", "/play/rivals");
+    }
+  }
 
   // Clock.
   const newSimSeconds = next.sim_seconds + dtSim;

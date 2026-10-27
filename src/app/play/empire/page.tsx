@@ -12,6 +12,7 @@ import { useGameStore } from "@/store/game-store";
 import { Badge, Panel, ProgressBar, SimulatedBadge, Stat } from "@/components/ui";
 import { EmblemIcon } from "@/components/game/NewGameWizard";
 import { HelpTip } from "@/components/game/Guide";
+import { isRivalAssigned } from "@/engine/rivals";
 
 export default function EmpirePage() {
   const state = useGameStore((s) => s.state)!;
@@ -25,7 +26,7 @@ export default function EmpirePage() {
   const controlled = catalog.ports.filter((p) => state.ports[p.id]?.access === "home");
   const agreements = catalog.ports.filter((p) => state.ports[p.id]?.access === "agreement");
   const visited = catalog.ports.filter((p) => state.ports[p.id]?.visited);
-  const activeContracts = Object.values(state.contracts).filter((c) => c.status === "accepted" || c.status === "in_transit");
+  const activeContracts = Object.values(state.contracts).filter((c) => (c.status === "accepted" || c.status === "in_transit") && !isRivalAssigned(c));
   const objectives = catalog.scenario.objectives.map((o) => ({ o, s: state.objectives[o.id], p: evaluateCondition(state, o.condition) }));
   const nextObjective = objectives.find((x) => x.s?.status !== "completed");
   const isHistorical = catalog.scenario.mode === "historical";

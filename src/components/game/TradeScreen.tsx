@@ -13,6 +13,7 @@ import { cn, formatMoney, formatMoneyExact, formatNumber } from "@/lib/utils";
 import { useGameStore } from "@/store/game-store";
 import { Badge, Button, EmptyState, Panel, SimulatedBadge, Tabs } from "@/components/ui";
 import { HelpTip } from "@/components/game/Guide";
+import { isRivalAssigned } from "@/engine/rivals";
 
 type Tab = "contracts" | "market" | "active";
 
@@ -38,7 +39,7 @@ export function TradeScreen() {
   }, [portId, ensureContracts, week]);
 
   const offers = useMemo(() => Object.values(state.contracts).filter((c) => c.status === "available" && c.origin_port_id === portId).sort((a, b) => Number(b.mission) - Number(a.mission) || b.payment - a.payment), [state.contracts, portId]);
-  const activeContracts = Object.values(state.contracts).filter((c) => c.status === "accepted" || c.status === "in_transit");
+  const activeContracts = Object.values(state.contracts).filter((c) => (c.status === "accepted" || c.status === "in_transit") && !isRivalAssigned(c));
 
   return (
     <div className="space-y-4">
