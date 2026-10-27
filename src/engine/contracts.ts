@@ -112,6 +112,7 @@ export function buildContract(
     paid: false,
     mission,
     generation_key: generationKey,
+    charterer_id: null,
   };
 }
 

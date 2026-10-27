@@ -4,7 +4,7 @@ import { Anchor, Handshake, Gift, Ship, TrendingUp } from "lucide-react";
 import { useMemo } from "react";
 import { getCivilization } from "@/data";
 import { formatDuration } from "@/engine/calendar";
-import { canPerformRivalAction, marketShare, rivalActionCost, type RivalAction } from "@/engine/rivals";
+import { canPerformRivalAction, marketShare, rivalActionCost, rivalRelation, type RivalAction } from "@/engine/rivals";
 import type { RivalShip } from "@/engine/state";
 import { remainingDistanceNm } from "@/engine/routing";
 import { cn, formatMoney, formatNumber } from "@/lib/utils";
@@ -87,9 +87,10 @@ export function RivalsScreen() {
                 <Badge tone="purple">fictional</Badge>
               </div>
 
-              <div className="mt-3 grid grid-cols-3 gap-2 text-xs">
+              <div className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
                 <Stat label="Fleet" value={`${ships.length}`} hint={`${atSea} at sea`} />
                 <Stat label="Deliveries" value={formatNumber(rival.stats.deliveries)} hint={`${rival.stats.contracts_taken} from the board`} />
+                <Stat label="Charters" value={formatNumber(rival.stats.charters_posted)} hint="posted for others" />
                 <Stat label="Finances" value={<Badge tone={band.tone}>{band.label}</Badge>} hint="estimate" />
               </div>
 
@@ -98,6 +99,29 @@ export function RivalsScreen() {
                 <ProgressBar value={rival.relation} max={100} tone={rival.relation >= 60 ? "green" : rival.relation >= 40 ? "cyan" : "coral"} className="mt-1" />
                 {rival.partnership && <Badge tone="green" className="mt-1.5">partnership in force</Badge>}
               </div>
+
+              {defs.length > 1 && (
+                <div className="mt-3">
+                  <div className="label-caps mb-1">Among rivals</div>
+                  <ul className="space-y-1 text-xs">
+                    {defs
+                      .filter((o) => o.id !== def.id)
+                      .map((o) => {
+                        const r = Math.round(rivalRelation(state, def.id, o.id));
+                        const allied = rival.allies.includes(o.id);
+                        return (
+                          <li key={o.id} className="flex items-center justify-between gap-2">
+                            <span className="truncate text-foam/75" style={{ color: o.color }}>{o.name}</span>
+                            <span className="flex items-center gap-1.5">
+                              {allied && <Badge tone="green">allied</Badge>}
+                              <span className={cn("font-mono", r >= 70 ? "text-emerald-300" : r < 40 ? "text-coral-400" : "text-foam/60")}>{r}</span>
+                            </span>
+                          </li>
+                        );
+                      })}
+                  </ul>
+                </div>
+              )}
 
               <div className="mt-3">
                 <div className="label-caps mb-1">Ships</div>

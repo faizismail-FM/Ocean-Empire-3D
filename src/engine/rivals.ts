@@ -142,14 +142,41 @@ export function createRivalStates(catalog: ScenarioCatalog, seed: number, simSec
       last_relation_action_sim_seconds: null,
       last_purchase_sim_seconds: simSeconds,
       last_development_sim_seconds: simSeconds,
-      stats: { deliveries: 0, contracts_taken: 0, revenue: 0 },
+      stats: { deliveries: 0, contracts_taken: 0, revenue: 0, charters_posted: 0 },
+      relations: {},
+      allies: [],
+      last_charter_sim_seconds: simSeconds,
       event_log: [],
     };
   }
   return rivals;
 }
 
-export type RivalEvent = { type: "rival_contract_taken"; rival_id: string; contract: Contract; port_id: string } | { type: "rival_partnership_ended"; rival_id: string };
+export type RivalEvent =
+  | { type: "rival_contract_taken"; rival_id: string; contract: Contract; port_id: string }
+  | { type: "rival_partnership_ended"; rival_id: string }
+  | { type: "rival_charter_posted"; rival_id: string; contract: Contract; port_id: string }
+  | { type: "rival_alliance"; rival_ids: [string, string]; formed: boolean };
+
+/** Money and goodwill owed between rivals, settled at the end of a tick. */
+interface Settlement {
+  payer: string;
+  /** Who receives the money; null when it was already credited to the carrier on arrival. */
+  payee: string | null;
+  /** The rival whose ship made the delivery. */
+  carrier: string;
+  amount: number;
+  /** Relation change applied to both parties. */
+  goodwill: number;
+}
+
+const ALLY_THRESHOLD = 70;
+const ALLY_BREAK = 40;
+
+/** Standing between two rivals (50 when they have had no dealings). */
+export function rivalRelation(state: GameState, a: string, b: string): number {
+  return state.rivals[a]?.relations[b] ?? 50;
+}
 
 /** Value of an own-account voyage, priced like a contract for a full hold. */
 function ownAccountValue(catalog: ScenarioCatalog, state: GameState, cls: VesselClass, origin: PortRecord, destination: PortRecord): number {
@@ -185,8 +212,12 @@ function decide(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition
 
   // 1. A contract from the shared board.
   if (!(rival.partnership && atPlayerHome)) {
+    // An ally's home port is off limits, except for the ally's own charters.
+    const allyHome = catalog.scenario.rivals.find((r) => rival.allies.includes(r.id) && r.home_port_id === here.id)?.id ?? null;
     const candidates = Object.values(contracts).filter((c) => {
       if (c.status !== "available" || c.mission || c.origin_port_id !== here.id) return false;
+      if (c.charterer_id === def.id) return false; // never carries its own charter
+      if (allyHome && c.charterer_id !== allyHome) return false;
       const dest = catalog.portMap.get(c.destination_port_id);
       if (!dest || !rivalCanCall(def, dest, state)) return false;
       const good = catalog.goodMap.get(c.good_id);
@@ -194,7 +225,9 @@ function decide(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition
     });
     if (candidates.length > 0 && rng.next() < p.take_chance) {
       const score = (c: Contract) => (def.personality === "expansive" ? c.payment : def.personality === "steady" ? (c.payment - c.estimated_costs) / Math.max(50, c.distance_nm) : -c.distance_nm);
-      const chosen = candidates.reduce((a, b) => (score(b) > score(a) ? b : a));
+      // Allies' charters come first; otherwise the personality decides.
+      const preferred = candidates.filter((c) => c.charterer_id && rival.allies.includes(c.charterer_id));
+      const chosen = (preferred.length > 0 ? preferred : candidates).reduce((a, b) => (score(b) > score(a) ? b : a));
       const dest = catalog.portMap.get(chosen.destination_port_id)!;
       const planned = planRoute(here, dest, year);
       if (planned) {
@@ -280,7 +313,7 @@ function move(catalog: ScenarioCatalog, ship: RivalShip, dtSim: number): { ship:
   return { ship: { ...ship, position, heading, waypoint_index: index, leg_progress_nm: progress, total_distance_nm: ship.total_distance_nm + sailed }, arrived };
 }
 
-function arrive(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition, rival: RivalState, ship: RivalShip, contracts: Record<string, Contract>): { ship: RivalShip; rival: RivalState } {
+function arrive(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition, rival: RivalState, ship: RivalShip, contracts: Record<string, Contract>, settlements: Settlement[]): { ship: RivalShip; rival: RivalState } {
   const dest = ship.destination_port_id ? catalog.portMap.get(ship.destination_port_id) : undefined;
   if (!dest) return { ship: { ...ship, status: "docked", speed_knots: 0, route: [], waypoint_index: 0 }, rival };
   const cls = requireClass(catalog, ship.class_id);
@@ -290,10 +323,19 @@ function arrive(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition
     const c = contracts[ship.contract_id];
     if (c) {
       payment = c.payment;
+      // A charter is paid by the rival that posted it, and carrying it builds goodwill.
+      if (c.charterer_id && c.charterer_id !== def.id && state.rivals[c.charterer_id]) settlements.push({ payer: c.charterer_id, payee: null, carrier: def.id, amount: payment, goodwill: 3 });
       delete contracts[ship.contract_id];
     }
   }
-  const expenses = voyageExpenses(catalog, state, cls, routeLength(ship.route), dest);
+  let expenses = voyageExpenses(catalog, state, cls, routeLength(ship.route), dest);
+  // Calling at another rival's home port means paying its agents: trade between the two.
+  const host = catalog.scenario.rivals.find((r) => r.id !== def.id && r.home_port_id === dest.id);
+  if (host && state.rivals[host.id] && payment > 0) {
+    const handling = Math.round(payment * 0.05);
+    expenses += handling;
+    settlements.push({ payer: def.id, payee: host.id, carrier: def.id, amount: handling, goodwill: 1 });
+  }
   const rng = createRandom(`${state.seed}:rivalturn:${def.id}:${ship.id}:${Math.floor(state.sim_seconds / HOUR)}`);
   const docked: RivalShip = {
     ...ship,
@@ -317,6 +359,39 @@ function arrive(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition
     stats: { ...rival.stats, deliveries: rival.stats.deliveries + 1, revenue: rival.stats.revenue + payment },
   };
   return { ship: docked, rival: updated };
+}
+
+/**
+ * Rivals are shippers as well as carriers: every so often one posts a charter at its home
+ * port (or its busiest port) that any other carrier, the player included, may take. The
+ * charterer pays on delivery.
+ */
+function postCharter(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition, rival: RivalState, contracts: Record<string, Contract>, events: RivalEvent[]): RivalState {
+  const interval = { expansive: 10, steady: 14, cautious: 21 }[def.personality] * DAY;
+  if (state.sim_seconds - rival.last_charter_sim_seconds < interval) return rival;
+  const rng = createRandom(`${state.seed}:charter:${def.id}:${Math.floor(state.sim_seconds / DAY)}`);
+  const busiest = Object.entries(rival.port_calls).sort((a, b) => b[1] - a[1])[0]?.[0];
+  const originId = busiest && rng.next() < 0.4 ? busiest : def.home_port_id;
+  const origin = catalog.portMap.get(originId);
+  if (!origin) return rival;
+  const supplies = origin.supplies.map((id) => catalog.goodMap.get(id)).filter((g): g is NonNullable<typeof g> => !!g);
+  const openToAll = (port: PortRecord) => {
+    const live = state.ports[port.id]?.access;
+    return live === "open" || live === "home" || live === "agreement";
+  };
+  const destinations = catalog.ports.filter((port) => port.id !== origin.id && openToAll(port) && rivalCanCall(def, port, state));
+  if (supplies.length === 0 || destinations.length === 0) return { ...rival, last_charter_sim_seconds: state.sim_seconds };
+  const good = rng.pick(supplies);
+  const wanting = destinations.filter((d) => d.demands.includes(good.id));
+  const destination = rng.pick(wanting.length > 0 ? wanting : destinations);
+  const capacity = Math.max(...def.ship_class_ids.map((id) => requireClass(catalog, id).cargo_capacity));
+  const ctx: ContractContext = { catalog, state, fleet_capacity: capacity, payment_multiplier: 1.1, extra_contracts: 0, event_price_mods: computeModifiers(catalog, state).event_price_mods, year: state.date.year };
+  const id = `ct_charter_${def.id}_${Math.floor(state.sim_seconds / DAY)}`;
+  const contract = buildContract(ctx, origin, destination, good, rng.range(0.3, 0.8), 1, id, null, false);
+  if (!contract || contracts[id] || rival.treasury < contract.payment * 2) return { ...rival, last_charter_sim_seconds: state.sim_seconds };
+  contracts[id] = { ...contract, charterer_id: def.id };
+  events.push({ type: "rival_charter_posted", rival_id: def.id, contract: contracts[id]!, port_id: origin.id });
+  return { ...rival, last_charter_sim_seconds: state.sim_seconds, stats: { ...rival.stats, charters_posted: rival.stats.charters_posted + 1 } };
 }
 
 function grow(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition, rival: RivalState): RivalState {
@@ -357,6 +432,7 @@ export function tickRivals(catalog: ScenarioCatalog, state: GameState, dtSim: nu
   if (ids.length === 0) return { state, events };
   const contracts = { ...state.contracts };
   const rivals: Record<string, RivalState> = {};
+  const settlements: Settlement[] = [];
 
   for (const id of ids) {
     const def = rivalDefinition(catalog, id);
@@ -375,7 +451,7 @@ export function tickRivals(catalog: ScenarioCatalog, state: GameState, dtSim: nu
         const moved = move(catalog, ship, dtSim);
         ship = moved.ship;
         if (moved.arrived) {
-          const result = arrive(catalog, state, def, rival, ship, contracts);
+          const result = arrive(catalog, state, def, rival, ship, contracts, settlements);
           ship = result.ship;
           rival = result.rival;
         }
@@ -388,6 +464,7 @@ export function tickRivals(catalog: ScenarioCatalog, state: GameState, dtSim: nu
     }
     rival = { ...rival, ships, treasury: rival.treasury - upkeep };
     rival = grow(catalog, state, def, rival);
+    rival = postCharter(catalog, state, def, rival, contracts, events);
 
     // Relations drift toward neutral over a couple of months; a partnership cannot survive bad standing.
     const relation = clamp(rival.relation + ((50 - rival.relation) * dtSim) / (60 * DAY), 0, 100);
@@ -397,6 +474,44 @@ export function tickRivals(catalog: ScenarioCatalog, state: GameState, dtSim: nu
       events.push({ type: "rival_partnership_ended", rival_id: id });
     }
     rivals[id] = { ...rival, relation, partnership, treasury: Math.round(rival.treasury * 100) / 100 };
+  }
+
+  // Settle what rivals owe each other and let their mutual standing move.
+  const bump = (a: string, b: string, delta: number) => {
+    const ra = rivals[a];
+    if (!ra) return;
+    rivals[a] = { ...ra, relations: { ...ra.relations, [b]: clamp((ra.relations[b] ?? 50) + delta, 0, 100) } };
+  };
+  for (const s of settlements) {
+    const payer = rivals[s.payer];
+    if (payer) rivals[s.payer] = { ...payer, treasury: Math.round(payer.treasury - s.amount) };
+    if (s.payee && rivals[s.payee]) rivals[s.payee] = { ...rivals[s.payee]!, treasury: Math.round(rivals[s.payee]!.treasury + s.amount) };
+    // Goodwill flows between payer and payee for a handling fee, and between charterer and carrier for a charter.
+    const counterpart = s.payee ?? s.carrier;
+    if (counterpart !== s.payer) {
+      bump(s.payer, counterpart, s.goodwill);
+      bump(counterpart, s.payer, s.goodwill);
+    }
+  }
+  // Mutual standing drifts toward neutral over four months; alliances form at 70 and break below 40.
+  for (let i = 0; i < ids.length; i++) {
+    for (let j = i + 1; j < ids.length; j++) {
+      const a = ids[i]!;
+      const b = ids[j]!;
+      const ra = rivals[a]!;
+      const rb = rivals[b]!;
+      const current = ((ra.relations[b] ?? 50) + (rb.relations[a] ?? 50)) / 2;
+      const drifted = clamp(current + ((50 - current) * dtSim) / (120 * DAY), 0, 100);
+      const allied = ra.allies.includes(b);
+      let formed: boolean | null = null;
+      if (!allied && drifted >= ALLY_THRESHOLD) formed = true;
+      if (allied && drifted < ALLY_BREAK) formed = false;
+      const alliesA = formed === true ? [...ra.allies, b] : formed === false ? ra.allies.filter((x) => x !== b) : ra.allies;
+      const alliesB = formed === true ? [...rb.allies, a] : formed === false ? rb.allies.filter((x) => x !== a) : rb.allies;
+      rivals[a] = { ...ra, relations: { ...ra.relations, [b]: drifted }, allies: alliesA };
+      rivals[b] = { ...rb, relations: { ...rb.relations, [a]: drifted }, allies: alliesB };
+      if (formed !== null) events.push({ type: "rival_alliance", rival_ids: [a, b], formed });
+    }
   }
   return { state: { ...state, rivals, contracts }, events };
 }
