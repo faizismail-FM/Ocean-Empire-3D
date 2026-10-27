@@ -32,7 +32,9 @@ export function SailingScene() {
   const quality = useSettingsStore((s) => s.quality);
   const camera = useSettingsStore((s) => s.camera);
   const q = QUALITY[quality];
-  const scenario = useGameStore((s) => s.catalog?.scenario);
+  const catalog = useGameStore((s) => s.catalog);
+  const scenario = catalog?.scenario;
+  const trafficModels = useMemo(() => catalog?.ships.map((c) => c.model) ?? [], [catalog]);
   const seed = useGameStore((s) => s.state?.seed ?? 0);
   if (!scenario) return null;
 
@@ -57,7 +59,7 @@ export function SailingScene() {
       <BowFoam />
       <NavigationAids />
       <NearbyPorts />
-      <TrafficShips era={scenario.era} seed={String(seed)} />
+      <TrafficShips era={scenario.era} models={trafficModels} seed={String(seed)} />
       <RivalTraffic />
       <CameraRig mode={camera} />
     </Canvas>

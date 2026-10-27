@@ -67,4 +67,58 @@ export const HISTORICAL_FIGURES: HistoricalFigure[] = [
     summary: "Captured Goa (1510) and Melaka (1511) to establish Portuguese control over the Indian Ocean spice routes.",
     evidence_status: "established", sources: ["src_reid_1993", "src_andaya_malaysia"],
   },
+  {
+    id: "fig_ibn_battuta", name: "Ibn Baṭṭūṭa", alternate_names: ["Shams al-Dīn Abū ʿAbd Allāh Muḥammad ibn Baṭṭūṭa"], role: "Traveller and jurist",
+    period: { start: 1304, end: 1369, approximate: true }, polity_id: null,
+    summary: "A Moroccan scholar whose travels (1325–1354) took him down the Swahili coast to Kilwa in 1331, to Aden, Hormuz, Qalhat and Cambay. His Riḥla, dictated on his return, is the only eyewitness account of the fourteenth-century Swahili towns, though its chronology is sometimes inconsistent.",
+    evidence_status: "established", sources: ["src_ibn_battuta_gibb"],
+  },
+  {
+    id: "fig_hasan_ibn_sulayman", name: "al-Hasan ibn Sulayman (Abu'l-Mawahib)", alternate_names: ["Abū al-Mawāhib al-Ḥasan ibn Sulaymān"], role: "Sultan of Kilwa (c. 1310–1333)",
+    period: { start: 1310, end: 1333, approximate: true }, polity_id: "civ_kilwa",
+    summary: "Ruler of Kilwa at its height, praised by Ibn Battuta for his humility and generosity. Coins bearing his name, including the coast's only gold issue, and the buildings attributed to his reign (Husuni Kubwa, the mosque extension) mark the city's peak. Regnal dates rest on the chronicle and the coin series.",
+    evidence_status: "scholarly_interpretation", sources: ["src_ibn_battuta_gibb", "src_sutton_1998", "src_kilwa_chronicle"],
+  },
+  {
+    id: "fig_mujahid_rasulid", name: "al-Mujahid ʿAlī", alternate_names: ["al-Malik al-Mujāhid ʿAlī ibn Dāwūd"], role: "Rasulid sultan of Yemen (1322–1363)",
+    period: { start: 1322, end: 1363 }, polity_id: "civ_rasulid",
+    summary: "Ruled Yemen for four decades, drawing revenue from Aden's customs; seized by the Mamluks during the pilgrimage of 1351 and held in Cairo for about a year before returning to his throne.",
+    evidence_status: "established", sources: ["src_margariti_aden"],
+  },
+  {
+    id: "fig_mocenigo", name: "Tommaso Mocenigo", alternate_names: [], role: "Doge of Venice (1414–1423)",
+    period: { start: 1343, end: 1423, approximate: true }, polity_id: "civ_venice",
+    summary: "Doge during the peace with the Ottomans and the recovery of Dalmatia. The deathbed oration attributed to him, listing Venice's ships, trade and revenues and warning against mainland war, is preserved only in later chronicles.",
+    evidence_status: "established", sources: ["src_lane_1973", "src_crouzet_pavan_2002"],
+  },
+  {
+    id: "fig_foscari", name: "Francesco Foscari", alternate_names: [], role: "Doge of Venice (1423–1457)",
+    period: { start: 1373, end: 1457 }, polity_id: "civ_venice",
+    summary: "Elected on 15 April 1423, Foscari presided over the Wars in Lombardy, the loss of Thessalonica and the fall of Constantinople, and was deposed in October 1457, the longest-reigning doge in Venetian history.",
+    evidence_status: "established", sources: ["src_lane_1973"],
+  },
+  {
+    id: "fig_barbarigo", name: "Andrea Barbarigo", alternate_names: [], role: "Venetian merchant",
+    period: { start: 1399, end: 1449, approximate: true }, polity_id: "civ_venice",
+    summary: "A patrician merchant whose account books and letters (1418–1449) survive, showing how a Venetian of modest capital traded in cloth, cotton, spices and bills of exchange through agents in Bruges, Valencia, Alexandria and Beirut. Lane's biography of him is a classic of commercial history.",
+    evidence_status: "established", sources: ["src_lane_1944"],
+  },
+  {
+    id: "fig_querini", name: "Pietro Querini", alternate_names: ["Piero Querini"], role: "Venetian merchant and sea captain",
+    period: { start: 1400, end: 1448, approximate: true }, polity_id: "civ_venice",
+    summary: "Owner and captain of the Querina, lost on the voyage from Candia to Flanders in 1431–1432; he and ten companions survived the winter on Røst in Norway and his account of the journey was later printed by Ramusio.",
+    evidence_status: "established", sources: ["src_querini_ramusio"],
+  },
+  {
+    id: "fig_barsbay", name: "al-Ashraf Barsbay", alternate_names: ["Barsbāy"], role: "Mamluk sultan (1422–1438)",
+    period: { start: 1369, end: 1438, approximate: true }, polity_id: "civ_mamluk",
+    summary: "A Circassian mamluk who became sultan in 1422, conquered Cyprus in 1426, diverted the Red Sea spice trade to Jedda and imposed the state monopoly on pepper sales to the Europeans that so exercised the Venetian galley merchants.",
+    evidence_status: "established", sources: ["src_ashtor_1983"],
+  },
+  {
+    id: "fig_mehmed_ii", name: "Mehmed II", alternate_names: ["Mehmed the Conqueror", "Fatih"], role: "Ottoman sultan (1444–1446, 1451–1481)",
+    period: { start: 1432, end: 1481 }, polity_id: "civ_ottoman_early",
+    summary: "Took Constantinople in 1453, made a treaty with Venice in 1454 and went to war with the republic in 1463.",
+    evidence_status: "established", sources: ["src_nicol_1988", "src_lane_1973"],
+  },
 ];

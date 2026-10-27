@@ -34,7 +34,7 @@ import { HISTORICAL_FIGURES } from "./historical/figures";
 import { HISTORICAL_ROUTES } from "./historical/routes";
 import { CIVILIZATIONS } from "./historical/civilizations";
 import { SOURCES } from "./historical/sources";
-import { MELAKA_SCENARIO, SIRAF_SCENARIO } from "./historical/scenarios";
+import { KILWA_SCENARIO, MELAKA_SCENARIO, SIRAF_SCENARIO, VENICE_SCENARIO } from "./historical/scenarios";
 
 /**
  * The immutable reference database. Everything is validated once at module load so that
@@ -61,7 +61,7 @@ export const ALL_FIGURES: HistoricalFigure[] = validateAll(HistoricalFigureSchem
 export const ALL_ROUTES: HistoricalRoute[] = validateAll(HistoricalRouteSchema, HISTORICAL_ROUTES, "route");
 export const ALL_CIVILIZATIONS: Civilization[] = validateAll(CivilizationSchema, CIVILIZATIONS, "civilization");
 export const ALL_SOURCES: HistoricalSource[] = validateAll(HistoricalSourceSchema, SOURCES, "source");
-export const ALL_SCENARIOS: Scenario[] = validateAll(ScenarioSchema, [MODERN_SCENARIO, SIRAF_SCENARIO, MELAKA_SCENARIO], "scenario");
+export const ALL_SCENARIOS: Scenario[] = validateAll(ScenarioSchema, [MODERN_SCENARIO, SIRAF_SCENARIO, KILWA_SCENARIO, MELAKA_SCENARIO, VENICE_SCENARIO], "scenario");
 
 function indexById<T extends { id: string }>(items: T[]): Map<string, T> {
   const map = new Map<string, T>();

@@ -27,6 +27,28 @@ No citation was invented. The six entries that were recorded from memory were ch
 
 Two sources were added during the check: the Princeton Geniza Lab's place entry for Kalah (summary of the location debate) and Wilkinson's 1974 *Paléorient* article on the Siraf region.
 
+### Kilwa and Venice campaigns (added October 2026)
+
+The bibliography for the two campaigns added later was checked at the time of writing, with the result noted on each entry in `sources.ts`:
+
+| Entry | Result |
+| --- | --- |
+| Chittick, *Kilwa* | Confirmed: BIEA Memoir 5, Nairobi, 1974, 2 vols, xviii + 514 pp. (catalogue records; reviews in *JAH* and *Antiquity*). |
+| Sutton, "Kilwa: a history of the ancient Swahili town" | Confirmed: *Azania* 33(1), 1998, pp. 113–169, doi:10.1080/00672709809511466. |
+| Freeman-Grenville, *The East African Coast: Select Documents* | Confirmed: Clarendon Press, 1962, viii + 314 pp.; reprinted 1966. |
+| Pearson, *Port Cities and Intruders* | Confirmed: Johns Hopkins UP, 1998, x + 202 pp. |
+| Kusimba, *The Rise and Fall of Swahili States* | Confirmed: AltaMira, 1999, 237 pp. |
+| Wynne-Jones & LaViolette (eds.), *The Swahili World* | Confirmed: Routledge, 2018, ISBN 978-1-138-91346-2. |
+| Gilbert, "The Mtepe" | Confirmed: *IJNA* 27(1), 1998, pp. 43–50. |
+| Lane, *Venice: A Maritime Republic* (1973); *Venetian Ships and Shipbuilders* (1934); *Andrea Barbarigo* (1944) | Confirmed against the publisher's listings and HathiTrust. |
+| Ashtor, *Levant Trade in the Later Middle Ages* | Confirmed: Princeton UP, 1983, xxii + 599 pp., ISBN 0-691-05386-3. |
+| Stöckly, *Le système de l'Incanto des galées du marché à Venise* | Confirmed: Brill, 1995 (The Medieval Mediterranean); the catalogue title reads "à Venise". |
+| Nicol, *Byzantium and Venice* | Confirmed: Cambridge UP, 1988; paperback 1992. |
+| Crouzet-Pavan, *Venice Triumphant* | Confirmed: Johns Hopkins UP, 2002, xxi + 386 pp. |
+| Gibb, *The Travels of Ibn Baṭṭūṭa*, vol. II (1962); Jackson, *The Delhi Sultanate* (1999); Necipoğlu, *Byzantium between the Ottomans and the Latins* (2009); Hill, *A History of Cyprus* II (1948); Querini in Ramusio (1559); Pryor, *Geography, Technology, and War* (1988) | Recorded from the implementer's knowledge of the literature and **not** re-checked against a catalogue; each entry says so in its notes. |
+
+Dates checked at the same time: Ibn Battuta at Mogadishu, Mombasa and Kilwa (1331, with the traveller's own chronology noted as inconsistent); al-Hasan ibn Sulayman's reign (c. 1310–1333, with 1335 in some reconstructions); the move of Hormuz to Jarun (c. 1300); the fall of Thessalonica (29 March 1430); the Mamluk victory at Khirokitia (7 July 1426); Barsbay's pepper monopoly (1429) and death (1438); Querini's departure from Candia (25 April 1431) and landing at Røst (January 1432); Mocenigo's death (4 April 1423) and Foscari's election (15 April 1423); the Peace of Lodi (9 April 1454); the Venetian–Ottoman treaty (18 April 1454); the declaration of war of 28 July 1463.
+
 ## Claims that need further research
 
 ### Siraf, 850 CE
@@ -53,13 +75,31 @@ Two sources were added during the check: the Princeton Geniza Lab's place entry 
 
 - **Abbasid reconquest of Oman, 893**: checked October 2026. The campaign of 280 AH / 893 CE under Muḥammad ibn Nūr, following the civil war that began with the deposition of Imam al-Ṣalt in 885, ended the Ibadi imamate and reincorporated much of Oman as an Abbasid province; Suhar's residents are reported to have fled in large numbers. Rated `established`; the game's fee increase at Suhar is the simulated consequence.
 
+### Kilwa, 1330 CE
+- **Regnal dates** of al-Hasan ibn Sulayman and his successors rest on the Kilwa Chronicle (written c. 1520–1530) and the coin series; the sultan's death is placed c. 1333 and rated `uncertain`.
+- **Husuni Kubwa and the mosque extension** are dated to his reign by coins and architectural comparison (`scholarly_interpretation`).
+- **Sofala**: the medieval town is not securely located; the marker is the later Portuguese Sofala. The chronicle's story of how Kilwa acquired Sofala is a later retrospective.
+- **Zanzibar island**: Tumbatu and Kizimkazi are the documented medieval towns; which harbour served the trade in the 1330s is unknown, so the port is rated `uncertain` and its location `disputed`.
+- **Black Death**: documented at Alexandria from autumn 1347 and in Yemen after 1351; its spread to the Swahili coast is unknown, so the event affects only Aden.
+- **Enslaved people** were traded on this coast. The game does not represent them as cargo; the scenario's uncertainty note says so.
+- **Ship classes** are reconstructions: no fourteenth-century Swahili hull has been excavated, and the mtepe is documented in detail only from the nineteenth and twentieth centuries.
+
+### Venice, 1423 CE
+- **Mocenigo's oration** survives only in later chronicles; its figures are not independently verifiable and are not used for balance.
+- **Thessalonica 1423**: whether Venice bought the city or accepted it as a protectorate is debated; the Venetian "sale" story is treated as unfounded by recent scholarship.
+- **Great galleys** were state-built and auctioned; a private house could not own one. The game turns winning the auction into a technology and a ship class, which is a simplification.
+- **Round ship dimensions** follow Lane's ranges; speeds and capacities are gameplay values.
+- **Mediterranean winds** use a single 12-month table (rated `reconstruction`); the bora, sirocco and mistral are not modelled.
+- **Constantinople** closes on 29 May 1453 and reopens as a restricted Ottoman port on the treaty of 18 April 1454; the two per cent customs duty of the treaty is reflected only as a fee multiplier.
+- **Thessalonica after 1430** reopens restricted in 1431 as a simplification of the peace of 1430 and the Venetian withdrawal completed by 1432.
+
 ### Modern scenario
 - Port coordinates point at the main container terminal areas and are accurate to roughly a kilometre; they are reference, not navigational, data.
 - Throughput rankings and port roles are described qualitatively from UNCTAD's Review of Maritime Transport; no specific statistics are quoted.
 - Freight rates, fuel prices, vessel prices and operating costs are gameplay abstractions.
 
-## Monsoon model
-Both historical scenarios use a simplified 12-month wind table (direction and speed) representing the north-east and south-west monsoons with transitional months. It reproduces the seasonal rhythm described by Hourani, Chaudhuri and Reid but is not a meteorological reconstruction.
+## Wind model
+The Siraf, Kilwa and Melaka scenarios use simplified 12-month wind tables (direction and speed) representing the north-east and south-west monsoons with transitional months. They reproduce the seasonal rhythm described by Hourani, Chaudhuri and Reid but are not meteorological reconstructions. The Venice scenario uses a single Mediterranean table (westerlies, winter gales, the summer etesians) rated `reconstruction`.
 
 ## Sea lanes
 The routing graph (`src/data/sealanes.ts`) is a gameplay abstraction that keeps routes at sea and respects the absence of the Suez (1869) and Panama (1914) canals in earlier periods. It is not a nautical chart.

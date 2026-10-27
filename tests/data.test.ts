@@ -115,14 +115,54 @@ describe("historical scenario validation", () => {
   });
 
   it("historical campaigns do not share ports, ships or scenario-specific goods with each other", () => {
-    const siraf = getCatalog("siraf_850");
-    const melaka = getCatalog("melaka_1460");
-    const sirafPorts = new Set(siraf.ports.map((p) => p.id));
-    for (const p of melaka.ports) expect(sirafPorts.has(p.id)).toBe(false);
-    const sirafShips = new Set(siraf.ships.map((s) => s.id));
-    for (const s of melaka.ships) expect(sirafShips.has(s.id)).toBe(false);
-    const shared = melaka.goods.filter((g) => siraf.goodMap.has(g.id)).length;
-    expect(shared).toBeLessThan(melaka.goods.length / 2);
+    const campaigns = ALL_SCENARIOS.filter((s) => s.mode === "historical").map((s) => getCatalog(s.id));
+    expect(campaigns.length).toBeGreaterThanOrEqual(4);
+    for (const a of campaigns) {
+      for (const b of campaigns) {
+        if (a === b) continue;
+        const aPorts = new Set(a.ports.map((p) => p.id));
+        for (const p of b.ports) expect(aPorts.has(p.id), `${p.id} shared by ${a.scenario.id} and ${b.scenario.id}`).toBe(false);
+        const aShips = new Set(a.ships.map((s) => s.id));
+        for (const s of b.ships) expect(aShips.has(s.id), `${s.id} shared by ${a.scenario.id} and ${b.scenario.id}`).toBe(false);
+        const shared = b.goods.filter((g) => a.goodMap.has(g.id)).length;
+        expect(shared, `${a.scenario.id} / ${b.scenario.id} share too many goods`).toBeLessThan(b.goods.length / 2);
+      }
+    }
+  });
+
+  it("every scenario's rivals, starting ships, objectives and events reference records inside the scenario", () => {
+    for (const s of ALL_SCENARIOS) {
+      const c = getCatalog(s.id);
+      const ships = new Set(c.ships.map((x) => x.id));
+      const goods = new Set(c.goods.map((x) => x.id));
+      const techs = new Set(c.technologies.map((x) => x.id));
+      const polities = new Set(c.civilizations.map((x) => x.id));
+      for (const r of s.rivals) {
+        expect(c.portMap.has(r.home_port_id), `${r.id} home port`).toBe(true);
+        for (const id of r.ship_class_ids) expect(ships.has(id), `${r.id} ship ${id}`).toBe(true);
+        if (r.polity_id) expect(polities.has(r.polity_id), `${r.id} polity`).toBe(true);
+      }
+      for (const st of s.starting_ships) {
+        expect(ships.has(st.class_id)).toBe(true);
+        expect(c.portMap.has(st.port_id)).toBe(true);
+      }
+      for (const o of s.objectives) {
+        const cond = o.condition;
+        if ("port_id" in cond) expect(c.portMap.has(cond.port_id), `${o.id} port`).toBe(true);
+        if ("good_id" in cond) expect(goods.has(cond.good_id), `${o.id} good`).toBe(true);
+        if ("technology_id" in cond) expect(techs.has(cond.technology_id), `${o.id} technology`).toBe(true);
+      }
+      for (const e of c.events) {
+        for (const f of e.effects) {
+          if ("port_id" in f) expect(c.portMap.has(f.port_id), `${e.id} port ${f.port_id}`).toBe(true);
+          if ("good_id" in f) expect(goods.has(f.good_id), `${e.id} good ${f.good_id}`).toBe(true);
+          if ("polity_id" in f) expect(polities.has(f.polity_id), `${e.id} polity ${f.polity_id}`).toBe(true);
+        }
+      }
+      for (const t of c.technologies) {
+        for (const f of t.effects) if (f.type === "unlock_ship") expect(ships.has(f.ship_class_id), `${t.id} unlocks ${f.ship_class_id}`).toBe(true);
+      }
+    }
   });
 
   it("every event with effects has a trigger date inside its scenario window", () => {
