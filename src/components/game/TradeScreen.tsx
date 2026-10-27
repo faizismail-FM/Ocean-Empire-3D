@@ -220,7 +220,7 @@ function Market({ portId, shipId }: { portId: string; shipId: string | null }) {
   return (
     <Panel padded={false}>
       <div className="flex flex-wrap items-center justify-between gap-2 px-4 py-3 text-xs text-foam/60">
-        <span>Prices drift weekly and respond to local supply, demand, warehouses and events. Values are gameplay abstractions.</span>
+        <span>Prices drift weekly and respond to local supply, demand, warehouses, events and this week&apos;s trading by you and the rivals. Values are gameplay abstractions.</span>
         {ship && cls && (
           <span className="font-mono">
             Free hold: {formatNumber(free)} {cls.cargo_unit} · Treasury {formatMoneyExact(state.treasury, catalog.scenario.currency)}
@@ -254,7 +254,14 @@ function Market({ portId, shipId }: { portId: string; shipId: string | null }) {
                       {l.demands && <Badge tone="cyan">in demand</Badge>}
                     </div>
                   </td>
-                  <td className="px-4 py-2 text-right font-mono text-gold-300">{formatMoneyExact(l.price, catalog.scenario.currency)}</td>
+                  <td className="px-4 py-2 text-right font-mono text-gold-300">
+                    {formatMoneyExact(l.price, catalog.scenario.currency)}
+                    {Math.abs(l.pressure - 1) >= 0.02 && (
+                      <div className={cn("text-[0.65rem] font-sans", l.pressure > 1 ? "text-coral-400/80" : "text-emerald-300/80")} title={`${formatNumber(l.activity.bought)} bought and ${formatNumber(l.activity.sold)} sold here this week by all traders`}>
+                        {l.pressure > 1 ? "+" : ""}{Math.round((l.pressure - 1) * 100)}% this week
+                      </div>
+                    )}
+                  </td>
                   <td className="px-4 py-2 text-right font-mono">{l.stock > 0 ? formatNumber(l.stock) : "—"}</td>
                   <td className="px-4 py-2 text-right font-mono">{onBoard > 0 ? formatNumber(onBoard) : "—"}</td>
                   <td className="px-4 py-2 text-right">

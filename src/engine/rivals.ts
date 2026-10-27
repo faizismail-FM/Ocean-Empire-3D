@@ -4,6 +4,7 @@ import { clamp } from "@/lib/utils";
 import { buildContract, type ContractContext } from "./contracts";
 import { applyTransaction, TransactionError } from "./economy";
 import { distanceNm, initialBearing, interpolate, type GeoPoint } from "./geo";
+import { livePrice, liveStock, recordTrade } from "./market";
 import { computeModifiers } from "./modifiers";
 import { infrastructureCost } from "./portdev";
 import { createRandom } from "./rng";
@@ -117,6 +118,7 @@ function makeShip(catalog: ScenarioCatalog, def: RivalDefinition, index: number,
     origin_port_id: null,
     contract_id: null,
     voyage_value: 0,
+    cargo: null,
     // Stagger first departures so the rivals do not all leave at once.
     next_decision_sim_seconds: simSeconds + rng.range(p.turnaround_hours[0], p.turnaround_hours[1] * 2) * HOUR,
     total_distance_nm: 0,
@@ -142,7 +144,7 @@ export function createRivalStates(catalog: ScenarioCatalog, seed: number, simSec
       last_relation_action_sim_seconds: null,
       last_purchase_sim_seconds: simSeconds,
       last_development_sim_seconds: simSeconds,
-      stats: { deliveries: 0, contracts_taken: 0, revenue: 0, charters_posted: 0 },
+      stats: { deliveries: 0, contracts_taken: 0, revenue: 0, charters_posted: 0, goods_sold: 0 },
       relations: {},
       allies: [],
       last_charter_sim_seconds: simSeconds,
@@ -178,16 +180,6 @@ export function rivalRelation(state: GameState, a: string, b: string): number {
   return state.rivals[a]?.relations[b] ?? 50;
 }
 
-/** Value of an own-account voyage, priced like a contract for a full hold. */
-function ownAccountValue(catalog: ScenarioCatalog, state: GameState, cls: VesselClass, origin: PortRecord, destination: PortRecord): number {
-  const supplies = origin.supplies.map((id) => catalog.goodMap.get(id)).filter((g): g is NonNullable<typeof g> => !!g);
-  if (supplies.length === 0) return 0;
-  const good = supplies.find((g) => destination.demands.includes(g.id)) ?? supplies[0]!;
-  const ctx: ContractContext = { catalog, state, fleet_capacity: cls.cargo_capacity, payment_multiplier: 1, extra_contracts: 0, event_price_mods: computeModifiers(catalog, state).event_price_mods, year: state.date.year };
-  const c = buildContract(ctx, origin, destination, good, 0.7, 1, "rival_tmp", null, false);
-  return c ? c.payment : 0;
-}
-
 function voyageExpenses(catalog: ScenarioCatalog, state: GameState, cls: VesselClass, distanceNmTotal: number, destination: PortRecord): number {
   const fuel = estimateEndurance(cls, distanceNmTotal) * catalog.scenario.fuel_price_per_unit;
   const eventFees = state.ports[destination.id]?.fee_multiplier ?? 1;
@@ -201,7 +193,7 @@ function routeLength(route: RivalShip["route"]): number {
   return total;
 }
 
-function decide(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition, rival: RivalState, ship: RivalShip, contracts: Record<string, Contract>, events: RivalEvent[]): { ship: RivalShip; rival: RivalState } {
+function decide(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition, rival: RivalState, ship: RivalShip, contracts: Record<string, Contract>, events: RivalEvent[], market: { current: GameState["market"] }): { ship: RivalShip; rival: RivalState } {
   const here = ship.docked_port_id ? catalog.portMap.get(ship.docked_port_id) : undefined;
   if (!here) return { ship, rival };
   const cls = requireClass(catalog, ship.class_id);
@@ -239,10 +231,11 @@ function decide(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition
     }
   }
 
-  // 2. Own-account trading to a port that wants what this one supplies.
+  // 2. Own-account trading: buy at this port's market what sells best elsewhere.
   const range = (catalog.scenario.mode === "modern" ? 3200 : 1500) * p.range_factor;
   const home = catalog.portMap.get(def.home_port_id);
   const priceMods = computeModifiers(catalog, state).event_price_mods;
+  const live = { ...state, market: market.current };
   const pool = catalog.ports
     .filter((port) => port.id !== here.id && rivalCanCall(def, port, state))
     .map((port) => {
@@ -262,6 +255,53 @@ function decide(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition
     .filter((x) => x.weight > 0);
   if (pool.length === 0 || !home) return { ship: { ...ship, next_decision_sim_seconds: state.sim_seconds + DAY }, rival };
 
+  // Real goods: every (good, destination) pair is priced from the live markets, with this
+  // week's purchases and sales by everyone already weighing on stock and price.
+  const budget = Math.max(0, rival.treasury) * (def.personality === "cautious" ? 0.4 : 0.6);
+  type Deal = { good: (typeof catalog.goods)[number]; port: PortRecord; quantity: number; buyPrice: number; profit: number; score: number };
+  const deals: Deal[] = [];
+  for (const goodId of here.supplies) {
+    const good = catalog.goodMap.get(goodId);
+    if (!good) continue;
+    const available = liveStock(here, good, live);
+    if (available < 1) continue;
+    const buyPrice = livePrice(here, good, live, priceMods[good.id] ?? 1);
+    const quantity = Math.min(available, Math.floor(cls.cargo_capacity / good.cargo_space), Math.floor(budget / Math.max(1, buyPrice)));
+    if (quantity < 1) continue;
+    for (const { port, weight } of pool) {
+      const sellPrice = livePrice(port, good, live, priceMods[good.id] ?? 1);
+      const d = distanceNm({ lat: here.latitude, lon: here.longitude }, { lat: port.latitude, lon: port.longitude });
+      const profit = (sellPrice - buyPrice) * quantity - voyageExpenses(catalog, state, cls, d * 1.15, port);
+      if (profit <= 0) continue;
+      const metric = def.personality === "expansive" ? profit : profit / Math.max(50, d);
+      deals.push({ good, port, quantity, buyPrice, profit, score: metric * weight });
+    }
+  }
+  deals.sort((a, b) => b.score - a.score);
+  for (const deal of deals.slice(0, 3)) {
+    const planned = planRoute(here, deal.port, year);
+    if (!planned) continue;
+    const cost = deal.buyPrice * deal.quantity;
+    market.current = recordTrade(market.current, here.id, deal.good.id, state.sim_seconds, "bought", deal.quantity, deal.buyPrice);
+    const sailing: RivalShip = {
+      ...ship,
+      status: "sailing",
+      docked_port_id: null,
+      route: planned.waypoints,
+      waypoint_index: 1,
+      leg_progress_nm: 0,
+      origin_port_id: here.id,
+      destination_port_id: deal.port.id,
+      contract_id: null,
+      voyage_value: 0,
+      cargo: { good_id: deal.good.id, quantity: deal.quantity, bought_at: deal.buyPrice },
+      speed_knots: cruiseSpeed(cls),
+      heading: initialBearing(ship.position, (planned.waypoints[1] as GeoPoint | undefined) ?? { lat: deal.port.latitude, lon: deal.port.longitude }),
+    };
+    return { ship: sailing, rival: { ...rival, treasury: rival.treasury - cost } };
+  }
+
+  // 3. Nothing worth buying here: reposition in ballast toward a port with better prospects.
   for (let attempt = 0; attempt < 4; attempt++) {
     const total = pool.reduce((s, x) => s + x.weight, 0);
     let r = rng.next() * total;
@@ -275,8 +315,7 @@ function decide(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition
     }
     const planned = planRoute(here, pick, year);
     if (!planned) continue;
-    const value = ownAccountValue(catalog, state, cls, here, pick);
-    const sailing: RivalShip = { ...ship, status: "sailing", docked_port_id: null, route: planned.waypoints, waypoint_index: 1, leg_progress_nm: 0, origin_port_id: here.id, destination_port_id: pick.id, contract_id: null, voyage_value: value, speed_knots: cruiseSpeed(cls), heading: initialBearing(ship.position, (planned.waypoints[1] as GeoPoint | undefined) ?? { lat: pick.latitude, lon: pick.longitude }) };
+    const sailing: RivalShip = { ...ship, status: "sailing", docked_port_id: null, route: planned.waypoints, waypoint_index: 1, leg_progress_nm: 0, origin_port_id: here.id, destination_port_id: pick.id, contract_id: null, voyage_value: 0, cargo: null, speed_knots: cruiseSpeed(cls), heading: initialBearing(ship.position, (planned.waypoints[1] as GeoPoint | undefined) ?? { lat: pick.latitude, lon: pick.longitude }) };
     return { ship: sailing, rival };
   }
   return { ship: { ...ship, next_decision_sim_seconds: state.sim_seconds + DAY }, rival };
@@ -313,12 +352,24 @@ function move(catalog: ScenarioCatalog, ship: RivalShip, dtSim: number): { ship:
   return { ship: { ...ship, position, heading, waypoint_index: index, leg_progress_nm: progress, total_distance_nm: ship.total_distance_nm + sailed }, arrived };
 }
 
-function arrive(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition, rival: RivalState, ship: RivalShip, contracts: Record<string, Contract>, settlements: Settlement[]): { ship: RivalShip; rival: RivalState } {
+function arrive(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition, rival: RivalState, ship: RivalShip, contracts: Record<string, Contract>, settlements: Settlement[], market: { current: GameState["market"] }): { ship: RivalShip; rival: RivalState } {
   const dest = ship.destination_port_id ? catalog.portMap.get(ship.destination_port_id) : undefined;
   if (!dest) return { ship: { ...ship, status: "docked", speed_knots: 0, route: [], waypoint_index: 0 }, rival };
   const cls = requireClass(catalog, ship.class_id);
   const p = PERSONALITIES[def.personality];
   let payment = ship.voyage_value;
+  let goodsSold = 0;
+  if (ship.cargo) {
+    // Sell into the destination market at the live price; the sale weighs on that price for the week.
+    const good = catalog.goodMap.get(ship.cargo.good_id);
+    if (good) {
+      const live = { ...state, market: market.current };
+      const price = livePrice(dest, good, live, computeModifiers(catalog, state).event_price_mods[good.id] ?? 1);
+      payment += price * ship.cargo.quantity;
+      goodsSold = ship.cargo.quantity;
+      market.current = recordTrade(market.current, dest.id, good.id, state.sim_seconds, "sold", ship.cargo.quantity, price);
+    }
+  }
   if (ship.contract_id) {
     const c = contracts[ship.contract_id];
     if (c) {
@@ -348,6 +399,7 @@ function arrive(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition
     leg_progress_nm: 0,
     contract_id: null,
     voyage_value: 0,
+    cargo: null,
     origin_port_id: null,
     destination_port_id: null,
     next_decision_sim_seconds: state.sim_seconds + rng.range(p.turnaround_hours[0], p.turnaround_hours[1]) * HOUR,
@@ -356,7 +408,7 @@ function arrive(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition
     ...rival,
     treasury: Math.round(rival.treasury + payment - expenses),
     port_calls: { ...rival.port_calls, [dest.id]: (rival.port_calls[dest.id] ?? 0) + 1 },
-    stats: { ...rival.stats, deliveries: rival.stats.deliveries + 1, revenue: rival.stats.revenue + payment },
+    stats: { ...rival.stats, deliveries: rival.stats.deliveries + 1, revenue: rival.stats.revenue + payment, goods_sold: rival.stats.goods_sold + goodsSold },
   };
   return { ship: docked, rival: updated };
 }
@@ -433,6 +485,7 @@ export function tickRivals(catalog: ScenarioCatalog, state: GameState, dtSim: nu
   const contracts = { ...state.contracts };
   const rivals: Record<string, RivalState> = {};
   const settlements: Settlement[] = [];
+  const market = { current: state.market };
 
   for (const id of ids) {
     const def = rivalDefinition(catalog, id);
@@ -451,12 +504,12 @@ export function tickRivals(catalog: ScenarioCatalog, state: GameState, dtSim: nu
         const moved = move(catalog, ship, dtSim);
         ship = moved.ship;
         if (moved.arrived) {
-          const result = arrive(catalog, state, def, rival, ship, contracts, settlements);
+          const result = arrive(catalog, state, def, rival, ship, contracts, settlements, market);
           ship = result.ship;
           rival = result.rival;
         }
       } else if (state.sim_seconds >= ship.next_decision_sim_seconds) {
-        const result = decide(catalog, state, def, rival, ship, contracts, events);
+        const result = decide(catalog, state, def, rival, ship, contracts, events, market);
         ship = result.ship;
         rival = result.rival;
       }
@@ -513,7 +566,7 @@ export function tickRivals(catalog: ScenarioCatalog, state: GameState, dtSim: nu
       if (formed !== null) events.push({ type: "rival_alliance", rival_ids: [a, b], formed });
     }
   }
-  return { state: { ...state, rivals, contracts }, events };
+  return { state: { ...state, rivals, contracts, market: market.current }, events };
 }
 
 /** The player accepting a contract at a rival's home port is read as poaching. */
