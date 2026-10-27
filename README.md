@@ -41,7 +41,7 @@ Automated: with a Supabase personal access token exported as `SUPABASE_ACCESS_TO
 node scripts/setup-supabase.mjs
 ```
 
-It creates (or reuses) a project named `ocean-empire-3d`, applies the migration, enables anonymous sign-ins and prints the two public variables. If `VERCEL_TOKEN`, `VERCEL_PROJECT` and `VERCEL_TEAM_SLUG` are also set it writes them to the Vercel project and redeploys production. The script has not yet been exercised against a live Supabase account; see its header for the API calls it makes.
+It creates (or reuses) a project named `ocean-empire-3d`, applies the migration, enables anonymous sign-ins and prints the two public variables. If `VERCEL_TOKEN`, `VERCEL_PROJECT` and `VERCEL_TEAM_SLUG` are also set it writes them to the Vercel project and redeploys production. The script has been run against a live Supabase account to provision the production project; see its header for the API calls it makes.
 
 Manual:
 
@@ -120,4 +120,4 @@ Quality presets (low / medium / high) control device pixel ratio, shadows and oc
 
 ## Status and limitations
 
-This is the first vertical slice. Not yet implemented from the master brief: AI-controlled trading powers with their own fleets, additional civilizations beyond the two campaigns, population/prosperity simulation, and the optional AI history assistant. Supabase sync is implemented but has only been exercised against the schema, not a live project.
+This is the first vertical slice. Not yet implemented from the master brief: AI-controlled trading powers with their own fleets, additional civilizations beyond the two campaigns, population/prosperity simulation, and the optional AI history assistant. Supabase sync and email sign-in run against a live project in production. Sign-in emails use Supabase's built-in mailer, which is limited to a few per hour until custom SMTP is configured (see "Accounts and cross-device saves"). The historical database still carries the open verification items listed in `docs/RESEARCH_NOTES.md`, and rendering has only been checked on a software renderer and one laptop GPU, with no frame-rate benchmarks.
