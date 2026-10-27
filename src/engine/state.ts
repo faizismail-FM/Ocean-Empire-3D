@@ -172,6 +172,51 @@ export type DiplomacyState = z.infer<typeof DiplomacyStateSchema>;
 
 export const MarketEntrySchema = z.object({ price: z.number(), stock: z.number() });
 
+export const RivalShipStatusSchema = z.enum(["docked", "sailing"]);
+
+export const RivalShipSchema = z.object({
+  id: z.string(),
+  class_id: z.string(),
+  name: z.string(),
+  position: GeoPointSchema,
+  heading: z.number(),
+  speed_knots: z.number(),
+  status: RivalShipStatusSchema,
+  docked_port_id: z.string().nullable(),
+  route: z.array(WaypointSchema),
+  waypoint_index: z.number().int(),
+  /** Nautical miles covered along the current leg. */
+  leg_progress_nm: z.number(),
+  destination_port_id: z.string().nullable(),
+  origin_port_id: z.string().nullable(),
+  /** Contract taken from the shared offer board, if any; otherwise the ship trades on its own account. */
+  contract_id: z.string().nullable(),
+  /** Earnings expected on arrival for an own-account voyage. */
+  voyage_value: z.number(),
+  /** Simulated time at which a docked ship next decides what to do. */
+  next_decision_sim_seconds: z.number(),
+  total_distance_nm: z.number(),
+});
+export type RivalShip = z.infer<typeof RivalShipSchema>;
+
+export const RivalStateSchema = z.object({
+  id: z.string(),
+  treasury: z.number(),
+  ships: z.record(z.string(), RivalShipSchema),
+  /** Calls made at each port, the basis of market share. */
+  port_calls: z.record(z.string(), z.number()),
+  /** Facilities the rival has built, by port and level. */
+  developed: z.record(z.string(), z.number()),
+  /** Standing with the player's house, 0..100. */
+  relation: z.number().min(0).max(100),
+  partnership: z.boolean(),
+  last_relation_action_sim_seconds: z.number().nullable(),
+  last_purchase_sim_seconds: z.number(),
+  last_development_sim_seconds: z.number(),
+  stats: z.object({ deliveries: z.number(), contracts_taken: z.number(), revenue: z.number() }),
+});
+export type RivalState = z.infer<typeof RivalStateSchema>;
+
 export const NotificationSchema = z.object({
   id: z.string(),
   sim_seconds: z.number(),
@@ -222,6 +267,8 @@ export const GameStateSchema = z.object({
   achievements: z.array(z.string()),
   diplomacy: z.record(z.string(), DiplomacyStateSchema),
   market: z.record(z.string(), z.record(z.string(), MarketEntrySchema)),
+  /** AI trading powers. Defaulted so saves from before rivals existed still load. */
+  rivals: z.record(z.string(), RivalStateSchema).default({}),
   applied_events: z.array(z.string()),
   notifications: z.array(NotificationSchema),
   tutorial: z.object({ step: z.number().int(), completed: z.boolean(), dismissed: z.boolean() }),

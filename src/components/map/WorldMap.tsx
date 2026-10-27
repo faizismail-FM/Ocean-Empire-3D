@@ -27,6 +27,7 @@ export interface MapLayers {
   regions: boolean;
   borders: boolean;
   contracts: boolean;
+  rivals: boolean;
 }
 
 export const DEFAULT_LAYERS: MapLayers = {
@@ -38,6 +39,7 @@ export const DEFAULT_LAYERS: MapLayers = {
   regions: true,
   borders: true,
   contracts: true,
+  rivals: true,
 };
 
 interface Props {
@@ -279,6 +281,29 @@ export function WorldMap({ catalog, state, selectedPortId, onSelectPort, onSelec
                   {active && <circle r={s * 1.8} fill="none" stroke="#e6f4ff" strokeWidth={0.7 * inv} opacity={0.5} />}
                 </g>
               );
+            })}
+
+          {layers.rivals &&
+            state &&
+            catalog.scenario.rivals.flatMap((def) => {
+              const rival = state.rivals[def.id];
+              if (!rival) return [];
+              return Object.values(rival.ships).map((ship) => {
+                const [x, y] = project(ship.position.lon, ship.position.lat);
+                const s = 5 * inv;
+                return (
+                  <g
+                    key={`${def.id}:${ship.id}`}
+                    transform={`translate(${x},${y})`}
+                    onPointerEnter={() => setHover({ x, y, text: `${ship.name} (${def.name}) · ${ship.status === "docked" ? `at ${catalog.portMap.get(ship.docked_port_id ?? "")?.name ?? "port"}` : `→ ${catalog.portMap.get(ship.destination_port_id ?? "")?.name ?? "sea"}`}` })}
+                    onPointerLeave={() => setHover(null)}
+                  >
+                    <g transform={`rotate(${ship.heading})`}>
+                      <path d={`M0 ${-s} L${s * 0.7} ${s} L0 ${s * 0.55} L${-s * 0.7} ${s} Z`} fill={def.color} stroke="#040b16" strokeWidth={0.7 * inv} opacity={0.9} />
+                    </g>
+                  </g>
+                );
+              });
             })}
         </g>
       </svg>

@@ -3,7 +3,7 @@
  * and the small "?" help tips on each screen, so the three never drift apart.
  */
 
-export type GuideSectionId = "goal" | "loop" | "sailing" | "time" | "trade" | "fleet" | "ports" | "technology" | "diplomacy" | "history" | "saves" | "glossary";
+export type GuideSectionId = "goal" | "loop" | "sailing" | "time" | "trade" | "fleet" | "ports" | "rivals" | "technology" | "diplomacy" | "history" | "saves" | "glossary";
 
 export interface GuideSection {
   id: GuideSectionId;
@@ -114,6 +114,20 @@ export const GUIDE: GuideSection[] = [
       "Cargo handling at the origin raises contract payments; warehouses and the commercial district improve local market prices; administration raises daily customs income at home.",
       "In the modern scenario you must have called at a port before you can lease facilities there.",
     ],
+  },
+  {
+    id: "rivals",
+    title: "Rival trading powers",
+    summary: "Other companies or merchant houses run their own fleets on the same ports and contract board. They take contracts, build up ports and can be courted into a partnership.",
+    points: [
+      "Each rival has a home port, a fleet and a personality: expansive rivals chase the best-paying contracts and buy ships quickly, steady ones run long regular services, cautious ones stay near home.",
+      "A rival ship docked at a port where contracts are on offer may take one. It disappears from the board, and you are told when it happens at your home port or where one of your ships is berthed.",
+      "Rival ships appear on the world map (Rival fleets layer) and in the sailing view when they pass nearby. The Rivals screen lists every ship, its destination and ETA.",
+      "Traffic share: the share of recorded calls at a port. A rival above half the traffic raises your terminal charges there by 10%, so work several ports rather than one.",
+      "Relations drift toward neutral, fall when you take contracts at a rival's home port, and rise with courtesies. At 60 you can propose a partnership: the rival stops bidding at your home port and your fees at its home port drop 10%. It lapses if relations fall below 35.",
+      "Rivals are fictional. Where a name recalls a historical community, the encyclopedia entry for that community is the place for the history; the rival's ships and decisions are gameplay.",
+    ],
+    tips: ["Accept the contract you want before leaving a port idle at high time scale: a rival berthed there may take it while you wait."],
   },
   {
     id: "technology",

@@ -64,6 +64,10 @@ Operational notes:
 
 Import the repository in Vercel. The defaults (framework: Next.js, build `next build`) work as-is. Add the two Supabase variables in the project settings only if you want remote saves. The project does not depend on any other deployment, API, domain or repository.
 
+## Rival trading powers
+
+Each scenario defines three AI trading powers (`rivals` in the scenario data; engine in `src/engine/rivals.ts`). They run fleets on the same sea lanes and the same contract board as the player: a docked rival ship takes one of the contracts on offer at its port or sails on its own account, arrival pays it and records a port call, and with money in hand it buys ships and builds cargo handling at its busiest port. Traffic share per port is derived from those calls; a rival above half the traffic raises the player's terminal charges there by 10%. Relations with the player drift toward neutral, fall when the player accepts contracts at the rival's home port, and can be raised with courtesies or a partnership. Rivals appear on the world map, in the sailing view when nearby, and on the Rivals screen. All rivals are fictional, and the engine is deterministic from the save's seed. Saves from before this feature load with no rivals.
+
 ## Controls (sailing view)
 
 | Key | Action |
