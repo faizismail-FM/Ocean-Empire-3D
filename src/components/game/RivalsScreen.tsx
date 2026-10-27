@@ -89,7 +89,7 @@ export function RivalsScreen() {
 
               <div className="mt-3 grid grid-cols-2 gap-2 text-xs sm:grid-cols-4">
                 <Stat label="Fleet" value={`${ships.length}`} hint={`${atSea} at sea`} />
-                <Stat label="Deliveries" value={formatNumber(rival.stats.deliveries)} hint={`${rival.stats.contracts_taken} from the board`} />
+                <Stat label="Deliveries" value={formatNumber(rival.stats.deliveries)} hint={`${rival.stats.contracts_taken} from the board · ${formatNumber(rival.stats.goods_sold)} units of goods sold`} />
                 <Stat label="Charters" value={formatNumber(rival.stats.charters_posted)} hint="posted for others" />
                 <Stat label="Finances" value={<Badge tone={band.tone}>{band.label}</Badge>} hint="estimate" />
               </div>
@@ -131,7 +131,7 @@ export function RivalsScreen() {
                       <span className="flex min-w-0 items-center gap-1.5 text-foam/85">
                         <Ship size={12} className="shrink-0 text-foam/50" /> <span className="truncate">{ship.name}</span>
                       </span>
-                      <span className="shrink-0 text-foam/60">{describeShip(ship, catalog.portMap)}</span>
+                      <span className="shrink-0 text-foam/60">{describeShip(ship, catalog.portMap, catalog.goodMap)}</span>
                     </li>
                   ))}
                 </ul>
@@ -230,10 +230,11 @@ function Stat({ label, value, hint }: { label: string; value: React.ReactNode; h
   );
 }
 
-function describeShip(ship: RivalShip, ports: Map<string, { name: string }>): string {
+function describeShip(ship: RivalShip, ports: Map<string, { name: string }>, goods: Map<string, { name: string }>): string {
   if (ship.status === "docked") return `at ${ports.get(ship.docked_port_id ?? "")?.name ?? "port"}`;
   const dest = ports.get(ship.destination_port_id ?? "")?.name ?? "sea";
   const remaining = ship.route.length > 1 ? remainingDistanceNm(ship.position, ship.route, Math.min(ship.waypoint_index, ship.route.length - 1)) : 0;
   const eta = ship.speed_knots > 0.5 && remaining > 0 ? formatDuration((remaining / ship.speed_knots) * 3600) : null;
-  return `→ ${dest}${eta ? ` · ${eta}` : ""}${ship.contract_id ? " · contract" : ""}`;
+  const load = ship.contract_id ? "contract" : ship.cargo ? `${formatNumber(ship.cargo.quantity)} ${goods.get(ship.cargo.good_id)?.name.toLowerCase() ?? "goods"}` : "in ballast";
+  return `→ ${dest}${eta ? ` · ${eta}` : ""} · ${load}`;
 }

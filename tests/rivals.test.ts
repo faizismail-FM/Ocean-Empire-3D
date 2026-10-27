@@ -4,6 +4,8 @@ import { createNewGame, ensureContracts, tickGame } from "@/engine/game";
 import { canPerformRivalAction, isRivalAssigned, marketShare, performRivalAction, reactToEvent, rivalCanCall, rivalFeeMultiplier, rivalRelation } from "@/engine/rivals";
 import { acceptContract, departShip, setDestination } from "@/engine/game";
 import { applyEvent } from "@/engine/events";
+import { livePrice, liveStock, marketActivity, recordTrade } from "@/engine/market";
+import { buyCargo, sellCargo } from "@/engine/game";
 import { parseState, serializeState } from "@/engine/save";
 import type { GameState } from "@/engine/state";
 
@@ -170,6 +172,43 @@ describe("rival trading powers", () => {
     expect(r.state.rivals["rival_nordhav"]!.allies).toContain("rival_meridian");
     expect(r.events.some((e) => e.type === "rival_alliance" && e.formed)).toBe(true);
     expect(rivalRelation(r.state, "rival_meridian", "rival_nordhav")).toBeGreaterThan(70);
+  });
+
+  it("buy and sell real goods through the shared market ledger", () => {
+    const after = advance(newGame(), 30 * DAY);
+    const sold = Object.values(after.rivals).reduce((n, r) => n + r.stats.goods_sold, 0);
+    expect(sold).toBeGreaterThan(0);
+    const entries = Object.values(after.market);
+    expect(entries.some((e) => (e.bought?.stock ?? 0) > 0)).toBe(true);
+    expect(entries.some((e) => (e.sold?.stock ?? 0) > 0)).toBe(true);
+    // Ships at sea without a contract carry goods or sail in ballast; never a leftover voyage value.
+    for (const r of Object.values(after.rivals)) for (const s of Object.values(r.ships)) if (s.status === "sailing" && !s.contract_id) expect(s.voyage_value).toBe(0);
+  });
+
+  it("let rival trading move the prices and stock the player sees", () => {
+    const catalog = getCatalog("modern_shipping_2024");
+    const state = newGame();
+    const klang = catalog.portMap.get("port_klang")!;
+    const good = catalog.goodMap.get(klang.supplies[0]!)!;
+    const base = livePrice(klang, good, state);
+    const stock = liveStock(klang, good, state);
+    const sold = { ...state, market: recordTrade(state.market, klang.id, good.id, state.sim_seconds, "sold", Math.round(stock), base) };
+    expect(livePrice(klang, good, sold)).toBeLessThan(base);
+    const bought = { ...state, market: recordTrade(state.market, klang.id, good.id, state.sim_seconds, "bought", Math.round(stock / 2), base) };
+    expect(livePrice(klang, good, bought)).toBeGreaterThan(base);
+    expect(liveStock(klang, good, bought)).toBe(stock - Math.round(stock / 2));
+  });
+
+  it("accumulate the player's purchases and sales within a week", () => {
+    const catalog = getCatalog("modern_shipping_2024");
+    let state = newGame();
+    const klang = catalog.portMap.get("port_klang")!;
+    const good = catalog.goodMap.get(klang.supplies[0]!)!;
+    state = buyCargo(catalog, state, "ship_1", good.id, 3);
+    state = buyCargo(catalog, state, "ship_1", good.id, 4);
+    expect(marketActivity(state.market, klang.id, good.id, state.sim_seconds).bought).toBe(7);
+    state = sellCargo(catalog, state, "ship_1", good.id, 2);
+    expect(marketActivity(state.market, klang.id, good.id, state.sim_seconds).sold).toBe(2);
   });
 
   it("load saves written before rivals existed", () => {

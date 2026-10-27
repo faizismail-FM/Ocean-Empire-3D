@@ -8,7 +8,7 @@ import { applyTransaction, canAfford, TransactionError } from "./economy";
 import { applyEvent, dueEvents } from "./events";
 import { createRivalStates, noteCompetition, reactToEvent, rivalFeeMultiplier, tickRivals, rivalDefinition } from "./rivals";
 import { distanceNm, type GeoPoint } from "./geo";
-import { marketPrice, marketStock } from "./market";
+import { livePrice, liveStock, recordTrade } from "./market";
 import { computeModifiers, type Modifiers } from "./modifiers";
 import { evaluateObjectives } from "./objectives";
 import { canDevelop, dailyAdministrationIncome, portFee, repairCost } from "./portdev";
@@ -496,13 +496,13 @@ export function buyCargo(catalog: ScenarioCatalog, state: GameState, shipId: str
   const port = catalog.portMap.get(ship.docked_port_id);
   if (!port) throw new TransactionError("Unknown port.");
   if (!Number.isInteger(quantity) || quantity <= 0) throw new TransactionError("Quantity must be a positive whole number.");
-  const stock = marketStock(port, good, state.seed, state.sim_seconds) - purchasedThisWeek(state, port.id, goodId);
+  const stock = liveStock(port, good, state);
   if (quantity > stock) throw new TransactionError(`Only ${Math.max(0, stock)} available this week.`);
   const cls = requireClass(catalog, ship.class_id);
   const mods = computeModifiers(catalog, state);
   const free = cargoCapacity(cls, mods.cargo_multiplier) - cargoUsed(ship, catalog);
   if (quantity * good.cargo_space > free + 1e-6) throw new TransactionError("Not enough cargo space.");
-  const price = marketPrice(port, good, state.seed, state.sim_seconds, mods.event_price_mods[goodId] ?? 1, state.ports[port.id]);
+  const price = livePrice(port, good, state, mods.event_price_mods[goodId] ?? 1);
   const total = price * quantity;
   if (!canAfford(state, total)) throw new TransactionError("Insufficient treasury.");
   let next = applyTransaction(state, -total, "cargo_purchase", `Bought ${quantity} ${good.name} at ${port.name}`, { ship_id: shipId, port_id: port.id });
@@ -511,13 +511,8 @@ export function buyCargo(catalog: ScenarioCatalog, state: GameState, shipId: str
     ? ship.cargo.map((c) => (c === existing ? { ...c, quantity: c.quantity + quantity, bought_at: Math.round(((c.bought_at ?? price) * c.quantity + price * quantity) / (c.quantity + quantity)) } : c))
     : [...ship.cargo, { good_id: goodId, quantity, contract_id: null, bought_at: price }];
   next = { ...next, ships: { ...next.ships, [shipId]: { ...ship, cargo } } };
-  next = { ...next, market: { ...next.market, [`${port.id}:${goodId}:${Math.floor(state.sim_seconds / (7 * 86400))}`]: { bought: { price, stock: quantity } } } };
+  next = { ...next, market: recordTrade(next.market, port.id, goodId, state.sim_seconds, "bought", quantity, price) };
   return next;
-}
-
-function purchasedThisWeek(state: GameState, portId: string, goodId: string): number {
-  const key = `${portId}:${goodId}:${Math.floor(state.sim_seconds / (7 * 86400))}`;
-  return state.market[key]?.bought?.stock ?? 0;
 }
 
 export function sellCargo(catalog: ScenarioCatalog, state: GameState, shipId: string, goodId: string, quantity: number): GameState {
@@ -531,13 +526,13 @@ export function sellCargo(catalog: ScenarioCatalog, state: GameState, shipId: st
   if (!item) throw new TransactionError("No such cargo on board (contract cargo cannot be sold).");
   if (!Number.isInteger(quantity) || quantity <= 0 || quantity > item.quantity) throw new TransactionError("Invalid quantity.");
   const mods = computeModifiers(catalog, state);
-  const price = marketPrice(port, good, state.seed, state.sim_seconds, mods.event_price_mods[goodId] ?? 1, state.ports[port.id]);
+  const price = livePrice(port, good, state, mods.event_price_mods[goodId] ?? 1);
   const total = price * quantity;
   let next = applyTransaction(state, total, "cargo_sale", `Sold ${quantity} ${good.name} at ${port.name}`, { ship_id: shipId, port_id: port.id });
   const cargo = ship.cargo
     .map((c) => (c === item ? { ...c, quantity: c.quantity - quantity } : c))
     .filter((c) => c.quantity > 0);
-  next = { ...next, ships: { ...next.ships, [shipId]: { ...ship, cargo } } };
+  next = { ...next, ships: { ...next.ships, [shipId]: { ...ship, cargo } }, market: recordTrade(next.market, port.id, goodId, state.sim_seconds, "sold", quantity, price) };
   return next;
 }
 

@@ -193,8 +193,10 @@ export const RivalShipSchema = z.object({
   origin_port_id: z.string().nullable(),
   /** Contract taken from the shared offer board, if any; otherwise the ship trades on its own account. */
   contract_id: z.string().nullable(),
-  /** Earnings expected on arrival for an own-account voyage. */
+  /** Earnings expected on arrival for an own-account voyage (ballast runs and legacy saves). */
   voyage_value: z.number(),
+  /** Goods bought at the origin market to sell at the destination. */
+  cargo: z.object({ good_id: z.string(), quantity: z.number(), bought_at: z.number() }).nullable().default(null),
   /** Simulated time at which a docked ship next decides what to do. */
   next_decision_sim_seconds: z.number(),
   total_distance_nm: z.number(),
@@ -215,7 +217,7 @@ export const RivalStateSchema = z.object({
   last_relation_action_sim_seconds: z.number().nullable(),
   last_purchase_sim_seconds: z.number(),
   last_development_sim_seconds: z.number(),
-  stats: z.object({ deliveries: z.number(), contracts_taken: z.number(), revenue: z.number(), charters_posted: z.number().default(0) }),
+  stats: z.object({ deliveries: z.number(), contracts_taken: z.number(), revenue: z.number(), charters_posted: z.number().default(0), goods_sold: z.number().default(0) }),
   /** Standing with each other rival, 0..100 (50 when unknown). */
   relations: z.record(z.string(), z.number()).default({}),
   /** Rivals this one is allied with: no bidding at each other's home ports, preference for each other's charters. */
