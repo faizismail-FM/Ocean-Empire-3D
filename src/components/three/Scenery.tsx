@@ -4,7 +4,7 @@ import { Line } from "@react-three/drei";
 import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
-import type { PortRecord, Era } from "@/data/schemas";
+import type { PortRecord, Era, ShipModel } from "@/data/schemas";
 import { createRandom } from "@/engine/rng";
 import type { Waypoint } from "@/engine/state";
 import { geoToScene, getSceneFrame } from "./scene-state";
@@ -180,9 +180,10 @@ export function RouteLine({ route, fromIndex }: { route: Waypoint[]; fromIndex: 
 }
 
 /** Ambient AI traffic: a few vessels on steady courses near the player. Decorative only. */
-export function TrafficShips({ era, seed }: { era: Era; seed: string }) {
+export function TrafficShips({ era, models, seed }: { era: Era; models: ShipModel[]; seed: string }) {
   const ships = useMemo(() => {
     const r = createRandom(`traffic:${seed}`);
+    const pool: ShipModel[] = models.length > 0 ? models : era === "modern" ? ["container_feeder"] : ["sewn_plank"];
     return Array.from({ length: 3 }, (_, i) => ({
       id: i,
       offsetX: (r.next() - 0.5) * 9000,
@@ -190,9 +191,10 @@ export function TrafficShips({ era, seed }: { era: Era; seed: string }) {
       heading: r.next() * 360,
       speed: era === "modern" ? 5 + r.next() * 4 : 1.5 + r.next() * 1.5, // m/s
       length: era === "modern" ? 120 + r.next() * 180 : 15 + r.next() * 20,
-      model: era === "modern" ? ("container_feeder" as const) : era === "medieval" ? ("sewn_plank" as const) : ("jong" as const),
+      // Local traffic looks like the vessels of the scenario itself.
+      model: pool[Math.floor(r.next() * pool.length)]!,
     }));
-  }, [seed, era]);
+  }, [seed, era, models]);
   return (
     <>
       {ships.map((s) => (
@@ -202,7 +204,7 @@ export function TrafficShips({ era, seed }: { era: Era; seed: string }) {
   );
 }
 
-function TrafficShip({ offsetX, offsetZ, heading, speed, length, model }: { offsetX: number; offsetZ: number; heading: number; speed: number; length: number; model: "container_feeder" | "sewn_plank" | "jong" }) {
+function TrafficShip({ offsetX, offsetZ, heading, speed, length, model }: { offsetX: number; offsetZ: number; heading: number; speed: number; length: number; model: ShipModel }) {
   const group = useRef<THREE.Group>(null);
   const pos = useRef({ x: NaN, z: NaN });
   useFrame((_, dt) => {

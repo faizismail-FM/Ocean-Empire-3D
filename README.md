@@ -2,13 +2,15 @@
 
 A standalone browser game that combines a 3D ship simulator, a maritime empire builder, historical trade campaigns, fleet management and a source-backed historical encyclopedia. Built with Next.js (App Router), TypeScript, React Three Fiber, Tailwind CSS and Zustand. It runs entirely in the browser with no paid APIs; Supabase persistence is optional.
 
-The full design brief is in `docs/MASTER_PROMPT.md`. This repository implements the **first playable release** described in its Part 16: three complete scenarios, a working 3D ocean with controllable vessels, a global port map, contracts and economy, ship purchasing, port development, technology, diplomacy, missions, save/restore, and the encyclopedia. A player guide (`/guide`, also opened with `?` in the sailing view and from the `?` buttons on each screen) explains the core loop, controls, time scale, trade, fleet and ports.
+The full design brief is in `docs/MASTER_PROMPT.md`. This repository implements the **first playable release** described in its Part 16: five complete scenarios, a working 3D ocean with controllable vessels, a global port map, contracts and economy, ship purchasing, port development, technology, diplomacy, missions, save/restore, and the encyclopedia. A player guide (`/guide`, also opened with `?` in the sailing view and from the `?` buttons on each screen) explains the core loop, controls, time scale, trade, fleet and ports.
 
 ## Scenarios
 
 | Scenario | Period | You play | Highlights |
 | --- | --- | --- | --- |
 | **Merchants of Siraf** | 850–900 CE, Abbasid Gulf | A fictional merchant house at Siraf | 11 period ports (Siraf, Basra, Suhar, Aden, Kollam, Mantai, Kalah, Khanfu…), sewn-plank ships, monsoon winds and provisions, the Zanj revolt and the 879 sack of Guangzhou as dated events |
+| **Sultans of Kilwa** | 1330–1380 CE, Swahili coast | A fictional merchant house at Kilwa | 9 ports from Sofala to Hormuz and Cambay, sewn ships and the mtepe, Sofala gold for Indian cloth, Ibn Battuta's visit, the Gujarat revolts and the Black Death at Aden as dated events |
+| **Galleys of Venice** | 1423–1463 CE, Republic of Venice | A fictional patrician house at Venice | 12 ports from Sluys to Alexandria, round ships and state-auctioned great galleys, Mediterranean winds, Thessalonica, Barsbay's pepper monopoly and the fall of Constantinople; campaign ends at the Ottoman war of 1463 |
 | **Emporium of the Straits** | 1460–1511 CE, Melaka Sultanate | A fictional trading house at Melaka | 15 ports from Cambay to Banda, jong and hybrid junks, Ming tribute access, campaign ends at the Portuguese capture of 1511 |
 | **Modern Shipping Empire** | 2024, open-ended | A fictional container line at Port Klang | 20 real container ports, feeder to ULCV classes, fuel, terminal fees, the Port Klang → Singapore tutorial |
 
@@ -113,7 +115,7 @@ src/persistence   Storage adapters: localStorage (default) + optional Supabase m
 src/components    UI primitives, game screens, the d3-geo world map, the R3F sailing scene and HUD
 src/app           Next.js routes: menu, new game, /play/* screens, /encyclopedia/*
 supabase          Optional database schema with RLS
-tests             Vitest suites (44 tests)
+tests             Vitest suites (72 tests)
 docs              Master design prompt and research notes
 ```
 
@@ -130,8 +132,8 @@ Quality presets (low / medium / high) control device pixel ratio, shadows and oc
 
 ## Verification
 
-`npm run check` (typecheck, lint, 44 unit/integration tests, production build) passes. The production build was also driven end to end in headless Chromium with Playwright: new game → accept the Port Klang→Singapore contract → depart → autopilot voyage at accelerated time → automatic docking, payment and voyage report → save restored after reload, plus the Siraf and Melaka sailing scenes, diplomacy, history and encyclopedia pages.
+`npm run check` (typecheck, lint, 72 unit/integration tests, production build) passes. The production build was also driven end to end in headless Chromium with Playwright: new game → accept the Port Klang→Singapore contract → depart → autopilot voyage at accelerated time → automatic docking, payment and voyage report → save restored after reload, plus the Siraf, Kilwa, Venice and Melaka sailing scenes, diplomacy, history and encyclopedia pages.
 
 ## Status and limitations
 
-This is the first vertical slice. Not yet implemented from the master brief: additional civilizations beyond the two campaigns. AI trading powers, the population and prosperity indicators and the optional AI history assistant are in place. Supabase sync and email sign-in run against a live project in production. Sign-in emails use Supabase's built-in mailer, which is limited to a few per hour until custom SMTP is configured (see "Accounts and cross-device saves"). The bibliography has been checked against catalogues and reviews, and the remaining open questions in `docs/RESEARCH_NOTES.md` (Kalah's site, Daybul's identification, Aden in 850) are open in the scholarship itself, and rendering has only been checked on a software renderer and one laptop GPU, with no frame-rate benchmarks.
+This is the first vertical slice. Four historical campaigns cover four civilization families from the brief (Abbasid-era Gulf trade, the Swahili city-states, Venetian commerce and the Melaka Sultanate); the other families it lists (Srivijaya, Chola, Song China, Portuguese, Dutch and the rest) are present only as polities and ports inside these campaigns, not as playable campaigns of their own. AI trading powers, the population and prosperity indicators and the optional AI history assistant are in place. Supabase sync and email sign-in run against a live project in production. Sign-in emails use Supabase's built-in mailer, which is limited to a few per hour until custom SMTP is configured (see "Accounts and cross-device saves"). The bibliography has been checked against catalogues and reviews, and the remaining open questions in `docs/RESEARCH_NOTES.md` (Kalah's site, Daybul's identification, Aden in 850, the Kilwa regnal dates, the fourteenth-century harbour of Zanzibar) are open in the scholarship itself, and rendering has only been checked on a software renderer and one laptop GPU, with no frame-rate benchmarks.

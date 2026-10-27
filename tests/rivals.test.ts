@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { getCatalog } from "@/data";
+import { ALL_SCENARIOS, getCatalog } from "@/data";
 import { createNewGame, ensureContracts, tickGame } from "@/engine/game";
 import { canPerformRivalAction, isRivalAssigned, marketShare, performRivalAction, reactToEvent, rivalCanCall, rivalFeeMultiplier, rivalRelation } from "@/engine/rivals";
 import { acceptContract, departShip, setDestination } from "@/engine/game";
@@ -24,7 +24,7 @@ function advance(state: GameState, simSeconds: number, step = 1800): GameState {
 
 describe("rival trading powers", () => {
   it("start every scenario with fleets at their home ports", () => {
-    for (const scenario of ["modern_shipping_2024", "siraf_850", "melaka_1460"]) {
+    for (const scenario of ALL_SCENARIOS.map((s) => s.id)) {
       const state = newGame(scenario);
       const catalog = getCatalog(scenario);
       expect(Object.keys(state.rivals)).toHaveLength(catalog.scenario.rivals.length);

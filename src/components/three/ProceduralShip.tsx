@@ -36,6 +36,10 @@ export function ProceduralShip({ model, length, sailYaw = 0, sailSet = 1, accent
       return <Lancaran length={length} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />;
     case "junk":
       return <Junk length={length} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />;
+    case "galley":
+      return <Galley length={length} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />;
+    case "cog":
+      return <Cog length={length} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />;
   }
 }
 
@@ -501,6 +505,152 @@ function BattenedRig({ z, mastHeight, width, sailYaw, sailSet, accent }: { z: nu
           ))}
         <mesh position={[0, mastHeight * 1.02, 0]}>
           <boxGeometry args={[0.05, 0.5, 2]} />
+          <meshStandardMaterial color={accent} side={THREE.DoubleSide} />
+        </mesh>
+      </group>
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Fifteenth-century Venetian great galley: long, low hull, oar banks along both sides, two lateen masts and a stern cabin.
+
+function Galley({ length, sailYaw, sailSet, accent }: { length: number; sailYaw: number; sailSet: number; accent: string }) {
+  const beam = length / 7;
+  const height = length / 18;
+  const draft = height * 0.6;
+  const hull = useMemo(() => hullGeometry(length, beam, height, 0.22, 0.12, true), [length, beam, height]);
+  // Oars: one bank per side over the middle 60% of the hull, angled down into the water.
+  const oars = useMemo(() => {
+    const count = Math.max(8, Math.round(length / 2.6));
+    const out: Array<{ z: number; side: number }> = [];
+    for (let i = 0; i < count; i++) {
+      const z = -length * 0.3 + (i / (count - 1)) * length * 0.6;
+      out.push({ z, side: 1 }, { z, side: -1 });
+    }
+    return out;
+  }, [length]);
+  const oarLength = beam * 1.9;
+  return (
+    <group>
+      <mesh geometry={hull} material={materials.wood} position={[0, -draft, 0]} castShadow receiveShadow />
+      {/* outrigger frame carrying the oar benches */}
+      <mesh position={[0, height * 0.55, -length * 0.02]} receiveShadow>
+        <boxGeometry args={[beam * 1.35, 0.25, length * 0.66]} />
+        <primitive object={materials.woodLight} attach="material" />
+      </mesh>
+      {/* central gangway */}
+      <mesh position={[0, height * 0.75, -length * 0.02]}>
+        <boxGeometry args={[beam * 0.22, 0.2, length * 0.66]} />
+        <primitive object={materials.woodDark} attach="material" />
+      </mesh>
+      {/* stern cabin and poop */}
+      <mesh position={[0, height * 0.95, length * 0.36]} castShadow>
+        <boxGeometry args={[beam * 0.9, height * 0.8, length * 0.16]} />
+        <primitive object={materials.woodLight} attach="material" />
+      </mesh>
+      <mesh position={[0, height * 1.4, length * 0.36]} castShadow>
+        <boxGeometry args={[beam * 1.0, 0.2, length * 0.18]} />
+        <primitive object={materials.woodDark} attach="material" />
+      </mesh>
+      {/* raised fighting platform at the bow */}
+      <mesh position={[0, height * 0.8, -length * 0.4]} castShadow>
+        <boxGeometry args={[beam * 0.8, height * 0.4, length * 0.1]} />
+        <primitive object={materials.wood} attach="material" />
+      </mesh>
+      {/* spur */}
+      <mesh position={[0, height * 0.35, -length * 0.55]} rotation={[Math.PI / 2, 0, 0]}>
+        <cylinderGeometry args={[0.12, 0.25, length * 0.14, 6]} />
+        <primitive object={materials.woodDark} attach="material" />
+      </mesh>
+      {oars.map((o, i) => (
+        <mesh key={i} position={[o.side * (beam * 0.68 + Math.cos(0.42) * oarLength * 0.5), height * 0.55 - Math.sin(0.42) * oarLength * 0.5, o.z]} rotation={[0, 0, o.side * 0.42]}>
+          <boxGeometry args={[oarLength, 0.07, 0.1]} />
+          <primitive object={materials.woodLight} attach="material" />
+        </mesh>
+      ))}
+      <LateenRig z={-length * 0.1} mastHeight={length * 0.5} yardLength={length * 0.62} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />
+      <LateenRig z={length * 0.2} mastHeight={length * 0.36} yardLength={length * 0.42} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Round ship (cocha / nave): high-sided hull, stern castle, straight stem and a single square sail.
+
+function Cog({ length, sailYaw, sailSet, accent }: { length: number; sailYaw: number; sailSet: number; accent: string }) {
+  const beam = length / 3.2;
+  const height = length / 5.5;
+  const draft = height * 0.45;
+  const hull = useMemo(() => hullGeometry(length, beam, height, 0.2, 0.18, true), [length, beam, height]);
+  return (
+    <group>
+      <mesh geometry={hull} material={materials.woodDark} position={[0, -draft, 0]} castShadow receiveShadow />
+      {/* clinker strakes */}
+      {[0.3, 0.5, 0.7, 0.9].map((f) => (
+        <mesh key={f} position={[0, -draft + height * f, 0]}>
+          <boxGeometry args={[beam * 1.02, 0.1, length * 0.7]} />
+          <primitive object={materials.wood} attach="material" />
+        </mesh>
+      ))}
+      <mesh position={[0, height * 0.56, 0]} receiveShadow>
+        <boxGeometry args={[beam * 0.9, 0.3, length * 0.7]} />
+        <primitive object={materials.woodLight} attach="material" />
+      </mesh>
+      {/* stern castle */}
+      <mesh position={[0, height * 1.0, length * 0.34]} castShadow>
+        <boxGeometry args={[beam * 0.95, height * 0.9, length * 0.2]} />
+        <primitive object={materials.woodLight} attach="material" />
+      </mesh>
+      <mesh position={[0, height * 1.5, length * 0.34]} castShadow>
+        <boxGeometry args={[beam * 1.05, 0.25, length * 0.24]} />
+        <primitive object={materials.woodDark} attach="material" />
+      </mesh>
+      {/* small forecastle */}
+      <mesh position={[0, height * 0.85, -length * 0.36]} castShadow>
+        <boxGeometry args={[beam * 0.7, height * 0.5, length * 0.12]} />
+        <primitive object={materials.wood} attach="material" />
+      </mesh>
+      {/* stern rudder */}
+      <mesh position={[0, -draft * 0.3, length * 0.51]}>
+        <boxGeometry args={[0.35, height * 1.6, 1.2]} />
+        <primitive object={materials.woodDark} attach="material" />
+      </mesh>
+      <SquareRig z={-length * 0.05} mastHeight={length * 0.95} width={beam * 2.1} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />
+    </group>
+  );
+}
+
+/** Single square sail on a horizontal yard, braced round by sailYaw. */
+function SquareRig({ z, mastHeight, width, sailYaw, sailSet, accent }: { z: number; mastHeight: number; width: number; sailYaw: number; sailSet: number; accent: string }) {
+  const sail = useMemo(() => {
+    const top = mastHeight * 0.82;
+    const bottom = mastHeight * 0.3;
+    const topL = new THREE.Vector3(-width / 2, top, 0.3);
+    const topR = new THREE.Vector3(width / 2, top, 0.3);
+    const botL = new THREE.Vector3(-width / 2 + width * 0.05, bottom, 0.3);
+    const botR = new THREE.Vector3(width / 2 - width * 0.05, bottom, 0.3);
+    return sailGeometry(topL, topR, botL, botR, 1.8 * sailSet, 10);
+  }, [mastHeight, width, sailSet]);
+  return (
+    <group position={[0, 0, z]}>
+      <mesh position={[0, mastHeight / 2, 0]} castShadow>
+        <cylinderGeometry args={[0.2, 0.35, mastHeight, 8]} />
+        <primitive object={materials.mast} attach="material" />
+      </mesh>
+      {/* top castle */}
+      <mesh position={[0, mastHeight * 0.9, 0]}>
+        <cylinderGeometry args={[0.7, 0.55, 0.8, 8]} />
+        <primitive object={materials.woodDark} attach="material" />
+      </mesh>
+      <group rotation={[0, (sailYaw * Math.PI) / 180, 0]}>
+        <mesh position={[0, mastHeight * 0.82, 0.3]} rotation={[0, 0, Math.PI / 2]} castShadow>
+          <cylinderGeometry args={[0.12, 0.12, width, 6]} />
+          <primitive object={materials.mast} attach="material" />
+        </mesh>
+        <mesh geometry={sail} material={materials.sail} scale={[1, sailSet > 0.05 ? 1 : 0.02, 1]} castShadow />
+        <mesh position={[0, mastHeight * 1.02, 0]}>
+          <boxGeometry args={[0.05, 0.6, 2.2]} />
           <meshStandardMaterial color={accent} side={THREE.DoubleSide} />
         </mesh>
       </group>
