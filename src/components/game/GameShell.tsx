@@ -94,7 +94,7 @@ export function GameShell({ children }: { children: ReactNode }) {
       {!isSail && <TopBar onMenu={() => setNavOpen((v) => !v)} />}
       <div className={cn("flex flex-1", isSail ? "min-h-0" : "")}>
         {!isSail && (
-          <aside className={cn("fixed inset-y-0 left-0 z-40 w-56 shrink-0 border-r border-white/5 bg-navy-950/95 pt-16 transition-transform md:static md:translate-x-0 md:bg-transparent md:pt-0", navOpen ? "translate-x-0" : "-translate-x-full")}>
+          <aside className={cn("fixed inset-y-0 left-0 z-30 w-56 shrink-0 border-r border-white/5 bg-navy-950/95 pt-14 transition-transform md:sticky md:top-14 md:h-[calc(100vh-3.5rem)] md:translate-x-0 md:self-start md:overflow-y-auto md:bg-transparent md:pt-0", navOpen ? "translate-x-0" : "-translate-x-full")}>
             <nav className="flex flex-col gap-0.5 p-3" aria-label="Game navigation">
               {nav.map((item) => {
                 const active = pathname === item.href || pathname.startsWith(item.href + "/");
@@ -143,8 +143,8 @@ function TopBar({ onMenu }: { onMenu: () => void }) {
   const sailing = Object.values(state.ships).filter((s) => s.status !== "docked").length;
 
   return (
-    <header className="sticky top-0 z-40 border-b border-white/5 bg-navy-950/85 backdrop-blur">
-      <div className="flex items-center gap-3 px-3 py-2 md:px-5">
+    <header className="sticky top-0 z-40 border-b border-white/5 bg-navy-950/95 backdrop-blur">
+      <div className="flex h-14 items-center gap-3 px-3 md:px-5">
         <button className="rounded-md p-1.5 text-foam/70 hover:bg-white/10 md:hidden" onClick={onMenu} aria-label="Toggle navigation">
           <Menu size={18} />
         </button>
