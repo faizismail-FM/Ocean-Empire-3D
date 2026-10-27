@@ -78,6 +78,14 @@ export const PortStateSchema = z.object({
   /** Scenario-event or diplomacy driven fee multiplier. */
   fee_multiplier: z.number(),
   influence: z.number().min(0).max(100),
+  /** Population in thousands (abstract). Zero means "not yet seeded" for older saves. */
+  population: z.number().default(0),
+  /** Prosperity 0..100, pulled daily toward a target set by calls, trade, facilities and events. */
+  prosperity: z.number().default(0),
+  /** Public order 0..100. */
+  order: z.number().default(70),
+  /** Rival port calls already counted toward prosperity. */
+  rival_calls_snapshot: z.number().default(0),
 });
 export type PortState = z.infer<typeof PortStateSchema>;
 

@@ -44,7 +44,10 @@ export function PortsScreen() {
                 {grouped[group].map((p) => (
                   <button key={p.id} onClick={() => setPortId(p.id)} className={cn("flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-sm hover:bg-white/5", portId === p.id && "bg-cyan-400/15 text-cyan-300")}>
                     <span className="truncate">{p.name}</span>
-                    <span className="text-xs text-foam/40">{Object.values(state.ports[p.id]?.infrastructure ?? {}).reduce((a, b) => a + b, 0)}</span>
+                    <span className="flex items-center gap-1.5 text-xs text-foam/40">
+                      {(state.ports[p.id]?.population ?? 0) > 0 && <span className={cn("h-1.5 w-1.5 rounded-full", (state.ports[p.id]?.prosperity ?? 0) >= 55 ? "bg-emerald-300" : (state.ports[p.id]?.prosperity ?? 0) >= 40 ? "bg-cyan-300" : "bg-coral-400")} title={`Prosperity ${Math.round(state.ports[p.id]?.prosperity ?? 0)}`} />}
+                      {Object.values(state.ports[p.id]?.infrastructure ?? {}).reduce((a, b) => a + b, 0)}
+                    </span>
                   </button>
                 ))}
               </div>

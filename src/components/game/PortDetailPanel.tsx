@@ -7,11 +7,12 @@ import { getInfrastructureDefinition } from "@/data/infrastructure";
 import { getCivilization } from "@/data";
 import { portFee } from "@/engine/portdev";
 import { marketShare, rivalDefinition, rivalFeeMultiplier } from "@/engine/rivals";
+import { orderFeeMultiplier, orderLabel, prosperityLabel, workforce } from "@/engine/demographics";
 import { computeModifiers } from "@/engine/modifiers";
 import { formatCoordinate } from "@/engine/geo";
 import { formatMoneyExact } from "@/lib/utils";
 import { useGameStore } from "@/store/game-store";
-import { Badge, Button, EvidenceBadge, KeyValue } from "@/components/ui";
+import { Badge, Button, EvidenceBadge, KeyValue, ProgressBar, SimulatedBadge } from "@/components/ui";
 
 /** Port information and actions, shared by the World map and the Ports screen. */
 export function PortDetailPanel({ portId, onClose, compact = false }: { portId: string; onClose?: () => void; compact?: boolean }) {
@@ -28,7 +29,7 @@ export function PortDetailPanel({ portId, onClose, compact = false }: { portId: 
   const active = state.active_ship_id ? state.ships[state.active_ship_id] : null;
   const activeClass = active ? catalog.ships.find((c) => c.id === active.class_id) : null;
   const mods = computeModifiers(catalog, state);
-  const fee = activeClass ? portFee(catalog, state, portId, activeClass.cargo_capacity, mods.port_fee_multiplier * rivalFeeMultiplier(catalog, state, portId)) : null;
+  const fee = activeClass ? portFee(catalog, state, portId, activeClass.cargo_capacity, mods.port_fee_multiplier * rivalFeeMultiplier(catalog, state, portId) * orderFeeMultiplier(ps)) : null;
   const competition = marketShare(state, portId).filter((m) => m.calls > 0);
   const offers = Object.values(state.contracts).filter((c) => c.status === "available" && c.origin_port_id === portId);
   const shipsHere = Object.values(state.ships).filter((s) => s.docked_port_id === portId);
@@ -64,6 +65,31 @@ export function PortDetailPanel({ portId, onClose, compact = false }: { portId: 
           ["Your ships here", shipsHere.length > 0 ? shipsHere.map((s) => s.name).join(", ") : "none"],
         ]}
       />
+
+      {ps.population > 0 && (
+        <div className="mt-3 rounded-lg bg-white/5 p-3">
+          <div className="flex items-center justify-between">
+            <span className="label-caps">People and prosperity</span>
+            <SimulatedBadge />
+          </div>
+          <div className="mt-2 grid gap-3 sm:grid-cols-2">
+            <div>
+              <div className="flex justify-between text-xs"><span className="text-foam/60">Prosperity</span><span className="font-mono text-foam">{Math.round(ps.prosperity)} · {prosperityLabel(ps.prosperity)}</span></div>
+              <ProgressBar value={ps.prosperity} max={100} tone={ps.prosperity >= 55 ? "green" : ps.prosperity >= 40 ? "cyan" : "coral"} className="mt-1" />
+            </div>
+            <div>
+              <div className="flex justify-between text-xs"><span className="text-foam/60">Public order</span><span className="font-mono text-foam">{Math.round(ps.order)} · {orderLabel(ps.order)}</span></div>
+              <ProgressBar value={ps.order} max={100} tone={ps.order >= 70 ? "green" : ps.order >= 45 ? "gold" : "coral"} className="mt-1" />
+            </div>
+          </div>
+          <div className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-foam/65">
+            <span>Population about {ps.population >= 10 ? Math.round(ps.population) : ps.population.toFixed(1)}k</span>
+            <span>Workforce {workforce(ps) >= 10 ? Math.round(workforce(ps)) : workforce(ps).toFixed(1)}k</span>
+            {orderFeeMultiplier(ps) > 1 && <span className="text-coral-400/80">Disorder adds {Math.round((orderFeeMultiplier(ps) - 1) * 100)}% to port charges</span>}
+          </div>
+          <p className="mt-1 text-[0.68rem] text-foam/45">Ship calls, market turnover and facilities raise prosperity; closures and unrest lower it. Prosperity sizes the market and the contract board.</p>
+        </div>
+      )}
 
       <div className="mt-3 grid gap-3 sm:grid-cols-2">
         <div>

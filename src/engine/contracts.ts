@@ -41,7 +41,9 @@ export function generateContractsForPort(ctx: ContractContext, origin: PortRecor
   const originState = state.ports[origin.id];
   const infra = originState?.infrastructure ?? {};
   const baseCount = { minor: 2, regional: 3, major: 4, hub: 5 }[origin.size];
-  const count = baseCount + ctx.extra_contracts + (infra.warehouse ?? 0) + (infra.commercial_district ?? 0);
+  // A prosperous port has more cargo looking for ships; a declining one less.
+  const prosperityExtra = originState && originState.population > 0 ? Math.floor(originState.prosperity / 40) - 1 : 0;
+  const count = Math.max(1, baseCount + ctx.extra_contracts + (infra.warehouse ?? 0) + (infra.commercial_district ?? 0) + prosperityExtra);
 
   const supplies = origin.supplies.map((id) => catalog.goodMap.get(id)).filter((g): g is TradeGood => !!g);
   if (supplies.length === 0) return [];

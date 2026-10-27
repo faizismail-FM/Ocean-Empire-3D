@@ -13,6 +13,7 @@ import { Badge, Panel, ProgressBar, SimulatedBadge, Stat } from "@/components/ui
 import { EmblemIcon } from "@/components/game/NewGameWizard";
 import { HelpTip } from "@/components/game/Guide";
 import { isRivalAssigned } from "@/engine/rivals";
+import { orderLabel, prosperityLabel, workforce } from "@/engine/demographics";
 
 export default function EmpirePage() {
   const state = useGameStore((s) => s.state)!;
@@ -31,7 +32,10 @@ export default function EmpirePage() {
   const nextObjective = objectives.find((x) => x.s?.status !== "completed");
   const isHistorical = catalog.scenario.mode === "historical";
   const influence = Math.round(Object.values(state.ports).reduce((sum, p) => sum + p.influence, 0) / Math.max(1, Object.keys(state.ports).length));
-  const stability = Math.round(Math.min(100, 50 + (state.treasury > 0 ? 20 : -20) + (ledger30.income >= ledger30.expenses ? 15 : -10) + Math.min(15, state.stats.contracts_completed)));
+  const home = state.ports[state.empire.home_port_id];
+  const homeProsperity = home && home.population > 0 ? home.prosperity : 50;
+  const homeOrder = home && home.population > 0 ? home.order : 70;
+  const stability = Math.round(Math.max(0, Math.min(100, 40 + (state.treasury > 0 ? 15 : -20) + (ledger30.income >= ledger30.expenses ? 10 : -10) + Math.min(10, state.stats.contracts_completed) + (homeProsperity - 50) * 0.3 + (homeOrder - 70) * 0.2)));
 
   return (
     <div className="space-y-4">
@@ -75,13 +79,24 @@ export default function EmpirePage() {
           </div>
         </Panel>
 
-        <Panel title={isHistorical ? "Standing" : "Company health"} subtitle="A few meaningful indicators rather than a population model.">
+        <Panel title={isHistorical ? "Standing" : "Company health"} subtitle="A few meaningful indicators: solvency, cash flow, deliveries and the home port's people.">
           <div className="space-y-3 text-sm">
             <div>
               <div className="flex justify-between"><span>Stability</span><span className="font-mono">{stability}</span></div>
               <ProgressBar value={stability} max={100} tone={stability > 60 ? "green" : stability > 35 ? "gold" : "coral"} className="mt-1" />
-              <div className="mt-1 text-xs text-foam/50">Derived from solvency, cash flow and deliveries. <SimulatedBadge className="ml-1" /></div>
+              <div className="mt-1 text-xs text-foam/50">Derived from solvency, cash flow, deliveries and the home port&apos;s prosperity and order. <SimulatedBadge className="ml-1" /></div>
             </div>
+            {home && home.population > 0 && (
+              <div className="rounded-lg bg-white/5 p-2.5">
+                <div className="label-caps">{catalog.portMap.get(state.empire.home_port_id)?.name ?? "Home port"}</div>
+                <div className="mt-1.5 grid grid-cols-2 gap-x-3 gap-y-1 text-xs">
+                  <span className="text-foam/60">Population</span><span className="text-right font-mono text-foam">{home.population >= 10 ? Math.round(home.population) : home.population.toFixed(1)}k</span>
+                  <span className="text-foam/60">Prosperity</span><span className="text-right font-mono text-foam">{Math.round(home.prosperity)} · {prosperityLabel(home.prosperity)}</span>
+                  <span className="text-foam/60">Public order</span><span className="text-right font-mono text-foam">{Math.round(home.order)} · {orderLabel(home.order)}</span>
+                  <span className="text-foam/60">Workforce</span><span className="text-right font-mono text-foam">{workforce(home) >= 10 ? Math.round(workforce(home)) : workforce(home).toFixed(1)}k</span>
+                </div>
+              </div>
+            )}
             <Row label="Technology" value={`${state.technologies.length} / ${catalog.technologies.length} acquired`} />
             {catalog.scenario.features.diplomacy && (
               <Row label="Diplomacy" value={`${Object.values(state.diplomacy).filter((d) => d.agreements.includes("trade_agreement")).length} trade agreements · ${Object.values(state.diplomacy).filter((d) => d.agreements.includes("port_access")).length} access grants`} />

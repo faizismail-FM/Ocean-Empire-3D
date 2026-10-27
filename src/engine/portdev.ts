@@ -1,6 +1,7 @@
 import type { ScenarioCatalog } from "@/data";
 import { getInfrastructureDefinition } from "@/data/infrastructure";
 import type { PortInfrastructureKind } from "@/data/schemas";
+import { prosperityFactor, workforceSupports } from "./demographics";
 import type { GameState } from "./state";
 
 /**
@@ -44,6 +45,7 @@ export function canDevelop(catalog: ScenarioCatalog, state: GameState, portId: s
       next_level: next,
     };
   }
+  if (!workforceSupports(portState, next)) return { ok: false, reason: "The port is not prosperous enough to staff this (prosperity 40 needed).", cost, next_level: next };
   if (state.treasury < cost) return { ok: false, reason: "Insufficient treasury.", cost, next_level: next };
   return { ok: true, cost, next_level: next };
 }
@@ -69,7 +71,9 @@ export function dailyAdministrationIncome(catalog: ScenarioCatalog, state: GameS
   const level = home.infrastructure.administration ?? 0;
   if (level === 0) return 0;
   const scale = economicScale(catalog);
-  return Math.round(scale * 0.02 * level * level);
+  // Duties follow the home port's prosperity: a thriving port pays more, a declining one less.
+  const prosperity = home.population > 0 ? prosperityFactor(home) : 1;
+  return Math.round(scale * 0.02 * level * level * prosperity);
 }
 
 export function repairCost(catalog: ScenarioCatalog, state: GameState, portId: string, purchaseCost: number, condition: number): number {
