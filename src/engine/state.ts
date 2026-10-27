@@ -214,6 +214,8 @@ export const RivalStateSchema = z.object({
   last_purchase_sim_seconds: z.number(),
   last_development_sim_seconds: z.number(),
   stats: z.object({ deliveries: z.number(), contracts_taken: z.number(), revenue: z.number() }),
+  /** How the rival answered historical events, newest first (defaulted for earlier saves). */
+  event_log: z.array(z.object({ event_id: z.string(), sim_seconds: z.number(), note: z.string() })).default([]),
 });
 export type RivalState = z.infer<typeof RivalStateSchema>;
 

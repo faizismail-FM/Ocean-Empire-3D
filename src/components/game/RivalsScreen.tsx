@@ -123,6 +123,19 @@ export function RivalsScreen() {
                 </div>
               )}
 
+              {rival.event_log.length > 0 && (
+                <div className="mt-3">
+                  <div className="label-caps mb-1">Response to events</div>
+                  <ul className="space-y-1 text-xs text-foam/75">
+                    {rival.event_log.slice(0, 3).map((e, i) => (
+                      <li key={`${e.event_id}-${i}`} className="rounded-md border border-gold-400/20 bg-gold-400/5 px-2 py-1">
+                        <span className="text-gold-300">{catalog.events.find((ev) => ev.id === e.event_id)?.title ?? e.event_id}:</span> {e.note.replace(`${def.name} `, "")}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+
               <p className="mt-3 text-xs text-foam/55">{def.note}</p>
 
               <div className="mt-3 space-y-1.5">

@@ -6,7 +6,7 @@ import { addSeconds, dateFromIso, SECONDS_PER_DAY, type GameDate } from "./calen
 import { buildTutorialContract, cargoCapacity, cargoUsed, generateContractsForPort, validateAccept, type ContractContext } from "./contracts";
 import { applyTransaction, canAfford, TransactionError } from "./economy";
 import { applyEvent, dueEvents } from "./events";
-import { createRivalStates, noteCompetition, rivalFeeMultiplier, tickRivals, rivalDefinition } from "./rivals";
+import { createRivalStates, noteCompetition, reactToEvent, rivalFeeMultiplier, tickRivals, rivalDefinition } from "./rivals";
 import { distanceNm, type GeoPoint } from "./geo";
 import { marketPrice, marketStock } from "./market";
 import { computeModifiers, type Modifiers } from "./modifiers";
@@ -870,6 +870,9 @@ export function tickGame(catalog: ScenarioCatalog, state: GameState, dtSim: numb
       } else {
         next = applyEvent(next, event);
         next = notify(next, "event", event.title, `${event.summary}${event.effects.length > 0 && event.effects[0]?.type !== "notice" ? " Simulated consequences now apply." : ""}`, "/play/history");
+        const reaction = reactToEvent(catalog, next, event);
+        next = reaction.state;
+        if (reaction.notes.length > 0) next = notify(next, "info", `Rivals respond to ${event.title.toLowerCase()}`, reaction.notes.join(" "), "/play/rivals");
       }
       events.push({ type: "historical_event", event });
       if (next.campaign.status !== "active") events.push({ type: "campaign_ended", status: next.campaign.status });

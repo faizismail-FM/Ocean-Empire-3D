@@ -1,12 +1,13 @@
 import type { ScenarioCatalog } from "@/data";
-import type { PortRecord, RivalDefinition, VesselClass } from "@/data/schemas";
+import type { HistoricalEvent, PortRecord, RivalDefinition, VesselClass } from "@/data/schemas";
 import { clamp } from "@/lib/utils";
 import { buildContract, type ContractContext } from "./contracts";
 import { applyTransaction, TransactionError } from "./economy";
 import { distanceNm, initialBearing, interpolate, type GeoPoint } from "./geo";
+import { computeModifiers } from "./modifiers";
 import { infrastructureCost } from "./portdev";
 import { createRandom } from "./rng";
-import { planRoute } from "./routing";
+import { planRoute, planRouteFromPosition } from "./routing";
 import { cruiseSpeed, estimateEndurance } from "./ship";
 import type { Contract, GameState, RivalShip, RivalState } from "./state";
 
@@ -66,10 +67,17 @@ function requireClass(catalog: ScenarioCatalog, id: string): VesselClass {
   return cls;
 }
 
-/** Whether a rival's ships may call at a port: its own polity's ports, or ports open to all. */
-export function rivalCanCall(def: RivalDefinition, port: PortRecord): boolean {
+/**
+ * Whether a rival's ships may call at a port: its own polity's ports, or ports open to all.
+ * The live port state wins over the reference data, so a port closed by a historical
+ * event (a sack, a maritime ban) is closed to rivals as well.
+ */
+export function rivalCanCall(def: RivalDefinition, port: PortRecord, state?: GameState): boolean {
+  const live = state?.ports[port.id]?.access;
+  if (live === "closed") return false;
   if (port.id === def.home_port_id) return true;
   if (def.polity_id && port.polity_id === def.polity_id) return true;
+  if (live === "restricted") return false;
   return port.default_access === "open" || port.default_access === "agreement";
 }
 
@@ -135,6 +143,7 @@ export function createRivalStates(catalog: ScenarioCatalog, seed: number, simSec
       last_purchase_sim_seconds: simSeconds,
       last_development_sim_seconds: simSeconds,
       stats: { deliveries: 0, contracts_taken: 0, revenue: 0 },
+      event_log: [],
     };
   }
   return rivals;
@@ -147,14 +156,15 @@ function ownAccountValue(catalog: ScenarioCatalog, state: GameState, cls: Vessel
   const supplies = origin.supplies.map((id) => catalog.goodMap.get(id)).filter((g): g is NonNullable<typeof g> => !!g);
   if (supplies.length === 0) return 0;
   const good = supplies.find((g) => destination.demands.includes(g.id)) ?? supplies[0]!;
-  const ctx: ContractContext = { catalog, state, fleet_capacity: cls.cargo_capacity, payment_multiplier: 1, extra_contracts: 0, event_price_mods: {}, year: state.date.year };
+  const ctx: ContractContext = { catalog, state, fleet_capacity: cls.cargo_capacity, payment_multiplier: 1, extra_contracts: 0, event_price_mods: computeModifiers(catalog, state).event_price_mods, year: state.date.year };
   const c = buildContract(ctx, origin, destination, good, 0.7, 1, "rival_tmp", null, false);
   return c ? c.payment : 0;
 }
 
-function voyageExpenses(catalog: ScenarioCatalog, cls: VesselClass, distanceNmTotal: number, destination: PortRecord): number {
+function voyageExpenses(catalog: ScenarioCatalog, state: GameState, cls: VesselClass, distanceNmTotal: number, destination: PortRecord): number {
   const fuel = estimateEndurance(cls, distanceNmTotal) * catalog.scenario.fuel_price_per_unit;
-  const fees = catalog.scenario.base_port_fee * destination.fee_modifier * Math.max(0.5, cls.cargo_capacity / Math.max(1, Math.min(...catalog.ships.map((s) => s.cargo_capacity))));
+  const eventFees = state.ports[destination.id]?.fee_multiplier ?? 1;
+  const fees = catalog.scenario.base_port_fee * destination.fee_modifier * eventFees * Math.max(0.5, cls.cargo_capacity / Math.max(1, Math.min(...catalog.ships.map((s) => s.cargo_capacity))));
   return Math.round(fuel + fees);
 }
 
@@ -178,7 +188,7 @@ function decide(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition
     const candidates = Object.values(contracts).filter((c) => {
       if (c.status !== "available" || c.mission || c.origin_port_id !== here.id) return false;
       const dest = catalog.portMap.get(c.destination_port_id);
-      if (!dest || !rivalCanCall(def, dest)) return false;
+      if (!dest || !rivalCanCall(def, dest, state)) return false;
       const good = catalog.goodMap.get(c.good_id);
       return c.quantity * (good?.cargo_space ?? 1) <= cls.cargo_capacity;
     });
@@ -199,14 +209,21 @@ function decide(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition
   // 2. Own-account trading to a port that wants what this one supplies.
   const range = (catalog.scenario.mode === "modern" ? 3200 : 1500) * p.range_factor;
   const home = catalog.portMap.get(def.home_port_id);
+  const priceMods = computeModifiers(catalog, state).event_price_mods;
   const pool = catalog.ports
-    .filter((port) => port.id !== here.id && rivalCanCall(def, port))
+    .filter((port) => port.id !== here.id && rivalCanCall(def, port, state))
     .map((port) => {
       const d = distanceNm({ lat: here.latitude, lon: here.longitude }, { lat: port.latitude, lon: port.longitude });
       let weight = d <= range ? 1 : 0.08;
       if (here.supplies.some((g) => port.demands.includes(g))) weight *= 3;
       if (port.id === def.home_port_id) weight *= def.personality === "cautious" ? 2.5 : 1.3;
       if (port.size === "hub" || port.size === "major") weight *= 1.4;
+      // Historical events: steer away from ports whose fees an event has driven up, and
+      // toward ports supplying goods whose price an event has lifted.
+      const eventFees = state.ports[port.id]?.fee_multiplier ?? 1;
+      if (eventFees >= 1.5) weight *= 0.3;
+      const boom = Math.max(1, ...port.supplies.map((g) => priceMods[g] ?? 1));
+      if (boom > 1) weight *= 1 + (boom - 1) * 2;
       return { port, weight };
     })
     .filter((x) => x.weight > 0);
@@ -276,7 +293,7 @@ function arrive(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition
       delete contracts[ship.contract_id];
     }
   }
-  const expenses = voyageExpenses(catalog, cls, routeLength(ship.route), dest);
+  const expenses = voyageExpenses(catalog, state, cls, routeLength(ship.route), dest);
   const rng = createRandom(`${state.seed}:rivalturn:${def.id}:${ship.id}:${Math.floor(state.sim_seconds / HOUR)}`);
   const docked: RivalShip = {
     ...ship,
@@ -472,4 +489,103 @@ export function performRivalAction(catalog: ScenarioCatalog, state: GameState, r
     last_relation_action_sim_seconds: state.sim_seconds,
   };
   return { ...next, rivals: { ...next.rivals, [rivalId]: updated } };
+}
+
+function nearestCallablePort(catalog: ScenarioCatalog, state: GameState, def: RivalDefinition, from: GeoPoint, exclude: string): PortRecord | null {
+  let best: PortRecord | null = null;
+  let bestD = Infinity;
+  for (const port of catalog.ports) {
+    if (port.id === exclude || !rivalCanCall(def, port, state)) continue;
+    const d = distanceNm(from, { lat: port.latitude, lon: port.longitude });
+    if (d < bestD) {
+      bestD = d;
+      best = port;
+    }
+  }
+  return best;
+}
+
+function logReaction(rival: RivalState, eventId: string, simSeconds: number, note: string): RivalState {
+  return { ...rival, event_log: [{ event_id: eventId, sim_seconds: simSeconds, note }, ...rival.event_log].slice(0, 12) };
+}
+
+/**
+ * How rivals answer a historical event once its effects have been applied to the state.
+ * Reactions derive from the event's gameplay effects, so any event works:
+ *  - a port closed or restricted: ships bound there divert to the nearest port they may
+ *    still call at (dropping any contract), and a rival based there loses part of its
+ *    treasury to the disruption;
+ *  - a port whose fees an event raises: ships bound there with no contract turn back to
+ *    the nearest cheaper port, and a rival based there is squeezed;
+ *  - a good whose price an event lifts: rivals' route choices favour its suppliers
+ *    (applied in `decide`), noted here for the log;
+ *  - a relations change for a rival's own polity: the rival's standing with the player
+ *    moves half as far in the same direction.
+ * Returns the new state and one short note per rival that did something.
+ */
+export function reactToEvent(catalog: ScenarioCatalog, state: GameState, event: HistoricalEvent): { state: GameState; notes: string[] } {
+  const notes: string[] = [];
+  if (Object.keys(state.rivals).length === 0 || event.effects.length === 0) return { state, notes };
+  const contracts = { ...state.contracts };
+  const rivals: Record<string, RivalState> = {};
+  const year = state.date.year;
+
+  for (const def of catalog.scenario.rivals) {
+    let rival = state.rivals[def.id];
+    if (!rival) continue;
+    const parts: string[] = [];
+    let treasuryHit = 0;
+    const ships: Record<string, RivalShip> = { ...rival.ships };
+
+    for (const effect of event.effects) {
+      if (effect.type === "port_access" || effect.type === "port_fee_modifier") {
+        const port = catalog.portMap.get(effect.port_id);
+        if (!port) continue;
+        const closed = effect.type === "port_access" && !rivalCanCall(def, port, state);
+        const expensive = effect.type === "port_fee_modifier" && effect.multiplier >= 1.5;
+        if (!closed && !expensive) continue;
+        // Divert ships bound for the port.
+        let diverted = 0;
+        for (const ship of Object.values(ships)) {
+          if (ship.status !== "sailing" || ship.destination_port_id !== port.id) continue;
+          if (expensive && ship.contract_id) continue; // a paid contract is still worth delivering
+          const alt = nearestCallablePort(catalog, state, def, ship.position, port.id);
+          if (!alt) continue;
+          const planned = planRouteFromPosition(ship.position, alt, year);
+          const cls = requireClass(catalog, ship.class_id);
+          if (ship.contract_id && contracts[ship.contract_id]) delete contracts[ship.contract_id];
+          const route = planned ? planned.waypoints : [{ lat: ship.position.lat, lon: ship.position.lon }, { lat: alt.latitude, lon: alt.longitude, port_id: alt.id, label: alt.name }];
+          ships[ship.id] = { ...ship, route, waypoint_index: 1, leg_progress_nm: 0, destination_port_id: alt.id, contract_id: null, voyage_value: Math.round(ship.voyage_value * 0.5), speed_knots: cruiseSpeed(cls), heading: initialBearing(ship.position, route[1] as GeoPoint) };
+          diverted += 1;
+        }
+        if (diverted > 0) parts.push(`${diverted === 1 ? "diverts a ship" : `diverts ${diverted} ships`} from ${port.name}`);
+        // A rival based at the port is hit directly.
+        if (port.id === def.home_port_id) {
+          const share = closed ? 0.25 : 0.1;
+          treasuryHit += Math.round(Math.max(0, rival.treasury) * share);
+          parts.push(closed ? `loses trade with its home port of ${port.name} closed` : `pays dearly for its berths at ${port.name}`);
+        }
+      } else if (effect.type === "good_price_modifier" && effect.multiplier > 1) {
+        const good = catalog.goodMap.get(effect.good_id);
+        const suppliers = catalog.ports.filter((p) => p.supplies.includes(effect.good_id) && rivalCanCall(def, p, state));
+        if (good && suppliers.length > 0 && def.personality !== "cautious") parts.push(`sends ships after ${good.name.toLowerCase()} now that prices have risen`);
+      } else if (effect.type === "relation_change" && def.polity_id && effect.polity_id === def.polity_id) {
+        const delta = Math.round(effect.delta / 2);
+        if (delta !== 0) {
+          rival = { ...rival, relation: clamp(rival.relation + delta, 0, 100) };
+          parts.push(delta < 0 ? "grows cooler toward your house" : "warms toward your house");
+        }
+      }
+    }
+
+    rival = { ...rival, ships, treasury: Math.round(rival.treasury - treasuryHit) };
+    if (parts.length > 0) {
+      const note = `${def.name} ${parts.join(", ")}.`;
+      rival = logReaction(rival, event.id, state.sim_seconds, note);
+      notes.push(note);
+    }
+    rivals[def.id] = rival;
+  }
+  for (const [id, r] of Object.entries(state.rivals)) if (!rivals[id]) rivals[id] = r;
+  return { state: { ...state, rivals, contracts }, notes };
 }
