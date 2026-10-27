@@ -13,7 +13,7 @@ import { cn, formatMoney, formatMoneyExact, formatNumber } from "@/lib/utils";
 import { useGameStore } from "@/store/game-store";
 import { Badge, Button, EmptyState, Panel, SimulatedBadge, Tabs } from "@/components/ui";
 import { HelpTip } from "@/components/game/Guide";
-import { isRivalAssigned } from "@/engine/rivals";
+import { isRivalAssigned, rivalDefinition } from "@/engine/rivals";
 
 type Tab = "contracts" | "market" | "active";
 
@@ -145,6 +145,11 @@ export function ContractCard({ contract, shipId }: { contract: Contract; shipId:
         <div className="flex flex-col items-end gap-1">
           <Badge tone={contract.status === "available" ? "neutral" : contract.status === "in_transit" ? "cyan" : "gold"}>{contract.status.replace("_", " ")}</Badge>
           {contract.mission && <Badge tone="gold">first voyage</Badge>}
+          {contract.charterer_id && (
+            <Badge tone="purple" title="Posted by a rival trading power, which pays on delivery">
+              charter · {rivalDefinition(catalog, contract.charterer_id)?.name ?? "rival"}
+            </Badge>
+          )}
         </div>
       </div>
       <div className="mt-3 grid grid-cols-3 gap-2 text-xs">

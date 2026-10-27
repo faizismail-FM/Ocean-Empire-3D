@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { getCatalog } from "@/data";
 import { createNewGame, ensureContracts, tickGame } from "@/engine/game";
-import { canPerformRivalAction, isRivalAssigned, marketShare, performRivalAction, reactToEvent, rivalCanCall, rivalFeeMultiplier } from "@/engine/rivals";
+import { canPerformRivalAction, isRivalAssigned, marketShare, performRivalAction, reactToEvent, rivalCanCall, rivalFeeMultiplier, rivalRelation } from "@/engine/rivals";
+import { acceptContract, departShip, setDestination } from "@/engine/game";
 import { applyEvent } from "@/engine/events";
 import { parseState, serializeState } from "@/engine/save";
 import type { GameState } from "@/engine/state";
@@ -121,6 +122,54 @@ describe("rival trading powers", () => {
     const { state: after } = reactToEvent(catalog, applyEvent(state, reconquest), reconquest);
     expect(after.rivals["rival_suhar_merchants"]!.relation).toBe(40);
     expect(after.rivals["rival_basra_house"]!.relation).toBe(50);
+  });
+
+  it("post charters that other carriers and the player can take", () => {
+    const catalog = getCatalog("modern_shipping_2024");
+    const after = advance(newGame(), 45 * DAY);
+    const posted = Object.values(after.rivals).reduce((n, r) => n + r.stats.charters_posted, 0);
+    expect(posted).toBeGreaterThan(0);
+    const charters = Object.values(after.contracts).filter((c) => c.charterer_id);
+    for (const c of charters) {
+      expect(c.charterer_id).not.toBe(c.assigned_ship_id?.split(":")[1]); // never carried by its own poster
+      expect(catalog.scenario.rivals.some((r) => r.id === c.charterer_id)).toBe(true);
+    }
+  });
+
+  it("let the player carry a charter, paid by the rival with goodwill attached", () => {
+    const catalog = getCatalog("modern_shipping_2024");
+    let state = newGame();
+    const klang = catalog.portMap.get("port_klang")!;
+    const singapore = catalog.portMap.get("singapore")!;
+    // Hand-post a Meridian charter at Port Klang, as the engine would at its home port.
+    const good = catalog.goodMap.get(klang.supplies[0]!)!;
+    const base = Object.values(state.contracts).find((c) => c.mission)!;
+    const charter = { ...base, id: "ct_charter_test", mission: false, charterer_id: "rival_meridian", good_id: good.id, quantity: 100, destination_port_id: singapore.id, generation_key: null };
+    state = { ...state, contracts: { ...state.contracts, [charter.id]: charter } };
+    state = acceptContract(catalog, state, charter.id, "ship_1");
+    state = setDestination(catalog, state, "ship_1", singapore.id);
+    state = departShip(catalog, state, "ship_1");
+    const before = state.rivals["rival_meridian"]!;
+    const after = advance(state, 2 * DAY, 600);
+    const ship = after.ships["ship_1"]!;
+    expect(ship.status).toBe("docked");
+    const meridian = after.rivals["rival_meridian"]!;
+    expect(meridian.treasury).toBeLessThan(before.treasury);
+    expect(meridian.relation).toBeGreaterThan(before.relation);
+    expect(after.ledger.some((e) => e.description.includes("for Meridian Container Line"))).toBe(true);
+  });
+
+  it("form an alliance when two rivals' mutual standing is high", () => {
+    const catalog = getCatalog("modern_shipping_2024");
+    let state = newGame();
+    const a = state.rivals["rival_meridian"]!;
+    const b = state.rivals["rival_nordhav"]!;
+    state = { ...state, rivals: { ...state.rivals, rival_meridian: { ...a, relations: { rival_nordhav: 75 } }, rival_nordhav: { ...b, relations: { rival_meridian: 75 } } } };
+    const r = tickGame(catalog, { ...state, paused: false }, 600);
+    expect(r.state.rivals["rival_meridian"]!.allies).toContain("rival_nordhav");
+    expect(r.state.rivals["rival_nordhav"]!.allies).toContain("rival_meridian");
+    expect(r.events.some((e) => e.type === "rival_alliance" && e.formed)).toBe(true);
+    expect(rivalRelation(r.state, "rival_meridian", "rival_nordhav")).toBeGreaterThan(70);
   });
 
   it("load saves written before rivals existed", () => {

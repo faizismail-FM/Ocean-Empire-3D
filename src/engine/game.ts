@@ -31,7 +31,9 @@ export type GameEvent =
   | { type: "campaign_ended"; status: GameState["campaign"]["status"] }
   | { type: "endurance_empty"; ship_id: string }
   | { type: "rival_contract_taken"; rival_id: string; contract_id: string; port_id: string }
-  | { type: "rival_partnership_ended"; rival_id: string };
+  | { type: "rival_partnership_ended"; rival_id: string }
+  | { type: "rival_charter_posted"; rival_id: string; contract_id: string; port_id: string }
+  | { type: "rival_alliance"; rival_ids: [string, string]; formed: boolean };
 
 export interface NewGameOptions {
   scenario_id: string;
@@ -193,6 +195,10 @@ export function ensureContracts(catalog: ScenarioCatalog, state: GameState, port
   let hasCurrent = false;
   for (const [id, c] of Object.entries(state.contracts)) {
     if (c.status === "available" && c.origin_port_id === portId && !c.mission) {
+      if (c.charterer_id) {
+        contracts[id] = c; // rival charters live until their deadline
+        continue;
+      }
       if (c.generation_key === currentKey) {
         hasCurrent = true;
         contracts[id] = c;
@@ -402,7 +408,19 @@ export function dockShip(catalog: ScenarioCatalog, state: GameState, shipId: str
         bonuses += bonus;
         notes.push("Early delivery bonus of 5%.");
       }
-      next = applyTransaction(next, payment, "contract_payment", `Delivered ${contract.quantity} ${contract.good_id.replace(/^good_/, "")} to ${port.name}`, { ship_id: shipId, port_id: portId });
+      // A charter is paid by the rival that posted it; a partner pays a little extra.
+      const charterer = contract.charterer_id ? next.rivals[contract.charterer_id] : undefined;
+      const chartererName = contract.charterer_id ? rivalDefinition(catalog, contract.charterer_id)?.name ?? contract.charterer_id : null;
+      if (charterer) {
+        if (charterer.partnership) {
+          const extra = Math.round(contract.payment * 0.1);
+          payment += extra;
+          bonuses += extra;
+          notes.push(`Partner's charter: ${chartererName} pays 10% over the rate.`);
+        }
+        next = { ...next, rivals: { ...next.rivals, [charterer.id]: { ...charterer, treasury: charterer.treasury - payment, relation: clamp(charterer.relation + 3, 0, 100) } } };
+      }
+      next = applyTransaction(next, payment, "contract_payment", `Delivered ${contract.quantity} ${contract.good_id.replace(/^good_/, "")} to ${port.name}${chartererName ? ` for ${chartererName}` : ""}`, { ship_id: shipId, port_id: portId });
       revenue += payment;
       contracts[contract.id] = { ...contract, status: "completed", completed_sim_seconds: next.sim_seconds, paid: true };
       completedIds.push(contract.id);
@@ -815,8 +833,9 @@ export function tickGame(catalog: ScenarioCatalog, state: GameState, dtSim: numb
   const rivalTick = tickRivals(catalog, next, dtSim);
   next = rivalTick.state;
   for (const ev of rivalTick.events) {
-    const def = rivalDefinition(catalog, ev.rival_id);
-    const name = def?.name ?? ev.rival_id;
+    const primaryId = ev.type === "rival_alliance" ? ev.rival_ids[0] : ev.rival_id;
+    const def = rivalDefinition(catalog, primaryId);
+    const name = def?.name ?? primaryId;
     if (ev.type === "rival_contract_taken") {
       events.push({ type: "rival_contract_taken", rival_id: ev.rival_id, contract_id: ev.contract.id, port_id: ev.port_id });
       // Only worth a notification where the player is actually trading.
@@ -829,6 +848,18 @@ export function tickGame(catalog: ScenarioCatalog, state: GameState, dtSim: numb
     } else if (ev.type === "rival_partnership_ended") {
       events.push(ev);
       next = notify(next, "warning", `${name} ended the partnership`, "Relations fell too far for the agreement to hold. Courtesies can rebuild them.", "/play/rivals");
+    } else if (ev.type === "rival_charter_posted") {
+      events.push({ type: "rival_charter_posted", rival_id: ev.rival_id, contract_id: ev.contract.id, port_id: ev.port_id });
+      const playerHere = ev.port_id === next.empire.home_port_id || Object.values(next.ships).some((sh) => sh.docked_port_id === ev.port_id);
+      if (playerHere) {
+        const good = catalog.goodMap.get(ev.contract.good_id);
+        const dest = catalog.portMap.get(ev.contract.destination_port_id);
+        next = notify(next, "info", `${name} is chartering`, `${ev.contract.quantity} ${good?.name ?? ev.contract.good_id} from ${catalog.portMap.get(ev.port_id)?.name ?? ev.port_id} to ${dest?.name ?? ev.contract.destination_port_id}. Any carrier may take it, you included.`, "/play/trade");
+      }
+    } else if (ev.type === "rival_alliance") {
+      events.push(ev);
+      const other = rivalDefinition(catalog, ev.rival_ids[1])?.name ?? ev.rival_ids[1];
+      next = notify(next, "info", ev.formed ? "Rivals form an alliance" : "A rival alliance breaks up", ev.formed ? `${name} and ${other} now favour each other's cargo and stay out of each other's home ports.` : `${name} and ${other} have fallen out; their ports are contested again.`, "/play/rivals");
     }
   }
 
