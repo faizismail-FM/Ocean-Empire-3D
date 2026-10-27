@@ -1,7 +1,8 @@
 import { describe, expect, it } from "vitest";
 import { getCatalog } from "@/data";
 import { createNewGame, ensureContracts, tickGame } from "@/engine/game";
-import { canPerformRivalAction, isRivalAssigned, marketShare, performRivalAction, rivalFeeMultiplier } from "@/engine/rivals";
+import { canPerformRivalAction, isRivalAssigned, marketShare, performRivalAction, reactToEvent, rivalCanCall, rivalFeeMultiplier } from "@/engine/rivals";
+import { applyEvent } from "@/engine/events";
 import { parseState, serializeState } from "@/engine/save";
 import type { GameState } from "@/engine/state";
 
@@ -88,6 +89,38 @@ describe("rival trading powers", () => {
     expect(rows[0]!.rival_id).toBe("rival_meridian");
     expect(rows[0]!.share).toBe(1);
     expect(rivalFeeMultiplier(catalog, dominated, "singapore")).toBeCloseTo(1.1);
+  });
+
+  it("divert ships and take losses when an event closes a port", () => {
+    const catalog = getCatalog("siraf_850");
+    let state = newGame("siraf_850");
+    const sack = catalog.events.find((e) => e.id === "evt_basra_sacked_871")!;
+    const basra = catalog.portMap.get("port_basra")!;
+    // Put a Suhar ship on its way to Basra, then let Basra fall.
+    const suhar = state.rivals["rival_suhar_merchants"]!;
+    const shipId = Object.keys(suhar.ships)[0]!;
+    const ship = suhar.ships[shipId]!;
+    const bound = { ...ship, status: "sailing" as const, docked_port_id: null, origin_port_id: "port_suhar", destination_port_id: "port_basra", route: [{ lat: ship.position.lat, lon: ship.position.lon }, { lat: basra.latitude, lon: basra.longitude, port_id: "port_basra" }], waypoint_index: 1, voyage_value: 100 };
+    state = { ...state, rivals: { ...state.rivals, rival_suhar_merchants: { ...suhar, ships: { ...suhar.ships, [shipId]: bound } } } };
+    const basraHouseBefore = state.rivals["rival_basra_house"]!.treasury;
+    const applied = applyEvent(state, sack);
+    expect(rivalCanCall(catalog.scenario.rivals.find((r) => r.id === "rival_basra_house")!, basra, applied)).toBe(false);
+    const { state: after, notes } = reactToEvent(catalog, applied, sack);
+    const diverted = after.rivals["rival_suhar_merchants"]!.ships[shipId]!;
+    expect(diverted.destination_port_id).not.toBe("port_basra");
+    expect(diverted.status).toBe("sailing");
+    expect(after.rivals["rival_basra_house"]!.treasury).toBeLessThan(basraHouseBefore);
+    expect(after.rivals["rival_basra_house"]!.event_log[0]?.event_id).toBe("evt_basra_sacked_871");
+    expect(notes.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("cool toward the player when their own polity's relations fall", () => {
+    const catalog = getCatalog("siraf_850");
+    const state = newGame("siraf_850");
+    const reconquest = catalog.events.find((e) => e.id === "evt_oman_reconquest_893")!;
+    const { state: after } = reactToEvent(catalog, applyEvent(state, reconquest), reconquest);
+    expect(after.rivals["rival_suhar_merchants"]!.relation).toBe(40);
+    expect(after.rivals["rival_basra_house"]!.relation).toBe(50);
   });
 
   it("load saves written before rivals existed", () => {

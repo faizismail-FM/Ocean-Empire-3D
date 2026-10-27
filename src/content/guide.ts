@@ -125,6 +125,7 @@ export const GUIDE: GuideSection[] = [
       "Rival ships appear on the world map (Rival fleets layer) and in the sailing view when they pass nearby. The Rivals screen lists every ship, its destination and ETA.",
       "Traffic share: the share of recorded calls at a port. A rival above half the traffic raises your terminal charges there by 10%, so work several ports rather than one.",
       "Relations drift toward neutral, fall when you take contracts at a rival's home port, and rise with courtesies. At 60 you can propose a partnership: the rival stops bidding at your home port and your fees at its home port drop 10%. It lapses if relations fall below 35.",
+      "Rivals react to historical events: ships bound for a port that an event closes or makes expensive divert to the nearest open port (dropping any contract), a rival based there loses money, price booms draw rivals to the goods' suppliers, and a quarrel involving a rival's sovereign cools its standing with you. The Rivals screen lists each response.",
       "Rivals are fictional. Where a name recalls a historical community, the encyclopedia entry for that community is the place for the history; the rival's ships and decisions are gameplay.",
     ],
     tips: ["Accept the contract you want before leaving a port idle at high time scale: a rival berthed there may take it while you wait."],
