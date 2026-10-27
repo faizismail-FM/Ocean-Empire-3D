@@ -60,6 +60,12 @@ Operational notes:
 - The project's Site URL and redirect allow-list must include the deployed origin (`https://ocean-empire-3d.vercel.app/**`) for the links to land on the game; `scripts/setup-supabase.mjs` does not set these, see Authentication → URL Configuration.
 - Sign-in links use the implicit flow so a link opened from a mail app's browser still works on that device.
 
+### Optional AI history assistant
+
+Encyclopedia entry pages can carry an "Ask about this entry" box. It is served by `src/app/api/history-assistant/route.ts`, which grounds Claude (`claude-opus-5-5`) in the entry's own record, closely related records and the bibliography behind them (`src/lib/history-grounding.ts`) and instructs it to answer only from that material, to say when the record does not cover a question, to label interpretation, reconstruction and fiction, and to cite the bracketed source ids. Gameplay tuning values are stripped from the material so they are never presented as history. The player's question and the entry material are sent to Anthropic's API; nothing else about the player is.
+
+Set `ANTHROPIC_API_KEY` in the server environment (for Vercel: Project → Settings → Environment Variables, then redeploy) to enable it. Without the key the route answers that the assistant is not enabled and the page says so; the game and the encyclopedia need no API key, as the brief requires.
+
 ### Deploying to Vercel
 
 Import the repository in Vercel. The defaults (framework: Next.js, build `next build`) work as-is. Add the two Supabase variables in the project settings only if you want remote saves. The project does not depend on any other deployment, API, domain or repository.
@@ -128,4 +134,4 @@ Quality presets (low / medium / high) control device pixel ratio, shadows and oc
 
 ## Status and limitations
 
-This is the first vertical slice. Not yet implemented from the master brief: additional civilizations beyond the two campaigns and the optional AI history assistant. AI trading powers and the population and prosperity indicators are in place. Supabase sync and email sign-in run against a live project in production. Sign-in emails use Supabase's built-in mailer, which is limited to a few per hour until custom SMTP is configured (see "Accounts and cross-device saves"). The bibliography has been checked against catalogues and reviews, and the remaining open questions in `docs/RESEARCH_NOTES.md` (Kalah's site, Daybul's identification, Aden in 850) are open in the scholarship itself, and rendering has only been checked on a software renderer and one laptop GPU, with no frame-rate benchmarks.
+This is the first vertical slice. Not yet implemented from the master brief: additional civilizations beyond the two campaigns. AI trading powers, the population and prosperity indicators and the optional AI history assistant are in place. Supabase sync and email sign-in run against a live project in production. Sign-in emails use Supabase's built-in mailer, which is limited to a few per hour until custom SMTP is configured (see "Accounts and cross-device saves"). The bibliography has been checked against catalogues and reviews, and the remaining open questions in `docs/RESEARCH_NOTES.md` (Kalah's site, Daybul's identification, Aden in 850) are open in the scholarship itself, and rendering has only been checked on a software renderer and one laptop GPU, with no frame-rate benchmarks.

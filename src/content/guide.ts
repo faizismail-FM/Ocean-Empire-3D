@@ -162,6 +162,7 @@ export const GUIDE: GuideSection[] = [
       "The History screen lists events that have happened and what they changed. Upcoming events are hidden unless the scenario reveals them.",
       "Evidence badges: Established, Interpretation, Reconstruction, Uncertain and Fictional. Gameplay numbers such as prices and speeds are abstractions even when the record is well documented.",
       "The Encyclopedia is available from the main menu without a game in progress.",
+      "Where the deployment enables it, each encyclopedia entry has an 'Ask about this entry' box. The assistant answers only from that entry's record and listed sources, says when the record does not cover a question, and labels interpretation, reconstruction and fiction. Treat it as a reading aid, not a source: check the bibliography before relying on a detail.",
     ],
   },
   {
