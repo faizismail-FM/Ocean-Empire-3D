@@ -18,7 +18,12 @@ export function applyEvent(state: GameState, event: HistoricalEvent): GameState 
     switch (effect.type) {
       case "port_access": {
         const ps = next.ports[effect.port_id];
-        if (ps && ps.access !== "home") next.ports[effect.port_id] = { ...ps, access: effect.access };
+        if (ps && ps.access !== "home") {
+          // A port shut by force loses order and part of its people at once; reopening steadies it.
+          const shock = effect.access === "closed" ? -40 : effect.access === "restricted" ? -15 : +10;
+          const population = effect.access === "closed" ? Math.round(ps.population * 0.85 * 100) / 100 : ps.population;
+          next.ports[effect.port_id] = { ...ps, access: effect.access, order: Math.max(0, Math.min(100, ps.order + shock)), population };
+        }
         break;
       }
       case "port_fee_modifier": {

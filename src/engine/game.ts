@@ -7,6 +7,7 @@ import { buildTutorialContract, cargoCapacity, cargoUsed, generateContractsForPo
 import { applyTransaction, canAfford, TransactionError } from "./economy";
 import { applyEvent, dueEvents } from "./events";
 import { createRivalStates, noteCompetition, reactToEvent, rivalFeeMultiplier, tickRivals, rivalDefinition } from "./rivals";
+import { ensureDemographics, initialDemographics, orderFeeMultiplier, prosperityFactor, tickDemographics } from "./demographics";
 import { distanceNm, type GeoPoint } from "./geo";
 import { livePrice, liveStock, recordTrade } from "./market";
 import { computeModifiers, type Modifiers } from "./modifiers";
@@ -72,6 +73,8 @@ export function createNewGame(options: NewGameOptions): GameState {
       visited: port.id === scenario.home_port_id,
       fee_multiplier: 1,
       influence: port.id === scenario.home_port_id ? 60 : 10,
+      ...initialDemographics(port, scenario.era),
+      rival_calls_snapshot: 0,
     };
   }
 
@@ -381,7 +384,7 @@ export function dockShip(catalog: ScenarioCatalog, state: GameState, shipId: str
   let next: GameState = { ...state };
 
   // Port fees are a running cost: charged even if the treasury dips below zero.
-  const fee = portFee(catalog, next, portId, cls.cargo_capacity, mods.port_fee_multiplier * rivalFeeMultiplier(catalog, next, portId));
+  const fee = portFee(catalog, next, portId, cls.cargo_capacity, mods.port_fee_multiplier * rivalFeeMultiplier(catalog, next, portId) * orderFeeMultiplier(next.ports[portId] ?? { order: 70 } as GameState["ports"][string]));
   if (fee > 0) {
     next = applyTransaction(next, -fee, "port_fee", `Port fees at ${port.name}`, { ship_id: shipId, port_id: portId, allow_negative: true });
     expenses += fee;
@@ -395,7 +398,8 @@ export function dockShip(catalog: ScenarioCatalog, state: GameState, shipId: str
     const contract = item.contract_id ? contracts[item.contract_id] : undefined;
     if (contract && contract.destination_port_id === portId && !contract.paid && contract.status !== "completed") {
       const originInfra = next.ports[contract.origin_port_id]?.infrastructure.cargo_handling ?? 0;
-      let payment = Math.round(contract.payment * (1 + 0.03 * originInfra));
+      const originProsperity = next.ports[contract.origin_port_id];
+      let payment = Math.round(contract.payment * (1 + 0.03 * originInfra) * (originProsperity ? 0.75 + 0.25 * prosperityFactor(originProsperity) : 1));
       const late = next.sim_seconds > contract.deadline_sim_seconds;
       if (late) {
         const penalty = Math.round(payment * 0.35);
@@ -475,7 +479,7 @@ export function dockShip(catalog: ScenarioCatalog, state: GameState, shipId: str
     ...next,
     ships: { ...next.ships, [shipId]: updatedShip },
     contracts,
-    ports: portState ? { ...next.ports, [portId]: { ...portState, visited: true, influence: clamp(portState.influence + 3, 0, 100) } } : next.ports,
+    ports: portState ? { ...next.ports, [portId]: { ...portState, visited: true, influence: clamp(portState.influence + 3, 0, 100), prosperity: clamp(portState.prosperity + 1, 0, 100) } } : next.ports,
     voyages: [report, ...next.voyages].slice(0, 100),
     stats: { ...next.stats, contracts_completed: next.stats.contracts_completed + completedIds.length, goods_delivered: goodsDelivered },
     pending_report: report,
@@ -660,7 +664,7 @@ export function developPort(catalog: ScenarioCatalog, state: GameState, portId: 
   const port = catalog.portMap.get(portId);
   if (!ps || !port) throw new TransactionError("Unknown port.");
   let next = applyTransaction(state, -check.cost, "infrastructure", `${kind.replace("_", " ")} level ${check.next_level} at ${port.name}`, { port_id: portId });
-  next = { ...next, ports: { ...next.ports, [portId]: { ...ps, infrastructure: { ...ps.infrastructure, [kind]: check.next_level }, influence: clamp(ps.influence + 5, 0, 100) } } };
+  next = { ...next, ports: { ...next.ports, [portId]: { ...ps, infrastructure: { ...ps.infrastructure, [kind]: check.next_level }, influence: clamp(ps.influence + 5, 0, 100), prosperity: clamp(ps.prosperity + 3, 0, 100) } } };
   return next;
 }
 
@@ -756,8 +760,9 @@ export function tickGame(catalog: ScenarioCatalog, state: GameState, dtSim: numb
 
   const mods = computeModifiers(catalog, state);
   const wind = catalog.scenario.features.wind ? windForDate(catalog.scenario.wind, state.date.month, state.date.day) : null;
-  const ships = { ...state.ships };
-  let next: GameState = { ...state, ships };
+  const seeded = ensureDemographics(catalog, state);
+  const ships = { ...seeded.ships };
+  let next: GameState = { ...seeded, ships };
   let distanceThisTick = 0;
 
   for (const shipId of Object.keys(ships)) {
@@ -877,6 +882,8 @@ export function tickGame(catalog: ScenarioCatalog, state: GameState, dtSim: numb
     const income = dailyAdministrationIncome(catalog, next) * days;
     if (income > 0) next = applyTransaction(next, income, "income", "Customs duties at home port", { port_id: next.empire.home_port_id });
     next = { ...next, stats: { ...next.stats, last_maintenance_day: dayAfter } };
+    // Population, prosperity and order move once a day.
+    next = tickDemographics(catalog, next, days);
 
     // Expire stale offers.
     const contracts: Record<string, Contract> = {};

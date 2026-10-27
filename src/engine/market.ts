@@ -1,5 +1,6 @@
-import type { ScenarioCatalog } from "@/data";
-import type { PortRecord, TradeGood } from "@/data/schemas";
+import { getScenario, type ScenarioCatalog } from "@/data";
+import type { Era, PortRecord, TradeGood } from "@/data/schemas";
+import { populationFactor, prosperityFactor } from "./demographics";
 import { createRandom } from "./rng";
 import type { GameState, PortState } from "./state";
 
@@ -33,19 +34,24 @@ export function marketPrice(
   return Math.max(1, Math.round(good.base_price * supplyDemandFactor(port, good) * drift * eventMultiplier * warehouseBonus * pressure));
 }
 
-/** Weekly turnover a port of this size could handle for a good, whether or not it supplies it. */
-export function marketBaseline(port: PortRecord, good: TradeGood, seed: number, simSeconds: number): number {
+/**
+ * Weekly turnover a port of this size could handle for a good, whether or not it supplies
+ * it. With a port state, prosperity and population scale it: a thriving, growing port
+ * turns over more, a declining one less (see demographics.ts).
+ */
+export function marketBaseline(port: PortRecord, good: TradeGood, seed: number, simSeconds: number, portState?: PortState, era?: Era): number {
   const week = Math.floor(simSeconds / (7 * 86400));
   const rng = createRandom(`${seed}:stock:${port.id}:${good.id}:${week}`);
   const sizeFactor = { minor: 0.5, regional: 1, major: 1.6, hub: 2.4 }[port.size];
   const base = good.cargo_space >= 1 ? 400 : good.cargo_space >= 0.5 ? 120 : 30;
-  return Math.round(base * sizeFactor * (0.7 + rng.next() * 0.6));
+  const demographic = portState && portState.population > 0 && era ? prosperityFactor(portState) * populationFactor(port, era, portState) : 1;
+  return Math.round(base * sizeFactor * (0.7 + rng.next() * 0.6) * demographic);
 }
 
 /** Quantity a port will sell per week of a good it supplies (abstraction). */
-export function marketStock(port: PortRecord, good: TradeGood, seed: number, simSeconds: number): number {
+export function marketStock(port: PortRecord, good: TradeGood, seed: number, simSeconds: number, portState?: PortState, era?: Era): number {
   if (!port.supplies.includes(good.id)) return 0;
-  return marketBaseline(port, good, seed, simSeconds);
+  return marketBaseline(port, good, seed, simSeconds, portState, era);
 }
 
 /**
@@ -84,15 +90,19 @@ export function pricePressure(activity: MarketActivity, baseline: number): numbe
 }
 
 /** Convenience: price at a port with this week's trading pressure applied. */
+function eraOf(state: GameState): Era | undefined {
+  return getScenario(state.scenario_id)?.era;
+}
+
 export function livePrice(port: PortRecord, good: TradeGood, state: GameState, eventMultiplier = 1): number {
   const activity = marketActivity(state.market, port.id, good.id, state.sim_seconds);
-  const pressure = pricePressure(activity, marketBaseline(port, good, state.seed, state.sim_seconds));
+  const pressure = pricePressure(activity, marketBaseline(port, good, state.seed, state.sim_seconds, state.ports[port.id], eraOf(state)));
   return marketPrice(port, good, state.seed, state.sim_seconds, eventMultiplier, state.ports[port.id], pressure);
 }
 
 /** Stock still available this week after everyone's purchases. */
 export function liveStock(port: PortRecord, good: TradeGood, state: GameState): number {
-  return Math.max(0, marketStock(port, good, state.seed, state.sim_seconds) - marketActivity(state.market, port.id, good.id, state.sim_seconds).bought);
+  return Math.max(0, marketStock(port, good, state.seed, state.sim_seconds, state.ports[port.id], eraOf(state)) - marketActivity(state.market, port.id, good.id, state.sim_seconds).bought);
 }
 
 export interface MarketListing {
@@ -111,7 +121,7 @@ export function portMarket(catalog: ScenarioCatalog, state: GameState, portId: s
   if (!port) return [];
   return catalog.goods.map((good) => {
     const activity = marketActivity(state.market, port.id, good.id, state.sim_seconds);
-    const pressure = pricePressure(activity, marketBaseline(port, good, state.seed, state.sim_seconds));
+    const pressure = pricePressure(activity, marketBaseline(port, good, state.seed, state.sim_seconds, state.ports[portId], catalog.scenario.era));
     return {
       good,
       price: marketPrice(port, good, state.seed, state.sim_seconds, eventPriceMods[good.id] ?? 1, state.ports[portId], pressure),

@@ -113,6 +113,7 @@ export const GUIDE: GuideSection[] = [
       "Facilities you can build: docks, warehouse, shipyard, cargo handling, navigation, repair, administration and a commercial district. Each level has a cost that scales with the scenario economy.",
       "Cargo handling at the origin raises contract payments; warehouses and the commercial district improve local market prices; administration raises daily customs income at home.",
       "In the modern scenario you must have called at a port before you can lease facilities there.",
+      "Every port has a population, a prosperity score and a public-order score, shown in the port panel. Ship calls (yours and the rivals'), market turnover and facilities raise prosperity; closures, high fees and unrest lower it. A prosperous port offers more and better-paid contracts and a bigger market; disorder adds to port charges; facilities above level 2 need prosperity of 40 to staff; and your home port's prosperity feeds your standing and daily duties.",
     ],
   },
   {
