@@ -2,13 +2,15 @@
 
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import { BookOpen, Navigation, Store, Building2, X } from "lucide-react";
+import { BookOpen, Flag, Landmark, Navigation, Store, Building2, X } from "lucide-react";
 import { getInfrastructureDefinition } from "@/data/infrastructure";
 import { getCivilization } from "@/data";
 import { portFee } from "@/engine/portdev";
 import { marketShare, rivalDefinition, rivalFeeMultiplier } from "@/engine/rivals";
 import { orderFeeMultiplier, orderLabel, prosperityLabel, workforce } from "@/engine/demographics";
 import { computeModifiers } from "@/engine/modifiers";
+import { canPerformTerritory } from "@/engine/game";
+import { influenceLabel, influenceTarget } from "@/engine/territory";
 import { formatCoordinate } from "@/engine/geo";
 import { formatMoneyExact } from "@/lib/utils";
 import { useGameStore } from "@/store/game-store";
@@ -21,6 +23,7 @@ export function PortDetailPanel({ portId, onClose, compact = false }: { portId: 
   const catalog = useGameStore((s) => s.catalog);
   const setDestination = useGameStore((s) => s.setDestination);
   const setActiveShip = useGameStore((s) => s.setActiveShip);
+  const territory = useGameStore((s) => s.territory);
   if (!state || !catalog) return null;
   const port = catalog.portMap.get(portId);
   const ps = state.ports[portId];
@@ -88,6 +91,41 @@ export function PortDetailPanel({ portId, onClose, compact = false }: { portId: 
             {orderFeeMultiplier(ps) > 1 && <span className="text-coral-400/80">Disorder adds {Math.round((orderFeeMultiplier(ps) - 1) * 100)}% to port charges</span>}
           </div>
           <p className="mt-1 text-[0.68rem] text-foam/45">Ship calls, market turnover and facilities raise prosperity; closures and unrest lower it. Prosperity sizes the market and the contract board.</p>
+        </div>
+      )}
+
+      {catalog.scenario.features.territory && (
+        <div className="mt-3 rounded-lg bg-white/5 p-3">
+          <div className="flex items-center justify-between">
+            <span className="label-caps">Influence and holdings</span>
+            <span className="flex items-center gap-1.5">
+              {ps.holding === "settlement" && <Badge tone="green"><Flag size={10} className="mr-1 inline" />your settlement</Badge>}
+              {ps.holding === "dependency" && <Badge tone="gold"><Landmark size={10} className="mr-1 inline" />under your protection</Badge>}
+              <SimulatedBadge />
+            </span>
+          </div>
+          <div className="mt-2">
+            <div className="flex justify-between text-xs"><span className="text-foam/60">Your influence</span><span className="font-mono text-foam">{Math.round(ps.influence)} · {influenceLabel(ps.influence)}{Math.round(influenceTarget(state, portId)) !== Math.round(ps.influence) ? ` (heading to ${Math.round(influenceTarget(state, portId))})` : ""}</span></div>
+            <ProgressBar value={ps.influence} max={100} tone={ps.influence >= 50 ? "gold" : ps.influence >= 25 ? "cyan" : "coral"} className="mt-1" />
+          </div>
+          {ps.access !== "home" && (
+            <div className="mt-2 flex flex-wrap gap-2">
+              {(["settlement", "dependency"] as const).map((action) => {
+                const rulesAllow = action === "settlement" ? catalog.scenario.territory_rules.settlements : catalog.scenario.territory_rules.dependencies;
+                if (!rulesAllow) return null;
+                if (action === "settlement" && ps.holding !== "none") return null;
+                if (action === "dependency" && ps.holding === "dependency") return null;
+                const check = canPerformTerritory(catalog, state, portId, action);
+                return (
+                  <Button key={action} size="sm" variant="secondary" disabled={!check.ok} title={check.reason ?? (action === "settlement" ? catalog.scenario.territory_rules.settlement_note : catalog.scenario.territory_rules.dependency_note)} onClick={() => territory(portId, action)}>
+                    {action === "settlement" ? <Flag size={13} /> : <Landmark size={13} />} {action === "settlement" ? "Found a settlement" : "Bring under protection"}
+                    <span className="ml-1 font-mono text-xs text-gold-300">{formatMoneyExact(check.cost, catalog.scenario.currency)}</span>
+                  </Button>
+                );
+              })}
+            </div>
+          )}
+          <p className="mt-1 text-[0.68rem] text-foam/45">{ps.access === "home" ? "Your home port: influence is complete here." : catalog.scenario.territory_rules.summary} Holdings are gameplay inventions; the port&apos;s historical rulers are unchanged in the record.</p>
         </div>
       )}
 

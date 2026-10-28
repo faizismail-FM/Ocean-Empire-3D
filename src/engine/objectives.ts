@@ -36,6 +36,10 @@ export function evaluateCondition(state: GameState, condition: ObjectiveConditio
     }
     case "ports_visited":
       return progress(Object.values(state.ports).filter((p) => p.visited).length, condition.count);
+    case "settlements_founded":
+      return progress(Object.values(state.ports).filter((p) => p.holding === "settlement" || p.holding === "dependency").length, condition.count);
+    case "dependencies_held":
+      return progress(Object.values(state.ports).filter((p) => p.holding === "dependency").length, condition.count);
   }
 }
 

@@ -14,6 +14,7 @@ import { EmblemIcon } from "@/components/game/NewGameWizard";
 import { HelpTip } from "@/components/game/Guide";
 import { isRivalAssigned } from "@/engine/rivals";
 import { orderLabel, prosperityLabel, workforce } from "@/engine/demographics";
+import { holdingsCount, regionSummaries, territoryUpkeep } from "@/engine/territory";
 
 export default function EmpirePage() {
   const state = useGameStore((s) => s.state)!;
@@ -31,7 +32,10 @@ export default function EmpirePage() {
   const objectives = catalog.scenario.objectives.map((o) => ({ o, s: state.objectives[o.id], p: evaluateCondition(state, o.condition) }));
   const nextObjective = objectives.find((x) => x.s?.status !== "completed");
   const isHistorical = catalog.scenario.mode === "historical";
-  const influence = Math.round(Object.values(state.ports).reduce((sum, p) => sum + p.influence, 0) / Math.max(1, Object.keys(state.ports).length));
+  const regions = regionSummaries(catalog, state);
+  const holdings = holdingsCount(state);
+  const holdingUpkeep = territoryUpkeep(catalog, state);
+  const rules = catalog.scenario.territory_rules;
   const home = state.ports[state.empire.home_port_id];
   const homeProsperity = home && home.population > 0 ? home.prosperity : 50;
   const homeOrder = home && home.population > 0 ? home.order : 70;
@@ -69,14 +73,50 @@ export default function EmpirePage() {
       </div>
 
       <div className="grid gap-4 lg:grid-cols-3">
-        <Panel title={isHistorical ? "Territory & access" : "Network"} subtitle={isHistorical ? "Sovereign territory belongs to the polity; your house holds ports and agreements." : "Ports served and facilities leased."}>
+        <Panel title={isHistorical ? "Territory & access" : "Network"} subtitle={isHistorical ? rules.summary : "Ports served and facilities leased."}>
           <div className="space-y-2 text-sm">
             <Row label={isHistorical ? "Home port" : "Headquarters"} value={controlled.map((p) => p.name).join(", ") || "—"} />
-            <Row label={isHistorical ? "Trade agreements" : "Partner terminals"} value={agreements.length > 0 ? agreements.map((p) => p.name).join(", ") : "none yet"} />
+            <Row label={isHistorical ? "Agreement ports" : "Partner terminals"} value={agreements.length > 0 ? agreements.map((p) => p.name).join(", ") : "none yet"} />
+            {isHistorical && (
+              <Row
+                label="Holdings"
+                value={
+                  holdings.settlements + holdings.dependencies === 0 ? (
+                    <span className="text-foam/60">no settlements yet</span>
+                  ) : (
+                    <span>
+                      {holdings.settlements} settlement{holdings.settlements === 1 ? "" : "s"}
+                      {holdings.dependencies > 0 ? `, ${holdings.dependencies} under protection` : ""}
+                      <span className="block text-xs text-foam/50">upkeep {formatMoneyExact(holdingUpkeep, currency)}/day</span>
+                    </span>
+                  )
+                }
+              />
+            )}
             <Row label="Ports visited" value={`${visited.length} / ${catalog.ports.length}`} />
             <Row label="Facilities built" value={`${Object.values(state.ports).reduce((sum, p) => sum + Object.values(p.infrastructure).reduce((a, b) => a + b, 0), 0)} levels`} />
-            {isHistorical && <Row label="Commercial influence" value={<><ProgressBar value={influence} max={100} className="mt-1" tone="gold" /><span className="text-xs text-foam/50">{influence}/100 average across ports <SimulatedBadge className="ml-1" /></span></>} />}
           </div>
+          {isHistorical && regions.length > 0 && (
+            <div className="mt-3 border-t border-white/5 pt-3">
+              <div className="flex items-center justify-between"><span className="label-caps">Influence by region</span><SimulatedBadge /></div>
+              <ul className="mt-2 space-y-2">
+                {regions.map((r) => (
+                  <li key={r.region.id} title={r.region.description}>
+                    <div className="flex items-center justify-between gap-2 text-xs">
+                      <span className="text-foam/85">{r.region.name}</span>
+                      <span className="flex items-center gap-1.5">
+                        {r.dependencies > 0 && <Badge tone="gold">{r.dependencies} protected</Badge>}
+                        {r.settlements > 0 && <Badge tone="green">{r.settlements} settled</Badge>}
+                        <span className="font-mono text-foam/60">{r.influence} · {r.label}</span>
+                      </span>
+                    </div>
+                    <ProgressBar value={r.influence} max={100} tone={r.influence >= 50 ? "gold" : r.influence >= 25 ? "cyan" : "coral"} className="mt-1" />
+                  </li>
+                ))}
+              </ul>
+              <p className="mt-2 text-[0.68rem] text-foam/45">Influence follows your share of each port&apos;s traffic, your facilities and your holdings, and fades where you stop calling. Regions are gameplay groupings.</p>
+            </div>
+          )}
         </Panel>
 
         <Panel title={isHistorical ? "Standing" : "Company health"} subtitle="A few meaningful indicators: solvency, cash flow, deliveries and the home port's people.">

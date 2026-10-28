@@ -53,6 +53,10 @@ Manual:
 
 Only the public anon key is used client-side; rows are protected by row-level security. Never put a service-role key in a `NEXT_PUBLIC_` variable.
 
+### Territory
+
+Sovereign territory is never for sale. Historical scenarios define regions (groupings of their ports, rated as reconstructions) and a territorial rule with its historical basis (`regions` and `territory_rules` in the scenario data; engine in `src/engine/territory.ts`). Every port carries the house's commercial influence (0 to 100), which relaxes daily toward a target set by the house's share of the port's traffic, its facilities, its holdings and rival development, and is always 100 at home. Where the rules allow, the house can found a trading settlement at a port it has called at (influence 25, relations 50 with the ruler): building and ship purchase rights, an extra weekly contract, agreement-level fees and a daily upkeep. Kilwa and Melaka also allow a settled port with influence 70, the larger part of its traffic and the ruler's favour to be brought under the house's protection: lower fees, two extra contracts and customs duties at half the home rate, at the cost of relations with its ruler; great cities are never available. The Empire screen summarises influence by region, the world map draws influence rings and holding markers, and the port panel offers the actions with the reason when one is unavailable. Holdings are gameplay inventions and the encyclopedia keeps the documented rulers.
+
 ### Alternate-history sandbox
 
 A historical house can be created under sandbox rules (`empire.rules === "sandbox"`). The documented timeline is unchanged, but at each turning point (a dated event with a gameplay effect) the simulation pauses and the player chooses what the game does: the documented consequence, nothing (averted), a softened version (closures become restrictions, multipliers move half as far) or the reverse. Decisions can be set in advance from the History screen. Rivals react to what actually happened in the game. Every departure from the record is logged in `state.alternate_history.divergences`, shown with a fiction label on the History screen, in the empire dashboard and in the top bar, and never touches the reference database (`src/engine/alternate.ts`). A sandbox campaign continues past its historical end unless the player lets the ending event happen.
@@ -119,7 +123,7 @@ src/persistence   Storage adapters: localStorage (default) + optional Supabase m
 src/components    UI primitives, game screens, the d3-geo world map, the R3F sailing scene and HUD
 src/app           Next.js routes: menu, new game, /play/* screens, /encyclopedia/*
 supabase          Optional database schema with RLS
-tests             Vitest suites (81 tests)
+tests             Vitest suites (88 tests)
 docs              Master design prompt and research notes
 ```
 
@@ -136,7 +140,7 @@ Quality presets (low / medium / high) control device pixel ratio, shadows and oc
 
 ## Verification
 
-`npm run check` (typecheck, lint, 81 unit/integration tests, production build) passes. The production build was also driven end to end in headless Chromium with Playwright: new game → accept the Port Klang→Singapore contract → depart → autopilot voyage at accelerated time → automatic docking, payment and voyage report → save restored after reload, plus the Siraf, Kilwa, Venice and Melaka sailing scenes, diplomacy, history and encyclopedia pages.
+`npm run check` (typecheck, lint, 88 unit/integration tests, production build) passes. The production build was also driven end to end in headless Chromium with Playwright: new game → accept the Port Klang→Singapore contract → depart → autopilot voyage at accelerated time → automatic docking, payment and voyage report → save restored after reload, plus the Siraf, Kilwa, Venice and Melaka sailing scenes, diplomacy, history and encyclopedia pages.
 
 ## Status and limitations
 

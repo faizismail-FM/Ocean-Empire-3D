@@ -26,6 +26,7 @@ export default function WorldPage() {
     { key: "routes", label: "Planned routes" },
     { key: "contracts", label: "Contract markers" },
     { key: "rivals", label: "Rival fleets", hide: catalog.scenario.rivals.length === 0 },
+    { key: "influence", label: "Your influence and holdings", hide: !catalog.scenario.features.territory },
     { key: "sealanes", label: "Sea-lane network" },
     { key: "historical_routes", label: "Documented trade routes", hide: catalog.routes.length === 0 },
     { key: "regions", label: "Approximate historical regions", hide: catalog.scenario.features.modern_borders },

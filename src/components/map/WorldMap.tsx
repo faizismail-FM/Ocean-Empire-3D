@@ -28,6 +28,8 @@ export interface MapLayers {
   borders: boolean;
   contracts: boolean;
   rivals: boolean;
+  /** Commercial influence rings and holdings (historical scenarios). */
+  influence: boolean;
 }
 
 export const DEFAULT_LAYERS: MapLayers = {
@@ -40,6 +42,7 @@ export const DEFAULT_LAYERS: MapLayers = {
   borders: true,
   contracts: true,
   rivals: true,
+  influence: true,
 };
 
 interface Props {
@@ -243,9 +246,15 @@ export function WorldMap({ catalog, state, selectedPortId, onSelectPort, onSelec
                     e.stopPropagation();
                     onSelectPort(port.id);
                   }}
-                  onPointerEnter={() => setHover({ x, y, text: `${port.name} · ${port.historical_polity}${offers ? ` · ${offers} contract${offers > 1 ? "s" : ""}` : ""}` })}
+                  onPointerEnter={() => setHover({ x, y, text: `${port.name} · ${port.historical_polity}${offers ? ` · ${offers} contract${offers > 1 ? "s" : ""}` : ""}${ps && catalog.scenario.features.territory && ps.access !== "home" ? ` · influence ${Math.round(ps.influence)}` : ""}${ps?.holding === "settlement" ? " · your settlement" : ps?.holding === "dependency" ? " · under your protection" : ""}` })}
                   onPointerLeave={() => setHover(null)}
                 >
+                  {layers.influence && ps && catalog.scenario.features.territory && ps.access !== "home" && ps.influence >= 10 && (
+                    <circle r={r * (1.6 + (ps.influence / 100) * 2.2)} fill={state?.empire.emblem.color ?? "#f5c842"} opacity={0.12 + (ps.influence / 100) * 0.25} stroke={state?.empire.emblem.color ?? "#f5c842"} strokeWidth={0.5 * inv} strokeOpacity={0.5} />
+                  )}
+                  {layers.influence && ps && ps.holding !== "none" && (
+                    <rect x={-r * 0.55} y={-r * 2.9} width={r * 1.1} height={r * 1.1} fill={state?.empire.emblem.color ?? "#f5c842"} stroke="#040b16" strokeWidth={0.6 * inv} transform="rotate(45)" />
+                  )}
                   {selected && <circle r={r * 2.6} fill="none" stroke="#e6f4ff" strokeWidth={1 * inv} opacity={0.8} />}
                   {ps?.access === "home" && <circle r={r * 1.9} fill="none" stroke={color} strokeWidth={0.8 * inv} opacity={0.7} />}
                   <circle r={r} fill={color} stroke="#040b16" strokeWidth={0.8 * inv} filter={selected ? "url(#glow)" : undefined} />

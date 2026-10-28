@@ -281,6 +281,8 @@ export const ObjectiveConditionSchema = z.discriminatedUnion("type", [
   z.object({ type: z.literal("goods_delivered"), good_id: z.string(), quantity: z.number() }),
   z.object({ type: z.literal("port_access"), port_id: z.string() }),
   z.object({ type: z.literal("ports_visited"), count: z.number().int() }),
+  z.object({ type: z.literal("settlements_founded"), count: z.number().int() }),
+  z.object({ type: z.literal("dependencies_held"), count: z.number().int() }),
 ]);
 export type ObjectiveCondition = z.infer<typeof ObjectiveConditionSchema>;
 
@@ -340,6 +342,47 @@ export const RivalDefinitionSchema = z.object({
 });
 export type RivalDefinition = z.infer<typeof RivalDefinitionSchema>;
 
+/**
+ * A region groups a scenario's ports for the territory system: commercial influence is
+ * tracked per port and summarised per region. Groupings are gameplay conveniences, rated
+ * as reconstructions unless a source defines the grouping.
+ */
+export const RegionSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  description: z.string(),
+  port_ids: z.array(z.string()).min(1),
+  evidence_status: EvidenceStatusSchema,
+  sources: z.array(z.string()),
+});
+export type Region = z.infer<typeof RegionSchema>;
+
+/**
+ * What a player entity may do territorially in this scenario. Sovereign territory is never
+ * for sale; a house may found trading settlements where the sources attest such
+ * communities, and only some scenarios allow a port to be brought under its protection.
+ */
+export const TerritoryRulesSchema = z.object({
+  summary: z.string(),
+  settlements: z.boolean(),
+  dependencies: z.boolean(),
+  settlement_note: z.string(),
+  dependency_note: z.string(),
+  evidence_status: EvidenceStatusSchema,
+  sources: z.array(z.string()).default([]),
+});
+export type TerritoryRules = z.infer<typeof TerritoryRulesSchema>;
+
+export const COMPANY_TERRITORY_RULES: TerritoryRules = {
+  summary: "A shipping company holds terminals, leases and partnerships, never sovereign territory.",
+  settlements: false,
+  dependencies: false,
+  settlement_note: "Modern operators expand by calling at ports and leasing facilities there (see the Ports screen).",
+  dependency_note: "Not applicable: ports belong to their states and port authorities.",
+  evidence_status: "established",
+  sources: [],
+};
+
 export const WindRegimeSchema = z.object({
   /** Month (1-12) → [direction wind comes FROM in degrees, speed in knots]. */
   monthly: z.array(z.tuple([z.number(), z.number()])).length(12),
@@ -366,6 +409,9 @@ export const ScenarioSchema = z.object({
   playable_polities: z.array(z.string()),
   ai_polities: z.array(PolityRelationSchema),
   rivals: z.array(RivalDefinitionSchema).default([]),
+  /** Port groupings for the territory system; empty for scenarios without territory. */
+  regions: z.array(RegionSchema).default([]),
+  territory_rules: TerritoryRulesSchema.default(COMPANY_TERRITORY_RULES),
   region: z.string(),
   map_bounds: z.object({ west: z.number(), south: z.number(), east: z.number(), north: z.number() }),
   summary: z.string(),

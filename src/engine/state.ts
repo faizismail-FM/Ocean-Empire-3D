@@ -86,6 +86,9 @@ export const PortStateSchema = z.object({
   order: z.number().default(70),
   /** Rival port calls already counted toward prosperity. */
   rival_calls_snapshot: z.number().default(0),
+  /** Territory: a trading settlement founded by the house, or a port under its protection. */
+  holding: z.enum(["none", "settlement", "dependency"]).default("none"),
+  holding_since: z.number().nullable().default(null),
 });
 export type PortState = z.infer<typeof PortStateSchema>;
 
@@ -136,6 +139,7 @@ export const LedgerEntrySchema = z.object({
     "infrastructure",
     "technology",
     "diplomacy",
+    "territory",
     "objective_reward",
     "income",
     "other",
