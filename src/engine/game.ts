@@ -6,6 +6,7 @@ import { addSeconds, dateFromIso, SECONDS_PER_DAY, type GameDate } from "./calen
 import { buildTutorialContract, cargoCapacity, cargoUsed, generateContractsForPort, validateAccept, type ContractContext } from "./contracts";
 import { applyTransaction, canAfford, TransactionError } from "./economy";
 import { applyEvent, dueEvents } from "./events";
+import { decideTurningPoint, holdTurningPoint, isTurningPoint, resolveTurningPoint } from "./alternate";
 import { createRivalStates, noteCompetition, reactToEvent, rivalFeeMultiplier, tickRivals, rivalDefinition } from "./rivals";
 import { ensureDemographics, initialDemographics, orderFeeMultiplier, prosperityFactor, tickDemographics } from "./demographics";
 import { distanceNm, type GeoPoint } from "./geo";
@@ -16,7 +17,7 @@ import { canDevelop, dailyAdministrationIncome, portFee, repairCost } from "./po
 import { hashString } from "./rng";
 import { planRoute, planRouteFromPosition } from "./routing";
 import { stepKinematics } from "./ship";
-import { SAVE_VERSION, type Contract, type GameNotification, type GameState, type ShipState, type VoyageRecord } from "./state";
+import { SAVE_VERSION, type Contract, type DivergenceChoice, type GameNotification, type GameState, type ShipState, type VoyageRecord } from "./state";
 import { canResearch } from "./tech";
 import { windForDate } from "./wind";
 
@@ -34,7 +35,9 @@ export type GameEvent =
   | { type: "rival_contract_taken"; rival_id: string; contract_id: string; port_id: string }
   | { type: "rival_partnership_ended"; rival_id: string }
   | { type: "rival_charter_posted"; rival_id: string; contract_id: string; port_id: string }
-  | { type: "rival_alliance"; rival_ids: [string, string]; formed: boolean };
+  | { type: "rival_alliance"; rival_ids: [string, string]; formed: boolean }
+  | { type: "turning_point"; event: HistoricalEvent }
+  | { type: "divergence"; event: HistoricalEvent; choice: DivergenceChoice };
 
 export interface NewGameOptions {
   scenario_id: string;
@@ -153,6 +156,7 @@ export function createNewGame(options: NewGameOptions): GameState {
     market: {},
     rivals: createRivalStates(catalog, seed, START_CLOCK_SECONDS),
     applied_events: [],
+    alternate_history: { decisions: {}, pending_event_id: null, divergences: [] },
     notifications: [],
     tutorial: { step: 0, completed: false, dismissed: false },
     stats: { contracts_completed: 0, distance_sailed_nm: 0, total_revenue: 0, total_expenses: 0, goods_delivered: {}, last_maintenance_day: 0 },
@@ -757,6 +761,8 @@ export interface TickResult {
 export function tickGame(catalog: ScenarioCatalog, state: GameState, dtSim: number): TickResult {
   const events: GameEvent[] = [];
   if (state.paused || state.campaign.status !== "active" || dtSim <= 0) return { state, events };
+  // A sandbox game waits at a turning point until the player decides; resuming does not advance it.
+  if (state.alternate_history.pending_event_id) return { state: { ...state, paused: true }, events };
 
   const mods = computeModifiers(catalog, state);
   const wind = catalog.scenario.features.wind ? windForDate(catalog.scenario.wind, state.date.month, state.date.day) : null;
@@ -897,9 +903,21 @@ export function tickGame(catalog: ScenarioCatalog, state: GameState, dtSim: numb
     const sandbox = next.empire.rules === "sandbox";
     for (const event of dueEvents(catalog, next)) {
       if (sandbox) {
-        // Alternate history: the documented event is announced, its effects are not applied.
-        next = { ...next, applied_events: [...next.applied_events, event.id] };
-        next = notify(next, "event", event.title, `${event.summary} (Alternate-history sandbox: no gameplay effect applied.)`, "/play/history");
+        // Alternate history: a turning point waits for a decision unless one was set in advance.
+        const decided = next.alternate_history.decisions[event.id];
+        if (isTurningPoint(event) && !decided) {
+          next = holdTurningPoint(next, event);
+          events.push({ type: "turning_point", event });
+          break;
+        }
+        const choice = decided ?? "historical";
+        const resolved = resolveTurningPoint(catalog, next, event, choice);
+        next = resolved.state;
+        if (resolved.notes.length > 0) next = notify(next, "info", `Rivals respond to ${event.title.toLowerCase()}`, resolved.notes.join(" "), "/play/rivals");
+        events.push({ type: "historical_event", event });
+        if (choice !== "historical") events.push({ type: "divergence", event, choice });
+        if (next.campaign.status !== "active") events.push({ type: "campaign_ended", status: next.campaign.status });
+        continue;
       } else {
         next = applyEvent(next, event);
         next = notify(next, "event", event.title, `${event.summary}${event.effects.length > 0 && event.effects[0]?.type !== "notice" ? " Simulated consequences now apply." : ""}`, "/play/history");
@@ -953,3 +971,14 @@ export function markNotificationsRead(state: GameState): GameState {
 }
 
 export { TransactionError };
+
+/** Sandbox: decide what happens at a turning point (pending now, or set in advance). */
+export function decideDivergence(catalog: ScenarioCatalog, state: GameState, eventId: string, choice: DivergenceChoice): GameState {
+  const result = decideTurningPoint(catalog, state, eventId, choice);
+  let next = result.state;
+  if (result.notes.length > 0) {
+    const event = catalog.events.find((e) => e.id === eventId);
+    next = notify(next, "info", `Rivals respond to ${event?.title.toLowerCase() ?? "the event"}`, result.notes.join(" "), "/play/rivals");
+  }
+  return next;
+}

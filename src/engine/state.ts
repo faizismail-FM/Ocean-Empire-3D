@@ -261,6 +261,35 @@ export const EmpireSchema = z.object({
 });
 export type Empire = z.infer<typeof EmpireSchema>;
 
+/**
+ * Alternate-history sandbox. A "turning point" is a documented event with gameplay effects.
+ * In sandbox games history pauses at each one and the player decides whether it happens as
+ * documented, is averted, softened or turned around. Everything that departs from the record
+ * is logged here and labelled fiction; the historical database itself is never changed.
+ */
+export const DivergenceChoiceSchema = z.enum(["historical", "averted", "softened", "reversed"]);
+export type DivergenceChoice = z.infer<typeof DivergenceChoiceSchema>;
+
+export const DivergenceSchema = z.object({
+  event_id: z.string(),
+  choice: DivergenceChoiceSchema,
+  sim_seconds: z.number(),
+  date: GameDateSchema,
+  /** What the game did instead of the documented consequence, in plain words. */
+  note: z.string(),
+});
+export type Divergence = z.infer<typeof DivergenceSchema>;
+
+export const AlternateHistorySchema = z.object({
+  /** Decisions made or set in advance, by event id. */
+  decisions: z.record(z.string(), DivergenceChoiceSchema),
+  /** The turning point waiting for a decision; the game stays paused while it is set. */
+  pending_event_id: z.string().nullable(),
+  /** Every departure from the documented record, in order. */
+  divergences: z.array(DivergenceSchema),
+});
+export type AlternateHistory = z.infer<typeof AlternateHistorySchema>;
+
 export const GameStateSchema = z.object({
   version: z.literal(SAVE_VERSION),
   id: z.string(),
@@ -289,6 +318,8 @@ export const GameStateSchema = z.object({
   /** AI trading powers. Defaulted so saves from before rivals existed still load. */
   rivals: z.record(z.string(), RivalStateSchema).default({}),
   applied_events: z.array(z.string()),
+  /** Sandbox decisions and divergences. Defaulted so earlier saves still load. */
+  alternate_history: AlternateHistorySchema.default({ decisions: {}, pending_event_id: null, divergences: [] }),
   notifications: z.array(NotificationSchema),
   tutorial: z.object({ step: z.number().int(), completed: z.boolean(), dismissed: z.boolean() }),
   stats: z.object({

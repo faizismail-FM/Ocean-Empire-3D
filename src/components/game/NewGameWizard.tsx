@@ -299,7 +299,7 @@ function EmpireForm({ scenario, onBack, onStart }: { scenario: Scenario; onBack:
             <Field label="Campaign rules">
               <div className="grid gap-2 sm:grid-cols-2">
                 <RuleOption active={rules === "historical"} onClick={() => setRules("historical")} title="Historical" text="Documented events happen on their dates and their simulated consequences apply. The campaign ends when history says it does." />
-                <RuleOption active={rules === "sandbox"} onClick={() => setRules("sandbox")} title="Alternate history (sandbox)" text="Events are announced but have no effect, and the campaign does not end. Clearly labelled as fiction; the historical database is never altered." />
+                <RuleOption active={rules === "sandbox"} onClick={() => setRules("sandbox")} title="Alternate history (sandbox)" text="History pauses at each documented turning point and you decide: let it happen, avert it, soften it or turn it around. The campaign does not end on its historical date. Every departure from the record is labelled fiction; the historical database is never altered." />
               </div>
             </Field>
           )}
