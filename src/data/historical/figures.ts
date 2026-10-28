@@ -146,6 +146,30 @@ export const HISTORICAL_FIGURES: HistoricalFigure[] = [
     evidence_status: "established", sources: ["src_newitt_2005", "src_boxer_1969"],
   },
   {
+    id: "fig_yongle", name: "The Yongle emperor (Zhu Di)", alternate_names: ["Yongle", "Chengzu"], role: "Ming emperor (1402–1424)",
+    period: { start: 1360, end: 1424 }, polity_id: "civ_ming",
+    summary: "Usurped the throne in 1402, sent the treasure fleets, annexed Đại Việt, moved the capital to Beijing (1421) and died on campaign against the Mongols on 12 August 1424.",
+    evidence_status: "established", sources: ["src_cambridge_ming_1988", "src_dreyer_zheng_he"],
+  },
+  {
+    id: "fig_wang_jinghong", name: "Wang Jinghong", alternate_names: ["Wang Guitong"], role: "Eunuch co-commander of the treasure fleets",
+    period: { start: 1370, end: 1434, approximate: true }, polity_id: "civ_ming",
+    summary: "Named with Zheng He in the orders for most of the voyages and the probable commander of the fleet's return in 1433; his later mission to Sumatra and death are poorly recorded.",
+    evidence_status: "scholarly_interpretation", sources: ["src_dreyer_zheng_he"],
+  },
+  {
+    id: "fig_fei_xin", name: "Fei Xin", alternate_names: ["Fei Hsin"], role: "Soldier and author of the Xingcha shenglan (1436)",
+    period: { start: 1385, end: 1436, approximate: true }, polity_id: "civ_ming",
+    summary: "A conscript soldier who sailed on four voyages and wrote the 'Overall Survey of the Star Raft', with descriptions of Mogadishu, Brava and the Maldives that Ma Huan lacks.",
+    evidence_status: "established", sources: ["src_fei_xin_ptak"],
+  },
+  {
+    id: "fig_shi_jinqing", name: "Shi Jinqing", alternate_names: ["Shih Chin-ch'ing"], role: "Pacification superintendent of Palembang (1407–c. 1421)",
+    period: { start: 1360, end: 1421, approximate: true }, polity_id: "civ_ming",
+    summary: "A Cantonese settler who helped the fleet destroy Chen Zuyi and was appointed to govern the Chinese of Palembang for the Ming; his daughter succeeded him.",
+    evidence_status: "scholarly_interpretation", sources: ["src_ma_huan", "src_dreyer_zheng_he"],
+  },
+  {
     id: "fig_coen", name: "Jan Pieterszoon Coen", alternate_names: [], role: "Governor-general of the VOC (1619–1623, 1627–1629)",
     period: { start: 1587, end: 1629 }, polity_id: "civ_dutch_republic",
     summary: "Founded Batavia in 1619 and conquered Banda in 1621 with great loss of life; the architect of the Company's monopoly by force and of its intra-Asian trade. He died at Batavia during the Mataram siege of 1629.",

@@ -376,6 +376,49 @@ export const SOURCES: HistoricalSource[] = [
     source_type: "primary_source", url_or_reference: "Hakluyt Society, first series nos. 53, 55, 62 and 69, London, 1875–1884, 4 vols", related_records: ["port_goa", "port_hormuz_1505", "port_malacca_1511", "evt_goa_1510", "evt_malacca_1511", "evt_hormuz_1515"],
     notes: "Confirmed against catalogue records (October 2026). Written by Albuquerque's son from his father's letters; partisan but detailed.",
   },
+  // Early Ming maritime expansion
+  {
+    id: "src_levathes_1994", title: "When China Ruled the Seas: The Treasure Fleet of the Dragon Throne, 1405–1433",
+    author_or_institution: "Louise Levathes", publication_year: 1994,
+    source_type: "book", url_or_reference: "Simon & Schuster, New York, 252 pp.; Oxford University Press paperback 1996", related_records: ["civ_ming", "port_liujiagang", "port_galle", "port_malindi", "civ_kotte"],
+    notes: "Confirmed against library catalogues and the Journal of Asian Studies review (October 2026). A popular narrative; used for context, with Dreyer preferred on dates.",
+  },
+  {
+    id: "src_church_2005", title: "Zheng He: An Investigation into the Plausibility of 450-ft Treasure Ships",
+    author_or_institution: "Sally K. Church", publication_year: 2005,
+    source_type: "journal_article", url_or_reference: "Monumenta Serica 53 (2005), pp. 1–43", related_records: ["ship_baochuan", "ship_fuchuan", "tech_longjiang_yard"],
+    notes: "Confirmed against the journal's contents listing (October 2026). The basis for the game's smaller treasure-ship dimensions.",
+  },
+  {
+    id: "src_wade_2004", title: "The Zheng He Voyages: A Reassessment",
+    author_or_institution: "Geoff Wade", publication_year: 2004,
+    source_type: "journal_article", url_or_reference: "Asia Research Institute Working Paper 31, National University of Singapore, October 2004; a version appeared in JMBRAS 78(1), 2005", related_records: ["port_melaka_1405", "port_palembang_1405", "evt_ceylon_1411", "evt_chen_zuyi_1407"],
+    notes: "The working paper was confirmed at the ARI site (October 2026); the JMBRAS printing is recorded from memory. Wade's reading of the voyages as armed 'pax Ming' expeditions informs the access effects.",
+  },
+  {
+    id: "src_fei_xin_ptak", title: "Hsing-ch'a Sheng-lan: The Overall Survey of the Star Raft [1436]",
+    author_or_institution: "Fei Hsin; translated by J. V. G. Mills, revised, annotated and edited by Roderich Ptak", publication_year: 1996,
+    source_type: "primary_source", url_or_reference: "Harrassowitz, Wiesbaden (South China and Maritime Asia 4), 153 pp.", related_records: ["fig_fei_xin", "port_mogadishu_1405", "port_xinzhou", "good_sappanwood"],
+    notes: "Confirmed against the Journal of Southeast Asian Studies review and library records (October 2026).",
+  },
+  {
+    id: "src_sen_2006", title: "The Formation of Chinese Maritime Networks to Southern Asia, 1200–1450",
+    author_or_institution: "Tansen Sen", publication_year: 2006,
+    source_type: "journal_article", url_or_reference: "Journal of the Economic and Social History of the Orient 49(4), pp. 421–453", related_records: ["port_quanzhou_1405", "port_chittagong", "civ_bengal_sultanate", "good_bengal_cotton"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in October 2026; a search found only Sen's related later work.",
+  },
+  {
+    id: "src_needham_1971", title: "Science and Civilisation in China, vol. 4 part 3: Civil Engineering and Nautics",
+    author_or_institution: "Joseph Needham, with Wang Ling and Lu Gwei-djen", publication_year: 1971,
+    source_type: "book", url_or_reference: "Cambridge University Press", related_records: ["ship_shachuan", "ship_fuchuan", "ship_guangchuan", "tech_watertight_bulkheads", "tech_compass_needle_routes", "tech_star_altitude_boards"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in October 2026.",
+  },
+  {
+    id: "src_cambridge_ming_1988", title: "The Cambridge History of China, vol. 7: The Ming Dynasty, 1368–1644, Part 1",
+    author_or_institution: "Frederick W. Mote and Denis Twitchett (eds.)", publication_year: 1988,
+    source_type: "book", url_or_reference: "Cambridge University Press", related_records: ["civ_ryukyu", "civ_ashikaga", "port_ningbo", "port_hakata", "port_naha", "evt_tally_lapse_1411", "evt_tally_1432", "fig_yongle"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in October 2026; the tally-trade dates (1404 start, lapse after 1408, resumption 1432) were checked against published summaries.",
+  },
   // Seventeenth-century Dutch expansion
   {
     id: "src_gaastra_2003", title: "The Dutch East India Company: Expansion and Decline",

@@ -332,6 +332,55 @@ export const HISTORICAL_GOODS: TradeGood[] = [
     historical_availability: { start: 1000, end: null }, base_price: 35, cargo_space: 1.2, storage: "liquid",
     evidence_status: "established", sources: ["src_boxer_1969"],
   },
+  // Early Ming, fifteenth century
+  {
+    id: "good_tea", name: "Tea", category: "food",
+    description: "Compressed and loose tea from Fujian and Zhejiang, a Ming export to Ryukyu, Japan and the tributaries.",
+    historical_availability: { start: 800, end: null }, base_price: 90, cargo_space: 0.8,
+    evidence_status: "established", sources: ["src_cambridge_ming_1988"],
+  },
+  {
+    id: "good_lacquerware", name: "Lacquerware", category: "luxury",
+    description: "Carved and painted lacquer from the imperial workshops and Fujian, carried as gifts and trade goods.",
+    historical_availability: { start: 1000, end: null }, base_price: 260, cargo_space: 0.5,
+    evidence_status: "established", sources: ["src_ma_huan"],
+  },
+  {
+    id: "good_iron_pans", name: "Iron pans and tools", category: "metal",
+    description: "Cast-iron cooking pans, nails and tools, in demand at every port of the Western Ocean.",
+    historical_availability: { start: 1000, end: 1700 }, base_price: 50, cargo_space: 1,
+    evidence_status: "established", sources: ["src_ma_huan"],
+  },
+  {
+    id: "good_sulphur", name: "Sulphur", category: "bulk",
+    description: "Sulphur from the Ryukyu islands and Japan for Chinese gunpowder, the staple of the Ryukyu tribute.",
+    historical_availability: { start: 1300, end: 1800 }, base_price: 45, cargo_space: 1,
+    evidence_status: "established", sources: ["src_cambridge_ming_1988"],
+  },
+  {
+    id: "good_japanese_swords", name: "Japanese swords", category: "luxury",
+    description: "Blades sent by the thousand in the tally ships; the Ming court complained of their numbers and cut the price.",
+    historical_availability: { start: 1400, end: 1600 }, base_price: 220, cargo_space: 0.4,
+    evidence_status: "established", sources: ["src_cambridge_ming_1988"],
+  },
+  {
+    id: "good_sappanwood", name: "Sappanwood", category: "timber",
+    description: "Red dyewood from Siam, Champa and Sumatra, the bulk tribute good of the southern seas.",
+    historical_availability: { start: 800, end: 1800 }, base_price: 40, cargo_space: 1,
+    evidence_status: "established", sources: ["src_ma_huan", "src_fei_xin_ptak"],
+  },
+  {
+    id: "good_cowries", name: "Cowrie shells", category: "bulk",
+    description: "Maldivian cowries, Bengal's small change, shipped by the boatload from the islands and Ceylon.",
+    historical_availability: { start: 500, end: 1800 }, base_price: 30, cargo_space: 1,
+    evidence_status: "established", sources: ["src_ma_huan"],
+  },
+  {
+    id: "good_bengal_cotton", name: "Bengal cottons", category: "textile",
+    description: "Fine muslins and plain cottons from Bengal, which Ma Huan lists by name, traded to Sumatra, Melaka and East Africa.",
+    historical_availability: { start: 1200, end: 1800 }, base_price: 110, cargo_space: 0.7,
+    evidence_status: "established", sources: ["src_ma_huan", "src_sen_2006"],
+  },
   // Seventeenth-century Dutch
   {
     id: "good_japanese_silver", name: "Japanese silver", category: "metal",

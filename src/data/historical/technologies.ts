@@ -256,6 +256,56 @@ export const HISTORICAL_TECHNOLOGIES: Technology[] = [
     historical_notes: "The Ribeira das Naus built the Crown's naus and galleons; private owners also had ships built there and at Porto. The galleon's appearance in the 1520s and 1530s is documented, its exact form debated.",
     evidence_status: "scholarly_interpretation", sources: ["src_boxer_1969", "src_subrahmanyam_1993"],
   },
+  // Early Ming, fifteenth century
+  {
+    id: "tech_watertight_bulkheads", name: "Watertight bulkheads", branch: "shipbuilding", cost: 900, prerequisites: [],
+    effects: [{ type: "maintenance_multiplier", value: 0.9 }],
+    description: "Transverse bulkheads that keep a holed junk afloat and divide the hold for separate cargoes.",
+    historical_notes: "Attested in the Quanzhou wreck (c. 1277) and described by Marco Polo; Needham traces the practice to the Song.",
+    evidence_status: "established", sources: ["src_needham_1971"],
+  },
+  {
+    id: "tech_longjiang_yard", name: "Longjiang treasure shipyard", branch: "shipbuilding", cost: 3200, prerequisites: ["tech_watertight_bulkheads"],
+    effects: [{ type: "unlock_ship", ship_class_id: "ship_baochuan" }],
+    description: "Access to the great dry docks on the Qinhuai at Nanjing where the fleet's largest ships were built.",
+    historical_notes: "The Longjiang yard's basins survive; the 11 m rudder-post found there in 1957 is the chief physical evidence for the great ships.",
+    evidence_status: "established", sources: ["src_church_2005", "src_dreyer_zheng_he"],
+  },
+  {
+    id: "tech_compass_needle_routes", name: "Needle routes (zhenlu)", branch: "navigation", cost: 800, prerequisites: [],
+    effects: [{ type: "speed_multiplier", value: 1.04 }],
+    description: "Compass bearings and watch-counts for each leg, recorded in the pilots' route books.",
+    historical_notes: "The Mao Kun chart of Zheng He's routes preserves bearings and distances in watches (geng); the route books themselves are lost.",
+    evidence_status: "established", sources: ["src_needham_1971", "src_dreyer_zheng_he"],
+  },
+  {
+    id: "tech_star_altitude_boards", name: "Star-altitude boards (qianxingban)", branch: "navigation", cost: 1200, prerequisites: ["tech_compass_needle_routes"],
+    effects: [{ type: "consumption_multiplier", value: 0.92 }],
+    description: "Measuring the Pole Star's height with a set of boards to hold a latitude across the Indian Ocean.",
+    historical_notes: "The Mao Kun chart's four stellar diagrams for the Arabian Sea crossing show the method; the game treats it as a saving in provisions from shorter crossings.",
+    evidence_status: "scholarly_interpretation", sources: ["src_needham_1971"],
+  },
+  {
+    id: "tech_mao_kun_chart", name: "The fleet's sea chart", branch: "cartography", cost: 1500, prerequisites: ["tech_compass_needle_routes"],
+    effects: [{ type: "extra_contracts", value: 1 }, { type: "speed_multiplier", value: 1.03 }],
+    description: "A strip chart of the whole route from Nanjing to Hormuz and the African coast, with anchorages and hazards.",
+    historical_notes: "Preserved in Mao Yuanyi's Wubei zhi (1621) and generally held to derive from the fleets' own charts; Mills prints it with Ma Huan.",
+    evidence_status: "scholarly_interpretation", sources: ["src_ma_huan", "src_needham_1971"],
+  },
+  {
+    id: "tech_tribute_tally", name: "Tribute tallies (kanhe)", branch: "commercial_administration", cost: 1100, prerequisites: [],
+    effects: [{ type: "port_fee_multiplier", value: 0.9 }, { type: "extra_contracts", value: 1 }],
+    description: "Numbered tallies issued by the Ministry of Rites that let a cargo pass the maritime trade offices as tribute goods.",
+    historical_notes: "Tallies governed the Japan and Ryukyu trades; a private house using them is the scenario's fiction, and the entry says so.",
+    evidence_status: "scholarly_interpretation", sources: ["src_cambridge_ming_1988"],
+  },
+  {
+    id: "tech_fleet_provisioning", name: "Fleet provisioning", branch: "vessel_efficiency", cost: 1000, prerequisites: [],
+    effects: [{ type: "cargo_multiplier", value: 1.05 }, { type: "consumption_multiplier", value: 0.95 }],
+    description: "Water tankers, grain ships and the depots at Melaka and Samudera that let the fleet stay out for two years.",
+    historical_notes: "Ma Huan describes the stockaded depot at Melaka; the specialised supply ships are known from the Ming shilu.",
+    evidence_status: "established", sources: ["src_ma_huan", "src_dreyer_zheng_he"],
+  },
   // Dutch Republic, seventeenth century
   {
     id: "tech_brouwer_route", name: "Brouwer's southern route", branch: "navigation", cost: 900, prerequisites: [],
