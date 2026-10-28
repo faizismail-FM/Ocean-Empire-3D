@@ -98,6 +98,9 @@ Dates checked at the same time: Ibn Battuta at Mogadishu, Mombasa and Kilwa (133
 - Throughput rankings and port roles are described qualitatively from UNCTAD's Review of Maritime Transport; no specific statistics are quoted.
 - Freight rates, fuel prices, vessel prices and operating costs are gameplay abstractions.
 
+## Territory model
+Regions are groupings of each scenario's ports made for the influence summary and are rated `reconstruction`. Each campaign's territorial rule records its basis: Gulf merchant communities abroad in the ninth century (Tharisappalli plates, the Accounts of China and India) for Siraf; Swahili towns founded by merchant lineages and Kilwa's hold on Sofala (the Kilwa Chronicle, Sutton, Pearson) for Kilwa; Venetian fondaci and consulates and the Senate's monopoly of overseas possessions (Lane, Ashtor) for Venice; the foreign merchant communities of the Straits (Pires) for Melaka, where a house holding a port in the sultan's name is a reconstruction. Settlements and dependencies, influence scores and their thresholds are gameplay abstractions.
+
 ## Wind model
 The Siraf, Kilwa and Melaka scenarios use simplified 12-month wind tables (direction and speed) representing the north-east and south-west monsoons with transitional months. They reproduce the seasonal rhythm described by Hourani, Chaudhuri and Reid but are not meteorological reconstructions. The Venice scenario uses a single Mediterranean table (westerlies, winter gales, the summer etesians) rated `reconstruction`.
 

@@ -219,6 +219,11 @@ function ScenarioDetail({ scenario }: { scenario: Scenario }) {
       <div className="rounded-lg border border-gold-400/25 bg-gold-400/5 p-3 text-xs text-gold-300/90">
         <strong>Player entity:</strong> {scenario.player_entity_note}
         <div className="mt-1 text-foam/60">{scenario.uncertainty_note}</div>
+        {scenario.features.territory && (
+          <div className="mt-2 border-t border-gold-400/15 pt-2">
+            <strong>Territory:</strong> {scenario.territory_rules.summary}
+          </div>
+        )}
       </div>
       <div>
         <div className="label-caps mb-1">Principal sources</div>

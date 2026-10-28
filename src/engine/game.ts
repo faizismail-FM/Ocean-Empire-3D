@@ -14,6 +14,7 @@ import { livePrice, liveStock, recordTrade } from "./market";
 import { computeModifiers, type Modifiers } from "./modifiers";
 import { evaluateObjectives } from "./objectives";
 import { canDevelop, dailyAdministrationIncome, portFee, repairCost } from "./portdev";
+import { acquireDependency, canAcquireDependency, canFoundSettlement, foundSettlement, territoryUpkeep, tickInfluence } from "./territory";
 import { hashString } from "./rng";
 import { planRoute, planRouteFromPosition } from "./routing";
 import { stepKinematics } from "./ship";
@@ -75,7 +76,9 @@ export function createNewGame(options: NewGameOptions): GameState {
       infrastructure: { ...port.infrastructure },
       visited: port.id === scenario.home_port_id,
       fee_multiplier: 1,
-      influence: port.id === scenario.home_port_id ? 60 : 10,
+      influence: port.id === scenario.home_port_id ? 100 : 0,
+      holding: "none",
+      holding_since: null,
       ...initialDemographics(port, scenario.era),
       rival_calls_snapshot: 0,
     };
@@ -192,7 +195,8 @@ export function ensureContracts(catalog: ScenarioCatalog, state: GameState, port
     state,
     fleet_capacity: fleetCapacity(catalog, state, mods),
     payment_multiplier: mods.contract_payment_multiplier,
-    extra_contracts: mods.extra_contracts,
+    // A settlement's agents gather cargo for the house; a dependency's officials more so.
+    extra_contracts: mods.extra_contracts + (state.ports[portId]?.holding === "settlement" ? 1 : state.ports[portId]?.holding === "dependency" ? 2 : 0),
     event_price_mods: mods.event_price_mods,
     year: state.date.year,
   };
@@ -588,7 +592,7 @@ export function canBuyShip(catalog: ScenarioCatalog, state: GameState, cls: Vess
   if (!ps) return { ok: false, reason: "Unknown port." };
   const yard = ps.infrastructure.shipyard ?? 0;
   if (yard < cls.required_shipyard_level) return { ok: false, reason: `Requires a level ${cls.required_shipyard_level} shipyard at this port (currently ${yard}).` };
-  if (!(ps.access === "home" || ps.access === "agreement" || (catalog.scenario.mode === "modern" && ps.visited))) return { ok: false, reason: "Ships can be acquired at your home port or at ports where you hold an agreement." };
+  if (!(ps.access === "home" || ps.access === "agreement" || ps.holding !== "none" || (catalog.scenario.mode === "modern" && ps.visited))) return { ok: false, reason: "Ships can be acquired at your home port, at ports where you hold an agreement, or where your house has a settlement." };
   if (cls.required_technology) {
     const mods = computeModifiers(catalog, state);
     if (!state.technologies.includes(cls.required_technology) && !mods.unlocked_ships.has(cls.id)) {
@@ -886,10 +890,13 @@ export function tickGame(catalog: ScenarioCatalog, state: GameState, dtSim: numb
     maintenance = Math.round(maintenance);
     if (maintenance > 0) next = applyTransaction(next, -maintenance, "maintenance", days > 1 ? `Fleet upkeep (${days} days)` : "Daily fleet upkeep", { allow_negative: true });
     const income = dailyAdministrationIncome(catalog, next) * days;
-    if (income > 0) next = applyTransaction(next, income, "income", "Customs duties at home port", { port_id: next.empire.home_port_id });
+    if (income > 0) next = applyTransaction(next, income, "income", "Customs duties at your ports", { port_id: next.empire.home_port_id });
+    const upkeep = territoryUpkeep(catalog, next) * days;
+    if (upkeep > 0) next = applyTransaction(next, -upkeep, "territory", days > 1 ? `Settlements and dependencies (${days} days)` : "Settlements and dependencies", { allow_negative: true });
     next = { ...next, stats: { ...next.stats, last_maintenance_day: dayAfter } };
-    // Population, prosperity and order move once a day.
+    // Population, prosperity, order and commercial influence move once a day.
     next = tickDemographics(catalog, next, days);
+    next = tickInfluence(next, days);
 
     // Expire stale offers.
     const contracts: Record<string, Contract> = {};
@@ -981,4 +988,27 @@ export function decideDivergence(catalog: ScenarioCatalog, state: GameState, eve
     next = notify(next, "info", `Rivals respond to ${event?.title.toLowerCase() ?? "the event"}`, result.notes.join(" "), "/play/rivals");
   }
   return next;
+}
+
+// ---------------------------------------------------------------------------
+// Territory
+
+export type TerritoryAction = "settlement" | "dependency";
+
+export function canPerformTerritory(catalog: ScenarioCatalog, state: GameState, portId: string, action: TerritoryAction): PurchaseCheck & { cost: number } {
+  return action === "settlement" ? canFoundSettlement(catalog, state, portId) : canAcquireDependency(catalog, state, portId);
+}
+
+export function performTerritory(catalog: ScenarioCatalog, state: GameState, portId: string, action: TerritoryAction): GameState {
+  const check = canPerformTerritory(catalog, state, portId, action);
+  if (!check.ok) throw new TransactionError(check.reason ?? "Cannot do that.");
+  const port = catalog.portMap.get(portId);
+  const next = action === "settlement" ? foundSettlement(catalog, state, portId) : acquireDependency(catalog, state, portId);
+  return notify(
+    next,
+    "success",
+    port?.name ?? portId,
+    action === "settlement" ? "Your agents have settled here: you may build, buy ships and draw more cargo, and your fees are reduced. The settlement is a gameplay invention." : "The port is under your house's protection: lower fees, duties from its customs house and more cargo. This outcome is fiction; the port's historical rulers are unchanged in the record.",
+    `/play/ports?port=${portId}`,
+  );
 }

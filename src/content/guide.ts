@@ -3,7 +3,7 @@
  * and the small "?" help tips on each screen, so the three never drift apart.
  */
 
-export type GuideSectionId = "goal" | "loop" | "sailing" | "time" | "trade" | "fleet" | "ports" | "rivals" | "technology" | "diplomacy" | "history" | "sandbox" | "saves" | "glossary";
+export type GuideSectionId = "goal" | "loop" | "sailing" | "time" | "trade" | "fleet" | "ports" | "territory" | "rivals" | "technology" | "diplomacy" | "history" | "sandbox" | "saves" | "glossary";
 
 export interface GuideSection {
   id: GuideSectionId;
@@ -17,7 +17,7 @@ export interface GuideSection {
   /** Keyboard or control reference, when relevant. */
   controls?: Array<{ keys: string; action: string }>;
   /** Only shown when the scenario has this feature. */
-  feature?: "technology" | "diplomacy";
+  feature?: "technology" | "diplomacy" | "territory";
 }
 
 export const GUIDE: GuideSection[] = [
@@ -115,6 +115,19 @@ export const GUIDE: GuideSection[] = [
       "In the modern scenario you must have called at a port before you can lease facilities there.",
       "Every port has a population, a prosperity score and a public-order score, shown in the port panel. Ship calls (yours and the rivals'), market turnover and facilities raise prosperity; closures, high fees and unrest lower it. A prosperous port offers more and better-paid contracts and a bigger market; disorder adds to port charges; facilities above level 2 need prosperity of 40 to staff; and your home port's prosperity feeds your standing and daily duties.",
     ],
+  },
+  {
+    id: "territory",
+    title: "Territory and influence",
+    summary: "Sovereign territory is never for sale. Your house builds influence at ports, founds settlements where the sources attest merchant communities, and in some campaigns brings a smaller port under its protection.",
+    feature: "territory",
+    points: [
+      "Every port shows your influence (0 to 100). It rises with your share of the port's traffic, the facilities you build and your holdings, and fades where you stop calling. Your home port is always at 100. The Empire screen summarises influence by region.",
+      "Found a settlement (Ports screen or the port panel on the map) at a port you have called at, with influence of 25 and relations of 50 with its ruler. A settlement lets you build and buy ships there, draws an extra contract each week and cuts your fees as a trade agreement does. It costs a daily upkeep.",
+      "Where the campaign's rules allow it (Kilwa and Melaka, not Siraf or Venice), a settled port with influence of 70, most of its traffic carried by your ships and the ruler's favour can be brought under your protection: lower fees, two extra contracts, and duties from its customs house at half the home rate. Great cities are never available, and the port's ruler resents it.",
+      "Each campaign states its territorial rule on the scenario page, with the historical basis and its evidence rating. Settlements and dependencies are gameplay inventions; the encyclopedia keeps the documented rulers.",
+    ],
+    tips: ["Influence is earned by calling: a port you visit on every circuit will reach the settlement threshold on its own. Build a warehouse there to speed it up."],
   },
   {
     id: "rivals",

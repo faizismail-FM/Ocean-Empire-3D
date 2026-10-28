@@ -68,6 +68,7 @@ interface GameStore {
   diplomacy: (polityId: string, action: rules.DiplomaticAction) => boolean;
   rivalAction: (rivalId: string, action: RivalAction) => boolean;
   decideDivergence: (eventId: string, choice: DivergenceChoice) => void;
+  territory: (portId: string, action: rules.TerritoryAction) => boolean;
   ensureContracts: (portId: string) => void;
   dismissReport: () => void;
   markNotificationsRead: () => void;
@@ -236,6 +237,7 @@ export const useGameStore = create<GameStore>()((set, get) => {
       const next = rules.ensureContracts(catalog, state, portId);
       if (next !== state) set({ state: next });
     },
+    territory: (portId, action) => apply((c, s) => rules.performTerritory(c, s, portId, action)),
     decideDivergence: (eventId, choice) => {
       const { state, catalog } = get();
       if (!state || !catalog) return;

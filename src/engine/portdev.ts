@@ -36,11 +36,11 @@ export function canDevelop(catalog: ScenarioCatalog, state: GameState, portId: s
   if (!portState) return { ok: false, reason: "Unknown port.", cost, next_level: next };
   if (!catalog.scenario.infrastructure_available.includes(kind)) return { ok: false, reason: "Not available in this period.", cost, next_level: next };
   if (current >= def.max_level) return { ok: false, reason: "Already at maximum level.", cost, next_level: next };
-  const developable = portState.access === "home" || portState.access === "agreement" || (catalog.scenario.mode === "modern" && portState.visited);
+  const developable = portState.access === "home" || portState.access === "agreement" || portState.holding !== "none" || (catalog.scenario.mode === "modern" && portState.visited);
   if (!developable) {
     return {
       ok: false,
-      reason: catalog.scenario.mode === "modern" ? "Call at this port before leasing facilities here." : "You may only build at your home port or where you hold a trade agreement.",
+      reason: catalog.scenario.mode === "modern" ? "Call at this port before leasing facilities here." : "You may only build at your home port, where you hold a trade agreement, or where your house has a settlement.",
       cost,
       next_level: next,
     };
@@ -60,20 +60,24 @@ export function portFee(catalog: ScenarioCatalog, state: GameState, portId: stri
   const docks = ps.infrastructure.docks ?? 0;
   const nav = ps.infrastructure.navigation ?? 0;
   const infraDiscount = Math.max(0.5, 1 - 0.06 * docks - 0.04 * nav);
-  const homeDiscount = ps.access === "home" ? 0.5 : ps.access === "agreement" ? 0.85 : 1;
+  const homeDiscount = ps.access === "home" ? 0.5 : ps.holding === "dependency" ? 0.6 : ps.access === "agreement" || ps.holding === "settlement" ? 0.85 : 1;
   return Math.round(catalog.scenario.base_port_fee * port.fee_modifier * ps.fee_multiplier * sizeFactor * infraDiscount * homeDiscount * techMultiplier);
 }
 
-/** Daily duty income from the home port's administration. */
+/** Daily duty income from the home port's administration, plus half rates from dependencies. */
 export function dailyAdministrationIncome(catalog: ScenarioCatalog, state: GameState): number {
-  const home = state.ports[state.empire.home_port_id];
-  if (!home) return 0;
-  const level = home.infrastructure.administration ?? 0;
-  if (level === 0) return 0;
   const scale = economicScale(catalog);
-  // Duties follow the home port's prosperity: a thriving port pays more, a declining one less.
-  const prosperity = home.population > 0 ? prosperityFactor(home) : 1;
-  return Math.round(scale * 0.02 * level * level * prosperity);
+  let total = 0;
+  for (const [id, ps] of Object.entries(state.ports)) {
+    const isHome = id === state.empire.home_port_id;
+    if (!isHome && ps.holding !== "dependency") continue;
+    const level = ps.infrastructure.administration ?? 0;
+    if (level === 0) continue;
+    // Duties follow the port's prosperity: a thriving port pays more, a declining one less.
+    const prosperity = ps.population > 0 ? prosperityFactor(ps) : 1;
+    total += scale * 0.02 * level * level * prosperity * (isHome ? 1 : 0.5);
+  }
+  return Math.round(total);
 }
 
 export function repairCost(catalog: ScenarioCatalog, state: GameState, portId: string, purchaseCost: number, condition: number): number {

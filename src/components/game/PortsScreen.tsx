@@ -22,8 +22,8 @@ export function PortsScreen() {
   const defs = INFRASTRUCTURE.filter((d) => catalog.scenario.infrastructure_available.includes(d.kind));
 
   const grouped = {
-    yours: catalog.ports.filter((p) => state.ports[p.id]?.access === "home" || state.ports[p.id]?.access === "agreement"),
-    open: catalog.ports.filter((p) => state.ports[p.id]?.access === "open"),
+    yours: catalog.ports.filter((p) => state.ports[p.id]?.access === "home" || state.ports[p.id]?.access === "agreement" || (state.ports[p.id]?.holding ?? "none") !== "none"),
+    open: catalog.ports.filter((p) => state.ports[p.id]?.access === "open" && (state.ports[p.id]?.holding ?? "none") === "none"),
     other: catalog.ports.filter((p) => state.ports[p.id]?.access === "restricted" || state.ports[p.id]?.access === "closed"),
   };
 
@@ -32,7 +32,7 @@ export function PortsScreen() {
       <div>
         <div className="flex items-center gap-2"><h1 className="text-3xl">Ports</h1><HelpTip section="ports" /></div>
         <p className="text-sm text-foam/60">
-          {catalog.scenario.mode === "modern" ? "Lease and expand terminal facilities at ports you have called at." : "Develop your home port and ports where you hold a trade agreement. Territory is not for sale; access is negotiated."}
+          {catalog.scenario.mode === "modern" ? "Lease and expand terminal facilities at ports you have called at." : "Develop your home port, ports where you hold a trade agreement and ports where your house has settled. Sovereign territory is not for sale; access is negotiated and settlements are founded where your influence has grown."}
         </p>
       </div>
       <div className="grid gap-4 lg:grid-cols-[260px_1fr]">
@@ -40,7 +40,7 @@ export function PortsScreen() {
           {(["yours", "open", "other"] as const).map((group) =>
             grouped[group].length > 0 ? (
               <div key={group} className="mb-2">
-                <div className="label-caps px-2 py-1">{group === "yours" ? "Your ports & agreements" : group === "open" ? "Open ports" : "Restricted or closed"}</div>
+                <div className="label-caps px-2 py-1">{group === "yours" ? "Your ports, settlements & agreements" : group === "open" ? "Open ports" : "Restricted or closed"}</div>
                 {grouped[group].map((p) => (
                   <button key={p.id} onClick={() => setPortId(p.id)} className={cn("flex w-full items-center justify-between rounded-md px-2 py-1.5 text-left text-sm hover:bg-white/5", portId === p.id && "bg-cyan-400/15 text-cyan-300")}>
                     <span className="truncate">{p.name}</span>
