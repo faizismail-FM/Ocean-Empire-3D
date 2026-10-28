@@ -11,6 +11,7 @@ const MELAKA_PERIOD = { start: 1400, end: 1511, note: "Scenario window; the port
 const KILWA_PERIOD = { start: 1300, end: 1400, note: "Scenario window; the port's history extends beyond it." };
 const VENICE_PERIOD = { start: 1400, end: 1470, note: "Scenario window; the port's history extends beyond it." };
 const PORTUGAL_PERIOD = { start: 1500, end: 1550, note: "Scenario window; the port's history extends beyond it." };
+const MING_PERIOD = { start: 1400, end: 1440, note: "Scenario window; the port's history extends beyond it." };
 const DUTCH_PERIOD = { start: 1595, end: 1660, note: "Scenario window; the port's history extends beyond it." };
 
 export const SIRAF_PORTS: PortRecord[] = [
@@ -594,6 +595,180 @@ export const PORTUGAL_PORTS: PortRecord[] = [
   },
 ];
 
+export const MING_PORTS: PortRecord[] = [
+  {
+    id: "port_liujiagang", name: "Liujiagang (Taicang)", modern_reference_name: "Taicang, Jiangsu, China",
+    historical_names: ["Liujia Harbour", "Taicang"], latitude: 31.52, longitude: 121.12, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Ming dynasty (Southern Metropolitan Area)", polity_id: "civ_ming", country: "China",
+    historical_significance: "The Yangtze-mouth anchorage where the treasure fleets assembled and from which they sailed; the 1431 stele at the Tianfei temple here records the first six voyages.",
+    supplies: ["good_silk", "good_porcelain", "good_tea", "good_lacquerware", "good_iron_pans", "good_copper_cash"], demands: ["good_pepper", "good_frankincense", "good_sappanwood", "good_gems", "good_ivory", "good_horses_hormuz"],
+    infrastructure: {docks: 3, warehouse: 3, shipyard: 2, administration: 2}, default_access: "home", fee_modifier: 1.0, lane_nodes: ["yangtze_mouth"],
+    evidence_status: "established", sources: ["src_dreyer_zheng_he", "src_levathes_1994"], size: "hub",
+  },
+  {
+    id: "port_ningbo", name: "Ningbo", modern_reference_name: "Ningbo, Zhejiang, China",
+    historical_names: ["Mingzhou", "Ningpo"], latitude: 29.87, longitude: 121.55, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Ming dynasty", polity_id: "civ_ming", country: "China",
+    historical_significance: "Seat of the maritime trade office (shibosi) for Japan: the tally ships from Hakata were received and inspected here.",
+    supplies: ["good_silk", "good_copper_cash", "good_tea"], demands: ["good_japanese_swords", "good_sulphur", "good_sappanwood"],
+    infrastructure: {docks: 2, warehouse: 2, administration: 2}, default_access: "agreement", fee_modifier: 1.0, lane_nodes: ["east_china_sea", "yangtze_mouth"],
+    evidence_status: "established", sources: ["src_cambridge_ming_1988"], size: "major",
+  },
+  {
+    id: "port_changle", name: "Changle (Taiping anchorage)", modern_reference_name: "Changle, Fuzhou, Fujian, China",
+    historical_names: ["Taiping gang", "Min estuary"], latitude: 25.96, longitude: 119.62, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Ming dynasty (Fujian)", polity_id: "civ_ming", country: "China",
+    historical_significance: "Where the fleets waited for the north-east monsoon before crossing the South China Sea; Zheng He's stele of 1431 to the goddess Tianfei stands here.",
+    supplies: ["good_porcelain", "good_tea", "good_iron_pans"], demands: ["good_pepper", "good_sulphur", "good_sappanwood"],
+    infrastructure: {docks: 2, warehouse: 2, repair: 1}, default_access: "agreement", fee_modifier: 0.9, lane_nodes: ["min_estuary"],
+    evidence_status: "established", sources: ["src_dreyer_zheng_he"], size: "major",
+  },
+  {
+    id: "port_quanzhou_1405", name: "Quanzhou", modern_reference_name: "Quanzhou, Fujian, China",
+    historical_names: ["Zaitun", "Chinchew"], latitude: 24.9, longitude: 118.6, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Ming dynasty (Fujian)", polity_id: "civ_ming", country: "China",
+    historical_significance: "The great port of the Song and Yuan, reduced under the Ming sea ban to the Ryukyu tribute trade; Zheng He prayed at its mosque before the fifth voyage (stele of 1417).",
+    supplies: ["good_porcelain", "good_silk", "good_iron_pans"], demands: ["good_sulphur", "good_pepper", "good_frankincense", "good_gems"],
+    infrastructure: {docks: 2, warehouse: 2, shipyard: 1, administration: 1}, default_access: "agreement", fee_modifier: 1.0, lane_nodes: ["taiwan_strait"],
+    evidence_status: "established", sources: ["src_sen_2006", "src_dreyer_zheng_he"], size: "major",
+  },
+  {
+    id: "port_guangzhou_1405", name: "Guangzhou", modern_reference_name: "Guangzhou, China",
+    historical_names: ["Canton"], latitude: 23.13, longitude: 113.26, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Ming dynasty (Guangdong)", polity_id: "civ_ming", country: "China",
+    historical_significance: "Seat of the trade office for the Southeast Asian tributaries (Champa, Siam, Java) and the port of the Guangdong shipwrights.",
+    supplies: ["good_porcelain", "good_silk", "good_copper_cash", "good_lacquerware"], demands: ["good_pepper", "good_sappanwood", "good_ivory", "good_frankincense"],
+    infrastructure: {docks: 2, warehouse: 2, shipyard: 1, administration: 2}, default_access: "agreement", fee_modifier: 1.0, lane_nodes: ["pearl_river"],
+    evidence_status: "established", sources: ["src_cambridge_ming_1988"], size: "hub",
+  },
+  {
+    id: "port_naha", name: "Naha (Ryukyu)", modern_reference_name: "Naha, Okinawa, Japan",
+    historical_names: ["Liuqiu", "Chūzan"], latitude: 26.21, longitude: 127.68, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Kingdom of Ryukyu (Chuzan)", polity_id: "civ_ryukyu", country: "Japan",
+    historical_significance: "Harbour of the Chuzan kings, whose tribute ships to Fujian and trading junks to Japan, Siam and Melaka made Ryukyu the carrier of the eastern seas while the sea ban held.",
+    supplies: ["good_sulphur", "good_japanese_swords"], demands: ["good_silk", "good_porcelain", "good_copper_cash", "good_sappanwood"],
+    infrastructure: {docks: 1, warehouse: 2}, default_access: "open", fee_modifier: 0.9, lane_nodes: ["ryukyu"],
+    evidence_status: "established", sources: ["src_cambridge_ming_1988"], size: "regional",
+  },
+  {
+    id: "port_hakata", name: "Hakata", modern_reference_name: "Fukuoka, Japan",
+    historical_names: ["Hakata", "Fukuoka"], latitude: 33.6, longitude: 130.4, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Ashikaga shogunate (Ōuchi and Shōni lords)", polity_id: "civ_ashikaga", country: "Japan",
+    historical_significance: "The port of the tally ships to Ningbo from 1404; the trade lapsed after 1408 and resumed in 1432 under Ashikaga Yoshinori.",
+    supplies: ["good_japanese_swords", "good_sulphur"], demands: ["good_copper_cash", "good_silk", "good_porcelain", "good_tea"],
+    infrastructure: {docks: 1, warehouse: 1}, default_access: "restricted", fee_modifier: 1.2, lane_nodes: ["kyushu_w"],
+    evidence_status: "established", sources: ["src_cambridge_ming_1988"], size: "regional",
+  },
+  {
+    id: "port_xinzhou", name: "Xinzhou (Qui Nhon)", modern_reference_name: "Quy Nhon, Vietnam",
+    historical_names: ["Thị Nại", "Sri Banoy", "Xinzhou"], latitude: 13.77, longitude: 109.23, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Champa (kingdom of Vijaya)", polity_id: "civ_champa", country: "Vietnam",
+    historical_significance: "The port of Vijaya and the fleets' first foreign landfall, about ten days from Fujian with the north-east monsoon; Ma Huan's account opens here.",
+    supplies: ["good_sappanwood", "good_ivory"], demands: ["good_porcelain", "good_silk", "good_lacquerware", "good_tea"],
+    infrastructure: {docks: 1, warehouse: 1}, default_access: "open", fee_modifier: 1.0, lane_nodes: ["champa_coast"],
+    evidence_status: "established", sources: ["src_ma_huan", "src_fei_xin_ptak"], size: "regional",
+  },
+  {
+    id: "port_ayutthaya_1405", name: "Ayutthaya", modern_reference_name: "Phra Nakhon Si Ayutthaya, Thailand",
+    historical_names: ["Xianluo", "Siam"], latitude: 14.35, longitude: 100.57, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Kingdom of Ayutthaya", polity_id: "civ_ayutthaya", country: "Thailand",
+    historical_significance: "Siam's river capital, reached up the Chao Phraya; a frequent Ming tributary that also pressed Melaka and the Malay states.",
+    supplies: ["good_sappanwood", "good_ivory"], demands: ["good_porcelain", "good_silk", "good_copper_cash"],
+    infrastructure: {docks: 1, warehouse: 2, administration: 1}, default_access: "open", fee_modifier: 1.0, lane_nodes: ["gulf_of_thailand_n"],
+    evidence_status: "established", sources: ["src_ma_huan"], size: "major",
+  },
+  {
+    id: "port_palembang_1405", name: "Palembang (Old Port)", modern_reference_name: "Palembang, Sumatra, Indonesia",
+    historical_names: ["Jiugang", "Old Port", "Sanfoqi"], latitude: -2.99, longitude: 104.76, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Chinese settlers under nominal Javanese suzerainty; Ming Pacification Superintendency from 1407", polity_id: "civ_majapahit", country: "Indonesia",
+    historical_significance: "A town of Cantonese and Fujianese settlers on the Musi; the pirate chief Chen Zuyi ruled it until Zheng He's fleet destroyed him in 1407 and the Ming appointed Shi Jinqing as pacification superintendent.",
+    supplies: ["good_pepper", "good_sappanwood"], demands: ["good_porcelain", "good_silk", "good_iron_pans", "good_copper_cash"],
+    infrastructure: {docks: 1, warehouse: 1}, default_access: "restricted", fee_modifier: 1.2, lane_nodes: ["palembang_mouth"],
+    evidence_status: "established", sources: ["src_ma_huan", "src_dreyer_zheng_he"], size: "major",
+  },
+  {
+    id: "port_melaka_1405", name: "Melaka", modern_reference_name: "Melaka, Malaysia",
+    historical_names: ["Manlajia", "Malacca"], latitude: 2.19, longitude: 102.25, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Melaka under Parameswara, a Ming tributary from 1405", polity_id: "civ_melaka", country: "Malaysia",
+    historical_significance: "A new settlement when the fleets first called; Parameswara travelled to Nanjing in 1411, and the fleets built a stockaded depot here for goods awaiting the monsoon.",
+    supplies: ["good_pepper", "good_gems"], demands: ["good_porcelain", "good_silk", "good_copper_cash", "good_iron_pans"],
+    infrastructure: {docks: 1, warehouse: 1}, default_access: "open", fee_modifier: 1.0, lane_nodes: ["malacca_s"],
+    evidence_status: "established", sources: ["src_ma_huan", "src_wade_2004"], size: "regional",
+  },
+  {
+    id: "port_samudera", name: "Samudera (Pasai)", modern_reference_name: "Lhokseumawe, Aceh, Indonesia",
+    historical_names: ["Sumendala", "Samudra", "Pasai"], latitude: 5.2, longitude: 97.03, location_certainty: "approximate",
+    active_period: MING_PERIOD, historical_polity: "Sultanate of Samudera Pasai", polity_id: "civ_pasai", country: "Indonesia",
+    historical_significance: "Northern Sumatra's pepper port and the fleets' last depot before the Bay of Bengal crossing; Zheng He's men captured the pretender Sekandar here in 1415.",
+    supplies: ["good_pepper"], demands: ["good_porcelain", "good_silk", "good_bengal_cotton", "good_copper_cash"],
+    infrastructure: {docks: 1, warehouse: 1}, default_access: "open", fee_modifier: 1.0, lane_nodes: ["malacca_n"],
+    evidence_status: "established", sources: ["src_ma_huan"], size: "regional",
+  },
+  {
+    id: "port_galle", name: "Galle", modern_reference_name: "Galle, Sri Lanka",
+    historical_names: ["Xilan", "Beruwala"], latitude: 6.03, longitude: 80.22, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Kingdom of Kotte (Alakeshvara, then Parakramabahu VI)", polity_id: "civ_kotte", country: "Sri Lanka",
+    historical_significance: "Where Zheng He set up a trilingual stele (dated 1409) to the Buddha, Shiva and Allah; the Ming expedition of 1411 carried off the ruler Alakeshvara to Nanjing.",
+    supplies: ["good_gems", "good_ivory"], demands: ["good_porcelain", "good_silk", "good_tea"],
+    infrastructure: {docks: 1, warehouse: 1}, default_access: "restricted", fee_modifier: 1.1, lane_nodes: ["dondra"],
+    evidence_status: "established", sources: ["src_dreyer_zheng_he", "src_levathes_1994"], size: "regional",
+  },
+  {
+    id: "port_chittagong", name: "Chittagong", modern_reference_name: "Chattogram, Bangladesh",
+    historical_names: ["Chatigaon", "Bangala"], latitude: 22.33, longitude: 91.83, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Bengal Sultanate", polity_id: "civ_bengal_sultanate", country: "Bangladesh",
+    historical_significance: "Bengal's sea gate, visited by the fleets of 1415 and 1421; its fine cottons and the Maldivian cowries that served as Bengal's small change filled the return cargoes.",
+    supplies: ["good_bengal_cotton", "good_cowries"], demands: ["good_porcelain", "good_silk", "good_copper_cash", "good_sappanwood"],
+    infrastructure: {docks: 1, warehouse: 2}, default_access: "open", fee_modifier: 1.0, lane_nodes: ["ganges_mouth"],
+    evidence_status: "established", sources: ["src_ma_huan", "src_sen_2006"], size: "major",
+  },
+  {
+    id: "port_calicut_1405", name: "Calicut", modern_reference_name: "Kozhikode, Kerala, India",
+    historical_names: ["Guli", "Kozhikode"], latitude: 11.25, longitude: 75.78, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Zamorin of Calicut", polity_id: "civ_calicut", country: "India",
+    historical_significance: "'The great country of the Western Ocean' in Ma Huan: the fleets' principal Indian port, where the zamorin received Ming investiture in 1407 and the pepper of Malabar was bought by weight against silk and porcelain.",
+    supplies: ["good_pepper", "good_gems"], demands: ["good_porcelain", "good_silk", "good_copper_cash", "good_lacquerware", "good_iron_pans"],
+    infrastructure: {docks: 2, warehouse: 2, administration: 1}, default_access: "open", fee_modifier: 1.0, lane_nodes: ["laccadive_sea"],
+    evidence_status: "established", sources: ["src_ma_huan", "src_dreyer_zheng_he"], size: "hub",
+  },
+  {
+    id: "port_hormuz_1405", name: "Hormuz (Jarun)", modern_reference_name: "Hormuz island, Iran",
+    historical_names: ["Hulumosi", "Ormuz"], latitude: 27.1, longitude: 56.45, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Kingdom of Hormuz", polity_id: "civ_hormuz", country: "Iran",
+    historical_significance: "The terminus of the fourth voyage (1413–1415) and of every fleet after it: horses, pearls and gems from the Gulf against silk, porcelain and musk.",
+    supplies: ["good_horses_hormuz", "good_gems", "good_frankincense"], demands: ["good_porcelain", "good_silk", "good_tea", "good_lacquerware"],
+    infrastructure: {docks: 2, warehouse: 2, administration: 1}, default_access: "restricted", fee_modifier: 1.1, lane_nodes: ["hormuz"],
+    evidence_status: "established", sources: ["src_ma_huan", "src_dreyer_zheng_he"], size: "hub",
+  },
+  {
+    id: "port_aden_1405", name: "Aden", modern_reference_name: "Aden, Yemen",
+    historical_names: ["Adan", "Aden"], latitude: 12.78, longitude: 45.03, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Rasulid Yemen", polity_id: "civ_rasulid", country: "Yemen",
+    historical_significance: "Reached by a detachment of the fifth voyage in 1419 and again in 1421 and 1432; the Rasulid sultan sent giraffes, lions and zebras to Nanjing.",
+    supplies: ["good_frankincense", "good_horses_hormuz"], demands: ["good_porcelain", "good_silk", "good_pepper", "good_tea"],
+    infrastructure: {docks: 2, warehouse: 2, administration: 1}, default_access: "restricted", fee_modifier: 1.1, lane_nodes: ["gulf_of_aden"],
+    evidence_status: "established", sources: ["src_ma_huan", "src_dreyer_zheng_he"], size: "hub",
+  },
+  {
+    id: "port_mogadishu_1405", name: "Mogadishu", modern_reference_name: "Mogadishu, Somalia",
+    historical_names: ["Mugudushu", "Maqdishu"], latitude: 2.04, longitude: 45.34, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Sultanate of Mogadishu", polity_id: "civ_mogadishu", country: "Somalia",
+    historical_significance: "The fleets' farthest regular port on the African coast, visited in 1417–1419 and 1421–1422; Fei Xin describes its stone houses and its trade in frankincense, ambergris and gold.",
+    supplies: ["good_frankincense", "good_ivory"], demands: ["good_porcelain", "good_silk", "good_bengal_cotton", "good_iron_pans"],
+    infrastructure: {docks: 1, warehouse: 1}, default_access: "closed", fee_modifier: 1.1, lane_nodes: ["benadir"],
+    evidence_status: "established", sources: ["src_fei_xin_ptak", "src_dreyer_zheng_he"], size: "regional",
+  },
+  {
+    id: "port_malindi", name: "Malindi", modern_reference_name: "Malindi, Kenya",
+    historical_names: ["Malin", "Melinde"], latitude: -3.22, longitude: 40.12, location_certainty: "precise",
+    active_period: MING_PERIOD, historical_polity: "Malindi, an independent Swahili town", polity_id: null, country: "Kenya",
+    historical_significance: "Sent the giraffe that reached Nanjing in 1415 and received the fifth voyage's detachment; the southern limit of the fleets' documented calls.",
+    supplies: ["good_ivory"], demands: ["good_porcelain", "good_silk", "good_bengal_cotton"],
+    infrastructure: {docks: 1, warehouse: 1}, default_access: "closed", fee_modifier: 1.1, lane_nodes: ["lamu_offshore"],
+    evidence_status: "scholarly_interpretation", sources: ["src_dreyer_zheng_he", "src_levathes_1994"], size: "regional",
+  },
+];
+
 export const DUTCH_PORTS: PortRecord[] = [
   {
     id: "port_amsterdam", name: "Amsterdam", modern_reference_name: "Amsterdam, Netherlands",
@@ -742,4 +917,4 @@ export const DUTCH_PORTS: PortRecord[] = [
   },
 ];
 
-export const HISTORICAL_PORTS: PortRecord[] = [...SIRAF_PORTS, ...MELAKA_PORTS, ...KILWA_PORTS, ...VENICE_PORTS, ...PORTUGAL_PORTS, ...DUTCH_PORTS];
+export const HISTORICAL_PORTS: PortRecord[] = [...SIRAF_PORTS, ...MELAKA_PORTS, ...KILWA_PORTS, ...VENICE_PORTS, ...PORTUGAL_PORTS, ...DUTCH_PORTS, ...MING_PORTS];

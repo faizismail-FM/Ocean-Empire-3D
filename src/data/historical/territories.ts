@@ -15,6 +15,7 @@ const VENICE = ["venice_1423"];
 const MELAKA = ["melaka_1460"];
 const PORTUGAL = ["portugal_1505"];
 const DUTCH = ["dutch_1602"];
+const MING = ["ming_1405"];
 
 export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
   // ---- Ninth century ------------------------------------------------------------------
@@ -105,7 +106,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_mogadishu", polity_id: "civ_mogadishu", label: "Sultanate of Mogadishu", control: "direct",
     period: { start: 1250, end: 1500, approximate: true },
     polygon: [[44.5, 3], [46.5, 3], [46.3, 1.3], [44.9, 1.5]],
-    evidence_status: "uncertain", sources: ["src_ibn_battuta_gibb", "src_swahili_world_2018"], scenario_ids: KILWA,
+    evidence_status: "uncertain", sources: ["src_ibn_battuta_gibb", "src_swahili_world_2018"], scenario_ids: [...KILWA, ...MING],
   },
   {
     id: "ext_mombasa_14c", polity_id: "civ_mombasa_14c", label: "Mombasa", control: "direct",
@@ -124,19 +125,19 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     period: { start: 1229, end: 1454 },
     polygon: [[42.5, 17], [44.5, 17], [46, 15.5], [49, 14.5], [49, 13], [45, 12.6], [43, 12.8], [42.5, 14.5]],
     note: "Highland control fluctuated; the Tihama, Taʿizz and Aden were the dynasty's core.",
-    evidence_status: "scholarly_interpretation", sources: ["src_margariti_aden", "src_ibn_battuta_gibb"], scenario_ids: KILWA,
+    evidence_status: "scholarly_interpretation", sources: ["src_margariti_aden", "src_ibn_battuta_gibb"], scenario_ids: [...KILWA, ...MING],
   },
   {
     id: "ext_hormuz_direct", polity_id: "civ_hormuz", label: "Kingdom of Hormuz", control: "direct",
     period: { start: 1300, end: 1507, approximate: true },
     polygon: [[55.5, 27.5], [57.5, 27.5], [57.5, 26.3], [56, 26.3]],
-    evidence_status: "scholarly_interpretation", sources: ["src_iranica_hormuz"], scenario_ids: [...KILWA, ...PORTUGAL],
+    evidence_status: "scholarly_interpretation", sources: ["src_iranica_hormuz"], scenario_ids: [...KILWA, ...PORTUGAL, ...MING],
   },
   {
     id: "ext_hormuz_oman", polity_id: "civ_hormuz", label: "Hormuz on the Omani coast", control: "suzerainty",
     period: { start: 1300, end: 1507, approximate: true, note: "Qalhat and the coast acknowledged Hormuz; inland Oman did not." },
     polygon: [[56, 24.8], [59.8, 23], [59.9, 22], [58.6, 21.6], [56.5, 23.5]],
-    evidence_status: "scholarly_interpretation", sources: ["src_iranica_hormuz", "src_ibn_battuta_gibb"], scenario_ids: [...KILWA, ...PORTUGAL],
+    evidence_status: "scholarly_interpretation", sources: ["src_iranica_hormuz", "src_ibn_battuta_gibb"], scenario_ids: [...KILWA, ...PORTUGAL, ...MING],
   },
   {
     id: "ext_delhi_tughluq", polity_id: "civ_delhi_tughluq", label: "Delhi Sultanate (Tughluq)", control: "direct",
@@ -290,7 +291,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_melaka_direct", polity_id: "civ_melaka", label: "Melaka Sultanate", control: "direct",
     period: { start: 1400, end: 1511, approximate: true },
     polygon: [[100.3, 3.5], [102.3, 2.8], [103.1, 1.6], [102.6, 1.5], [101.3, 2.6]],
-    evidence_status: "scholarly_interpretation", sources: ["src_andaya_malaysia", "src_thomaz_1993"], scenario_ids: [...MELAKA, ...PORTUGAL],
+    evidence_status: "scholarly_interpretation", sources: ["src_andaya_malaysia", "src_thomaz_1993"], scenario_ids: [...MELAKA, ...PORTUGAL, ...MING],
   },
   {
     id: "ext_melaka_sphere", polity_id: "civ_melaka", label: "Melaka's suzerainty over the peninsula and eastern Sumatra", control: "suzerainty",
@@ -303,37 +304,37 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     period: { start: 1368, end: 1644 },
     polygon: [[98, 22], [110, 21.5], [118, 23], [122, 30], [121, 34], [117, 35], [105, 35], [99, 30], [98, 28]],
     note: "Southern and eastern provinces only.",
-    evidence_status: "established", sources: ["src_dreyer_zheng_he"], scenario_ids: [...MELAKA, ...DUTCH],
+    evidence_status: "established", sources: ["src_dreyer_zheng_he"], scenario_ids: [...MELAKA, ...DUTCH, ...MING],
   },
   {
     id: "ext_majapahit", polity_id: "civ_majapahit", label: "Majapahit (core)", control: "direct",
     period: { start: 1293, end: 1527, approximate: true, note: "Eastern and central Java; wider claims over the archipelago are disputed and the kingdom was in decline by 1460." },
     polygon: [[108, -6.3], [114.5, -7], [114.5, -8.5], [110, -8.2], [108, -7]],
-    evidence_status: "scholarly_interpretation", sources: ["src_reid_1988"], scenario_ids: MELAKA,
+    evidence_status: "scholarly_interpretation", sources: ["src_reid_1988"], scenario_ids: [...MELAKA, ...MING],
   },
   {
     id: "ext_pasai", polity_id: "civ_pasai", label: "Samudera Pasai", control: "direct",
     period: { start: 1267, end: 1521, approximate: true },
     polygon: [[95.5, 5.3], [97.6, 5.3], [97.6, 4.6], [95.8, 4.5]],
-    evidence_status: "uncertain", sources: ["src_reid_1988", "src_pires_suma"], scenario_ids: MELAKA,
+    evidence_status: "uncertain", sources: ["src_reid_1988", "src_pires_suma"], scenario_ids: [...MELAKA, ...MING],
   },
   {
     id: "ext_ayutthaya", polity_id: "civ_ayutthaya", label: "Ayutthaya", control: "direct",
     period: { start: 1351, end: 1767, approximate: true },
     polygon: [[98.5, 17.5], [101.5, 17.5], [102, 14], [101, 12], [99.5, 12.5], [98.8, 15]],
-    evidence_status: "scholarly_interpretation", sources: ["src_reid_1988"], scenario_ids: MELAKA,
+    evidence_status: "scholarly_interpretation", sources: ["src_reid_1988"], scenario_ids: [...MELAKA, ...MING],
   },
   {
     id: "ext_hanthawaddy", polity_id: "civ_hanthawaddy", label: "Hanthawaddy (Pegu)", control: "direct",
     period: { start: 1287, end: 1539, approximate: true },
     polygon: [[95.5, 18], [97.8, 18], [97.8, 15.5], [96.5, 15.5], [95.5, 16.5]],
-    evidence_status: "scholarly_interpretation", sources: ["src_reid_1988"], scenario_ids: MELAKA,
+    evidence_status: "scholarly_interpretation", sources: ["src_reid_1988"], scenario_ids: [...MELAKA, ...MING],
   },
   {
     id: "ext_calicut", polity_id: "civ_calicut", label: "Zamorin of Calicut", control: "direct",
     period: { start: 1400, end: 1600, approximate: true },
     polygon: [[75.5, 12.3], [76.5, 12.3], [76.3, 10.2], [75.6, 10.3]],
-    evidence_status: "uncertain", sources: ["src_malekandathil_2010", "src_pires_suma"], scenario_ids: [...MELAKA, ...PORTUGAL],
+    evidence_status: "uncertain", sources: ["src_malekandathil_2010", "src_pires_suma"], scenario_ids: [...MELAKA, ...PORTUGAL, ...MING],
   },
   {
     id: "ext_gujarat_sultanate", polity_id: "civ_gujarat_sultanate", label: "Gujarat Sultanate", control: "direct",
@@ -345,7 +346,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_vijayanagara", polity_id: "civ_vijayanagara", label: "Vijayanagara", control: "direct",
     period: { start: 1336, end: 1565, approximate: true },
     polygon: [[73.5, 17], [79, 17], [80.3, 14], [79, 11], [77, 10], [75, 12], [73.8, 15]],
-    evidence_status: "scholarly_interpretation", sources: ["src_reid_1988", "src_malekandathil_2010"], scenario_ids: [...MELAKA, ...PORTUGAL],
+    evidence_status: "scholarly_interpretation", sources: ["src_reid_1988", "src_malekandathil_2010"], scenario_ids: [...MELAKA, ...PORTUGAL, ...MING],
   },
   {
     id: "ext_ternate", polity_id: "civ_ternate", label: "Ternate", control: "direct",
@@ -450,6 +451,56 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     polygon: [[25, 31.8], [32, 31.6], [36, 37], [38.5, 37.5], [41, 36.5], [39, 33], [36, 29], [39, 23], [43, 13], [42.5, 12.8], [36, 22], [32, 24], [25, 22]],
     note: "Yemen was occupied in 1538; the Hijaz acknowledged the sultan from 1517.",
     evidence_status: "scholarly_interpretation", sources: ["src_subrahmanyam_1993"], scenario_ids: PORTUGAL,
+  },
+
+  // ---- Early fifteenth century: the Ming treasure fleets --------------------------------
+  {
+    id: "ext_ming_jiaozhi", polity_id: "civ_ming", label: "Jiaozhi (Ming-occupied Đại Việt)", control: "direct",
+    period: { start: 1407, end: 1427, note: "Annexed July 1407; abandoned after Lê Lợi's victories at the end of 1427." },
+    polygon: [[103.0, 22.8], [106.7, 22.9], [108.0, 21.5], [106.6, 20.0], [106.2, 18.3], [105.0, 19.0], [104.2, 20.5], [103.0, 21.5]],
+    evidence_status: "established", sources: ["src_cambridge_ming_1988"], scenario_ids: MING,
+  },
+  {
+    id: "ext_ryukyu_chuzan", polity_id: "civ_ryukyu", label: "Chuzan (central Okinawa)", control: "direct",
+    period: { start: 1372, end: 1428, approximate: true, note: "One of three Okinawan principalities; Hokuzan fell to Shō Hashi in 1416 and Nanzan in 1429." },
+    polygon: [[127.6, 26.5], [128.0, 26.6], [128.1, 26.2], [127.7, 26.1]],
+    evidence_status: "scholarly_interpretation", sources: ["src_cambridge_ming_1988"], scenario_ids: MING,
+  },
+  {
+    id: "ext_ryukyu_kingdom", polity_id: "civ_ryukyu", label: "Kingdom of Ryukyu", control: "direct",
+    period: { start: 1429, end: 1879, note: "United under Shō Hashi in 1429; the outer islands were brought under Shuri through the fifteenth century." },
+    polygon: [[127.6, 26.9], [128.3, 26.9], [128.4, 26.0], [127.6, 26.0]],
+    evidence_status: "established", sources: ["src_cambridge_ming_1988"], scenario_ids: MING,
+  },
+  {
+    id: "ext_ashikaga", polity_id: "civ_ashikaga", label: "Ashikaga Japan", control: "suzerainty",
+    period: { start: 1392, end: 1467, approximate: true, note: "From the reunion of the courts (1392) to the Ōnin war; the shogun's authority ran through the provincial lords (shugo)." },
+    polygon: [[129.5, 33.8], [131.0, 34.6], [135.0, 35.8], [138.5, 38.2], [141.5, 41.2], [142.0, 40.0], [141.0, 36.8], [139.9, 35.0], [137.0, 34.3], [133.0, 33.4], [131.2, 31.1], [130.0, 31.4]],
+    evidence_status: "scholarly_interpretation", sources: ["src_cambridge_ming_1988"], scenario_ids: MING,
+  },
+  {
+    id: "ext_champa_vijaya", polity_id: "civ_champa", label: "Champa (Vijaya)", control: "direct",
+    period: { start: 1000, end: 1471, approximate: true, note: "The central coast from the Hải Vân pass to Phan Rang; the northern provinces were lost to Đại Việt by stages and Vijaya fell in 1471." },
+    polygon: [[107.8, 16.3], [108.3, 16.1], [109.4, 13.6], [109.1, 11.6], [108.4, 11.2], [107.9, 12.5], [108.0, 14.5], [107.6, 15.8]],
+    evidence_status: "scholarly_interpretation", sources: ["src_ma_huan"], scenario_ids: MING,
+  },
+  {
+    id: "ext_kotte", polity_id: "civ_kotte", label: "Kotte and Raigama (south-western Sri Lanka)", control: "direct",
+    period: { start: 1371, end: 1597, approximate: true, note: "Alakeshvara's lowland kingdom; Parakramabahu VI (1412–1467) later brought the whole island under Kotte for a generation." },
+    polygon: [[79.8, 7.6], [80.6, 7.4], [81.0, 6.4], [80.6, 5.9], [80.0, 6.1], [79.8, 6.8]],
+    evidence_status: "scholarly_interpretation", sources: ["src_dreyer_zheng_he", "src_levathes_1994"], scenario_ids: MING,
+  },
+  {
+    id: "ext_bengal_sultanate", polity_id: "civ_bengal_sultanate", label: "Bengal Sultanate", control: "direct",
+    period: { start: 1352, end: 1576, approximate: true, note: "The delta and its hinterland; the eastern frontier toward Arakan and Tripura moved through the period." },
+    polygon: [[86.8, 25.8], [89.5, 26.2], [91.8, 25.0], [92.2, 23.2], [91.5, 21.8], [89.0, 21.6], [87.5, 22.3], [86.6, 24.0]],
+    evidence_status: "scholarly_interpretation", sources: ["src_sen_2006"], scenario_ids: MING,
+  },
+  {
+    id: "ext_palembang_superintendency", polity_id: "civ_ming", label: "Palembang pacification superintendency", control: "sphere",
+    period: { start: 1407, end: 1440, approximate: true, note: "Shi Jinqing and his heirs governed the Chinese of the Old Port in the Ming's name; the office faded after the voyages ended." },
+    polygon: [[104.4, -2.6], [105.2, -2.6], [105.2, -3.3], [104.4, -3.3]],
+    evidence_status: "scholarly_interpretation", sources: ["src_ma_huan", "src_dreyer_zheng_he"], scenario_ids: MING,
   },
 
   // ---- Seventeenth century: the Dutch East India Company ----------------------------
@@ -578,7 +629,7 @@ export const SETTLEMENTS: SettlementRecord[] = [
   { id: "stl_mecca", name: "Mecca", kind: "religious_centre", latitude: 21.42, longitude: 39.83, location_certainty: "precise", period: { start: 630, end: null }, polity_id: null, description: "The pilgrimage city; its yearly gathering was a market for goods from the Indian Ocean and the Mediterranean.", evidence_status: "established", sources: ["src_kennedy_caliphates"], scenario_ids: [...SIRAF, ...KILWA, ...PORTUGAL] },
   // Fourteenth century
   { id: "stl_great_zimbabwe", name: "Great Zimbabwe", kind: "inland_centre", latitude: -20.27, longitude: 30.93, location_certainty: "precise", period: { start: 1100, end: 1450, approximate: true }, polity_id: null, description: "The stone-built capital of the plateau state whose gold reached Sofala and Kilwa; Kilwa coins and Chinese ceramics have been found there.", evidence_status: "established", sources: ["src_pearson_1998", "src_sutton_1998"], scenario_ids: KILWA },
-  { id: "stl_taizz", name: "Taʿizz", kind: "capital", latitude: 13.58, longitude: 44.02, location_certainty: "precise", period: { start: 1229, end: 1454 }, polity_id: "civ_rasulid", description: "The Rasulid capital in the highlands above Aden.", evidence_status: "established", sources: ["src_margariti_aden"], scenario_ids: KILWA },
+  { id: "stl_taizz", name: "Taʿizz", kind: "capital", latitude: 13.58, longitude: 44.02, location_certainty: "precise", period: { start: 1229, end: 1454 }, polity_id: "civ_rasulid", description: "The Rasulid capital in the highlands above Aden.", evidence_status: "established", sources: ["src_margariti_aden"], scenario_ids: [...KILWA, ...MING] },
   { id: "stl_zabid", name: "Zabid", kind: "city", latitude: 14.2, longitude: 43.32, location_certainty: "precise", period: { start: 819, end: null }, polity_id: "civ_rasulid", description: "The Tihama's chief town and a seat of learning under the Rasulids.", evidence_status: "established", sources: ["src_margariti_aden"], scenario_ids: [...SIRAF, ...KILWA] },
   { id: "stl_delhi", name: "Delhi", kind: "capital", latitude: 28.65, longitude: 77.23, location_certainty: "precise", period: { start: 1206, end: null }, polity_id: "civ_delhi_tughluq", description: "Capital of the sultanate; Ibn Battuta served here as a judge from 1334 to 1341.", evidence_status: "established", sources: ["src_jackson_delhi", "src_ibn_battuta_gibb"], scenario_ids: KILWA },
   // Fifteenth century: Venice
@@ -591,9 +642,9 @@ export const SETTLEMENTS: SettlementRecord[] = [
   { id: "stl_edirne", name: "Adrianople (Edirne)", kind: "capital", latitude: 41.68, longitude: 26.56, location_certainty: "precise", period: { start: 1369, end: 1453, approximate: true }, polity_id: "civ_ottoman_early", description: "The Ottoman capital in Europe until the conquest of Constantinople.", evidence_status: "established", sources: ["src_nicol_1988"], scenario_ids: VENICE },
   { id: "stl_nuremberg", name: "Nuremberg", kind: "city", latitude: 49.45, longitude: 11.08, location_certainty: "precise", period: { start: 1400, end: null }, polity_id: null, description: "A centre of the south German metal and merchant houses that traded through the Fondaco dei Tedeschi.", evidence_status: "established", sources: ["src_lane_1973"], scenario_ids: VENICE },
   // Fifteenth century: Melaka
-  { id: "stl_trowulan", name: "Trowulan", kind: "capital", latitude: -7.56, longitude: 112.38, location_certainty: "approximate", period: { start: 1293, end: 1500, approximate: true }, polity_id: "civ_majapahit", description: "The inland capital of Majapahit, identified with the Trowulan site in East Java.", evidence_status: "scholarly_interpretation", sources: ["src_reid_1988"], scenario_ids: MELAKA },
-  { id: "stl_vijayanagara", name: "Vijayanagara", kind: "capital", latitude: 15.33, longitude: 76.46, location_certainty: "precise", period: { start: 1336, end: 1565 }, polity_id: "civ_vijayanagara", description: "The capital of the southern empire whose demand for horses and whose textiles fed the coastal trade.", evidence_status: "established", sources: ["src_reid_1988", "src_malekandathil_2010"], scenario_ids: [...MELAKA, ...PORTUGAL] },
-  { id: "stl_ava", name: "Ava", kind: "capital", latitude: 21.86, longitude: 95.98, location_certainty: "precise", period: { start: 1365, end: 1555 }, polity_id: null, description: "Capital of the upper Burmese kingdom at war with Pegu for much of the fifteenth century.", evidence_status: "established", sources: ["src_reid_1988"], scenario_ids: MELAKA },
+  { id: "stl_trowulan", name: "Trowulan", kind: "capital", latitude: -7.56, longitude: 112.38, location_certainty: "approximate", period: { start: 1293, end: 1500, approximate: true }, polity_id: "civ_majapahit", description: "The inland capital of Majapahit, identified with the Trowulan site in East Java.", evidence_status: "scholarly_interpretation", sources: ["src_reid_1988"], scenario_ids: [...MELAKA, ...MING] },
+  { id: "stl_vijayanagara", name: "Vijayanagara", kind: "capital", latitude: 15.33, longitude: 76.46, location_certainty: "precise", period: { start: 1336, end: 1565 }, polity_id: "civ_vijayanagara", description: "The capital of the southern empire whose demand for horses and whose textiles fed the coastal trade.", evidence_status: "established", sources: ["src_reid_1988", "src_malekandathil_2010"], scenario_ids: [...MELAKA, ...PORTUGAL, ...MING] },
+  { id: "stl_ava", name: "Ava", kind: "capital", latitude: 21.86, longitude: 95.98, location_certainty: "precise", period: { start: 1365, end: 1555 }, polity_id: null, description: "Capital of the upper Burmese kingdom at war with Pegu for much of the fifteenth century.", evidence_status: "established", sources: ["src_reid_1988"], scenario_ids: [...MELAKA, ...MING] },
   // Sixteenth century: Portugal
   { id: "stl_evora", name: "Évora", kind: "city", latitude: 38.57, longitude: -7.91, location_certainty: "precise", period: { start: 1500, end: null }, polity_id: "civ_portugal", description: "A favoured residence of the court under Manuel I and João III, away from Lisbon's plagues.", evidence_status: "established", sources: ["src_newitt_2005"], scenario_ids: PORTUGAL },
   { id: "stl_seville", name: "Seville", kind: "city", latitude: 37.39, longitude: -5.99, location_certainty: "precise", period: { start: 1503, end: null }, polity_id: null, description: "Seat of Castile's Casa de Contratación from 1503, Lisbon's rival as the gateway to the new oceans.", evidence_status: "established", sources: ["src_boxer_1969"], scenario_ids: PORTUGAL },
@@ -608,4 +659,13 @@ export const SETTLEMENTS: SettlementRecord[] = [
   { id: "stl_golconda", name: "Golconda (Hyderabad)", kind: "capital", latitude: 17.38, longitude: 78.4, location_certainty: "precise", period: { start: 1518, end: 1687 }, polity_id: "civ_golconda", description: "Capital of the Qutb Shahi sultans, whose farmans governed the Masulipatnam factory.", evidence_status: "established", sources: ["src_das_bruijn"], scenario_ids: DUTCH },
   { id: "stl_karta", name: "Karta (Mataram)", kind: "capital", latitude: -7.83, longitude: 110.4, location_certainty: "approximate", period: { start: 1613, end: 1645, approximate: true }, polity_id: "civ_mataram", description: "Sultan Agung's court near present-day Yogyakarta, from which the sieges of Batavia were launched; its exact site is uncertain.", evidence_status: "scholarly_interpretation", sources: ["src_blusse_1986"], scenario_ids: DUTCH },
   { id: "stl_goa_estado", name: "Goa (Estado da Índia)", kind: "city", latitude: 15.5, longitude: 73.91, location_certainty: "precise", period: { start: 1530, end: 1961 }, polity_id: "civ_portugal", description: "Capital of the Portuguese Estado, blockaded by Company fleets almost every monsoon from 1636 to 1644.", evidence_status: "established", sources: ["src_boxer_1965"], scenario_ids: DUTCH },
+  // Early fifteenth century: the Ming treasure fleets
+  { id: "stl_nanjing", name: "Nanjing", kind: "capital", latitude: 32.06, longitude: 118.78, location_certainty: "precise", period: { start: 1368, end: 1420 }, polity_id: "civ_ming", description: "The Ming capital until 1421 and seat of the Longjiang shipyard; the fleets' envoys were received here.", evidence_status: "established", sources: ["src_dreyer_zheng_he"], scenario_ids: MING },
+  { id: "stl_nanjing_secondary", name: "Nanjing (secondary capital)", kind: "city", latitude: 32.06, longitude: 118.78, location_certainty: "precise", period: { start: 1421, end: 1644 }, polity_id: "civ_ming", description: "Kept a shadow administration and the fleet's base after the court moved north.", evidence_status: "established", sources: ["src_cambridge_ming_1988"], scenario_ids: MING },
+  { id: "stl_beijing_1421", name: "Beijing", kind: "capital", latitude: 39.9, longitude: 116.4, location_certainty: "precise", period: { start: 1421, end: 1644 }, polity_id: "civ_ming", description: "The Ming capital from the New Year of 1421.", evidence_status: "established", sources: ["src_cambridge_ming_1988"], scenario_ids: MING },
+  { id: "stl_kyoto", name: "Kyoto", kind: "capital", latitude: 35.01, longitude: 135.77, location_certainty: "precise", period: { start: 794, end: 1868 }, polity_id: "civ_ashikaga", description: "Seat of the Ashikaga shoguns at Muromachi and of the imperial court.", evidence_status: "established", sources: ["src_cambridge_ming_1988"], scenario_ids: MING },
+  { id: "stl_shuri", name: "Shuri", kind: "capital", latitude: 26.22, longitude: 127.72, location_certainty: "precise", period: { start: 1406, end: 1879, approximate: true }, polity_id: "civ_ryukyu", description: "Shō Hashi's capital above the port of Naha.", evidence_status: "established", sources: ["src_cambridge_ming_1988"], scenario_ids: MING },
+  { id: "stl_vijaya", name: "Vijaya (Đồ Bàn)", kind: "capital", latitude: 13.9, longitude: 109.07, location_certainty: "precise", period: { start: 1000, end: 1471, approximate: true }, polity_id: "civ_champa", description: "The Cham capital behind Xinzhou, taken by Đại Việt in 1471.", evidence_status: "established", sources: ["src_ma_huan"], scenario_ids: MING },
+  { id: "stl_kotte", name: "Kotte (Jayawardenapura)", kind: "capital", latitude: 6.9, longitude: 79.91, location_certainty: "precise", period: { start: 1412, end: 1597 }, polity_id: "civ_kotte", description: "Parakramabahu VI's capital from 1412.", evidence_status: "established", sources: ["src_levathes_1994"], scenario_ids: MING },
+  { id: "stl_pandua", name: "Pandua", kind: "capital", latitude: 25.13, longitude: 88.16, location_certainty: "precise", period: { start: 1352, end: 1450, approximate: true }, polity_id: "civ_bengal_sultanate", description: "Capital of the Bengal sultans until the return to Gaur around 1450.", evidence_status: "scholarly_interpretation", sources: ["src_sen_2006"], scenario_ids: MING },
 ];
