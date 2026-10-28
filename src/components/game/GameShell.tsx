@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useEffect, useState, type ReactNode } from "react";
-import { Bell, BookOpen, BookOpenText, Building2, Coins, Globe2, Handshake, Hourglass, Landmark, ListChecks, Menu, Pause, Play, Save, ScrollText, Settings, Ship, Store, Swords, Target, Waves, X } from "lucide-react";
+import { Bell, BookOpen, BookOpenText, Building2, Coins, GitFork, Globe2, Handshake, Hourglass, Landmark, ListChecks, Menu, Pause, Play, Save, ScrollText, Settings, Ship, Store, Swords, Target, Waves, X } from "lucide-react";
 import { formatClock, formatGameDate } from "@/engine/calendar";
 import { TIME_SCALES, timeScaleHint, timeScaleLabel } from "@/lib/time-scale";
 import { cn, formatMoney } from "@/lib/utils";
@@ -14,6 +14,7 @@ import { SimulationRunner } from "./SimulationRunner";
 import { Toasts } from "./Toasts";
 import { VoyageReportModal } from "./VoyageReportModal";
 import { CampaignEndModal } from "./CampaignEndModal";
+import { DivergenceModal } from "./DivergenceModal";
 
 interface NavItem {
   href: string;
@@ -127,6 +128,7 @@ export function GameShell({ children }: { children: ReactNode }) {
       <Toasts />
       <VoyageReportModal />
       <CampaignEndModal />
+      <DivergenceModal />
     </div>
   );
 }
@@ -162,6 +164,11 @@ function TopBar({ onMenu }: { onMenu: () => void }) {
         </Link>
 
         <div className="ml-auto flex items-center gap-2 md:gap-3">
+          {state.empire.rules === "sandbox" && (
+            <Link href="/play/history" className={cn("hidden items-center gap-1 rounded-lg border px-2 py-1 text-xs md:flex", state.alternate_history.pending_event_id ? "animate-pulse border-coral-400/60 bg-coral-400/10 text-coral-300" : "border-coral-400/30 text-coral-300/80 hover:bg-coral-400/10")} title={state.alternate_history.pending_event_id ? "A turning point awaits your decision" : `Alternate history: ${state.alternate_history.divergences.length} divergence(s) from the record`}>
+              <GitFork size={12} /> {state.alternate_history.pending_event_id ? "Decision awaited" : `Alternate history · ${state.alternate_history.divergences.length}`}
+            </Link>
+          )}
           <div className="hidden items-center gap-1.5 rounded-lg bg-navy-800/80 px-3 py-1.5 font-mono text-sm text-gold-300 sm:flex" title="Treasury">
             <Coins size={14} />
             {formatMoney(state.treasury, catalog.scenario.currency)}

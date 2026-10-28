@@ -3,7 +3,7 @@
  * and the small "?" help tips on each screen, so the three never drift apart.
  */
 
-export type GuideSectionId = "goal" | "loop" | "sailing" | "time" | "trade" | "fleet" | "ports" | "rivals" | "technology" | "diplomacy" | "history" | "saves" | "glossary";
+export type GuideSectionId = "goal" | "loop" | "sailing" | "time" | "trade" | "fleet" | "ports" | "rivals" | "technology" | "diplomacy" | "history" | "sandbox" | "saves" | "glossary";
 
 export interface GuideSection {
   id: GuideSectionId;
@@ -164,6 +164,19 @@ export const GUIDE: GuideSection[] = [
       "The Encyclopedia is available from the main menu without a game in progress.",
       "Where the deployment enables it, each encyclopedia entry has an 'Ask about this entry' box. The assistant answers only from that entry's record and listed sources, says when the record does not cover a question, and labels interpretation, reconstruction and fiction. Treat it as a reading aid, not a source: check the bibliography before relying on a detail.",
     ],
+  },
+  {
+    id: "sandbox",
+    title: "Alternate history (sandbox)",
+    summary: "In a sandbox game history pauses at each turning point and you choose what happens. Changed outcomes are fiction and are labelled as such.",
+    points: [
+      "Choose Alternate history when creating a historical house. The documented timeline is the same; what changes is that the game asks you before applying an event's simulated consequence.",
+      "A turning point is any dated event with a gameplay effect (a port closing, fees or prices moving, relations shifting, the campaign ending). When one falls due the game pauses and offers up to four outcomes: as documented, averted (nothing happens), softened (closures become restrictions, multipliers move half as far) or turned around (the opposite happens).",
+      "Rivals react to what actually happened in your game, not to the record. Events without effects, such as a book being written, are announced as usual.",
+      "You can decide in advance from the History screen so that a long voyage at high time scale is not interrupted. Decisions made later show up in the Divergences panel with the date and what the game did instead.",
+      "Sandbox campaigns do not end on their historical date unless you let the ending event happen. The encyclopedia and every record in it are never altered by anything you choose.",
+    ],
+    tips: ["Averting a closure keeps a port open but also keeps its prices steady: the shortage that a closure creates elsewhere never happens, so judge each turning point by your own routes."],
   },
   {
     id: "saves",

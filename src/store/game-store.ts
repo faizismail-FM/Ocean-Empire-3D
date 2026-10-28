@@ -7,7 +7,7 @@ import * as rules from "@/engine/game";
 import { performRivalAction, type RivalAction } from "@/engine/rivals";
 import type { GameEvent, NewGameOptions } from "@/engine/game";
 import { parseState, summarizeState } from "@/engine/save";
-import type { GameState, SaveSummary, ShipState } from "@/engine/state";
+import type { DivergenceChoice, GameState, SaveSummary, ShipState } from "@/engine/state";
 import { getPersistence } from "@/persistence";
 
 /**
@@ -67,6 +67,7 @@ interface GameStore {
   research: (techId: string) => boolean;
   diplomacy: (polityId: string, action: rules.DiplomaticAction) => boolean;
   rivalAction: (rivalId: string, action: RivalAction) => boolean;
+  decideDivergence: (eventId: string, choice: DivergenceChoice) => void;
   ensureContracts: (portId: string) => void;
   dismissReport: () => void;
   markNotificationsRead: () => void;
@@ -176,6 +177,8 @@ export const useGameStore = create<GameStore>()((set, get) => {
         for (const e of result.events) {
           if (e.type === "objective_completed") get().pushToast({ kind: "success", title: "Objective complete", message: e.objective.title });
           if (e.type === "historical_event") get().pushToast({ kind: "event", title: e.event.title, message: `${e.event.date_or_date_range.start}: documented event. Simulated consequences applied where noted.` });
+          if (e.type === "turning_point") get().pushToast({ kind: "event", title: "A turning point in history", message: `${e.event.title}. The game is paused until you decide what happens.` });
+          if (e.type === "divergence") get().pushToast({ kind: "warning", title: "History diverges", message: `${e.event.title}: ${e.choice}, as you decided. This outcome is fiction.` });
           if (e.type === "endurance_empty") get().pushToast({ kind: "warning", title: "Endurance exhausted", message: "A ship has run out of fuel or provisions." });
         }
       } else {
@@ -232,6 +235,13 @@ export const useGameStore = create<GameStore>()((set, get) => {
       if (!state || !catalog) return;
       const next = rules.ensureContracts(catalog, state, portId);
       if (next !== state) set({ state: next });
+    },
+    decideDivergence: (eventId, choice) => {
+      const { state, catalog } = get();
+      if (!state || !catalog) return;
+      const next = rules.decideDivergence(catalog, state, eventId, choice);
+      set({ state: next });
+      if (next.campaign.status !== "active" && state.campaign.status === "active") set({ pendingEvents: [...get().pendingEvents, { type: "campaign_ended", status: next.campaign.status }] });
     },
     dismissReport: () => {
       const { state } = get();

@@ -49,7 +49,7 @@ export default function EmpirePage() {
           <div className="mt-1 flex flex-wrap gap-1">
             <Badge tone="purple">Fictional {isHistorical ? "house" : "company"}</Badge>
             {polity && <Badge tone="gold">within the {polity.canonical_name}</Badge>}
-            {state.empire.rules === "sandbox" && <Badge tone="coral">Alternate history</Badge>}
+            {state.empire.rules === "sandbox" && <Badge tone="coral">Alternate history · {state.alternate_history.divergences.length} divergence{state.alternate_history.divergences.length === 1 ? "" : "s"}</Badge>}
             <Badge tone="neutral">{state.empire.difficulty}</Badge>
           </div>
         </div>

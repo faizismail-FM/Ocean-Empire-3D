@@ -53,7 +53,11 @@ Manual:
 
 Only the public anon key is used client-side; rows are protected by row-level security. Never put a service-role key in a `NEXT_PUBLIC_` variable.
 
-### Accounts and cross-device saves
+### Alternate-history sandbox
+
+A historical house can be created under sandbox rules (`empire.rules === "sandbox"`). The documented timeline is unchanged, but at each turning point (a dated event with a gameplay effect) the simulation pauses and the player chooses what the game does: the documented consequence, nothing (averted), a softened version (closures become restrictions, multipliers move half as far) or the reverse. Decisions can be set in advance from the History screen. Rivals react to what actually happened in the game. Every departure from the record is logged in `state.alternate_history.divergences`, shown with a fiction label on the History screen, in the empire dashboard and in the top bar, and never touches the reference database (`src/engine/alternate.ts`). A sandbox campaign continues past its historical end unless the player lets the ending event happen.
+
+## Accounts and cross-device saves
 
 With Supabase configured, every browser first gets an anonymous Supabase identity so its saves can be mirrored. To keep saves across devices, players sign in with their email from the main menu or Settings → Account: the game emails a sign-in link (no password), and opening that link on a device signs it in. An anonymous identity is upgraded in place when possible, so existing saves keep their ids; otherwise the device's local saves are uploaded to the account on sign-in (re-identified if their ids already belong to an old anonymous identity). The Continue list merges local and account saves and loads whichever copy is newer.
 
@@ -115,13 +119,13 @@ src/persistence   Storage adapters: localStorage (default) + optional Supabase m
 src/components    UI primitives, game screens, the d3-geo world map, the R3F sailing scene and HUD
 src/app           Next.js routes: menu, new game, /play/* screens, /encyclopedia/*
 supabase          Optional database schema with RLS
-tests             Vitest suites (72 tests)
+tests             Vitest suites (81 tests)
 docs              Master design prompt and research notes
 ```
 
 Design rules kept throughout:
 
-- Historical data is separate from mutable player state and is never modified by play. The alternate-history sandbox announces events without applying them and labels results as fiction.
+- Historical data is separate from mutable player state and is never modified by play. The alternate-history sandbox changes only the simulated consequences of events, at the player's decision, and labels every departure from the record as fiction.
 - Gameplay numbers (prices, speeds, costs) are labelled as abstractions; the interface marks simulated values and distinguishes them from reference data.
 - No external 3D model URLs: all ships, ports and effects are procedural. The world map uses the bundled Natural Earth topology, not a tile server.
 - Three.js only runs in the browser (dynamic import, `ssr: false`), with a WebGL fallback.
@@ -132,7 +136,7 @@ Quality presets (low / medium / high) control device pixel ratio, shadows and oc
 
 ## Verification
 
-`npm run check` (typecheck, lint, 72 unit/integration tests, production build) passes. The production build was also driven end to end in headless Chromium with Playwright: new game → accept the Port Klang→Singapore contract → depart → autopilot voyage at accelerated time → automatic docking, payment and voyage report → save restored after reload, plus the Siraf, Kilwa, Venice and Melaka sailing scenes, diplomacy, history and encyclopedia pages.
+`npm run check` (typecheck, lint, 81 unit/integration tests, production build) passes. The production build was also driven end to end in headless Chromium with Playwright: new game → accept the Port Klang→Singapore contract → depart → autopilot voyage at accelerated time → automatic docking, payment and voyage report → save restored after reload, plus the Siraf, Kilwa, Venice and Melaka sailing scenes, diplomacy, history and encyclopedia pages.
 
 ## Status and limitations
 
