@@ -1,5 +1,7 @@
 "use client";
 
+import { SoundToggle } from "./SoundToggle";
+
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -52,12 +54,13 @@ export function MainMenu() {
       <div className="relative mx-auto flex min-h-screen max-w-6xl flex-col px-4 py-10 md:px-8">
         <header className="animate-fade-up">
           <div className="flex items-center gap-3 text-cyan-300/80">
+            <SoundToggle className="absolute right-4 top-4 md:right-8" label />
             <Anchor size={22} />
             <span className="label-caps">Maritime simulator · empire builder · history</span>
           </div>
           <h1 className="text-glow mt-3 text-5xl text-foam md:text-7xl">Ocean Empire 3D</h1>
           <p className="mt-3 max-w-2xl text-base text-foam/70 md:text-lg">
-            Sail a living ocean, carry cargo between real ports, and grow a trading house across the monsoon seas of 850 CE, the Swahili gold coast of 1330, the galley convoys of Venice in 1423, the Straits of 1460, the Cape route of 1505, or the container lanes of today.
+            Sail a living ocean, carry cargo between real ports, and grow a trading house across the monsoon seas of 850 CE, the Swahili gold coast of 1330, the galley convoys of Venice in 1423, the treasure fleets of 1405, the Straits of 1460, the Cape route of 1505, the Company&rsquo;s spice monopoly of 1602, or the container lanes of today.
           </p>
         </header>
 

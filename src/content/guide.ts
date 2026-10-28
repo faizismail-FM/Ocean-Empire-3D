@@ -57,6 +57,7 @@ export const GUIDE: GuideSection[] = [
       "Three cameras: Chase follows behind the ship, Free orbits with the mouse, Overhead is a north-up chart view. Zoom with + and −, reset with R.",
       "A red-and-white buoy marks the next waypoint. Sailing ships cannot sail straight into the wind: the wind panel turns red when you are 'in irons' and the autopilot tacks for you.",
       "Fuel (or provisions) are consumed every hour at sea. Running out leaves an engine ship drifting; refuel at any port from the Fleet screen.",
+      "Sound is synthesised in the browser: the sea and wind follow the simulated weather, a sailing ship creaks and a motor ship hums with its throttle, and a quiet generative music bed follows the campaign's era. It starts after your first click or key; mute it with the speaker button or set levels in Settings.",
       "The dock at the bottom right opens any game screen without leaving the voyage; the ship keeps sailing while you trade, develop ports or read the history. Each screen also has a key (M for the World map, F for the Fleet, T for Trade), and the Sail entry in the sidebar brings you back to the helm.",
     ],
     controls: [

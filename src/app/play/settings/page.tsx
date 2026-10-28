@@ -53,6 +53,16 @@ export default function SettingsPage() {
           />
           <p className="mt-2 text-xs text-foam/50">Frame rates depend on your hardware; no specific rate is guaranteed.</p>
         </Panel>
+        <Panel title="Sound" subtitle="Ocean, wind and a generative music bed, synthesised in the browser; no audio files are downloaded.">
+          <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={settings.audio.enabled} onChange={(e) => settings.setAudio({ enabled: e.target.checked })} /> Sound on</label>
+          {([["master", "Master"], ["music", "Music"], ["ambience", "Sea, wind and ship"]] as const).map(([key, label]) => (
+            <label key={key} className="mt-2 block text-xs text-foam/70">
+              <div className="flex justify-between"><span>{label}</span><span className="font-mono">{Math.round(settings.audio[key] * 100)}%</span></div>
+              <input type="range" min={0} max={100} step={5} value={Math.round(settings.audio[key] * 100)} onChange={(e) => settings.setAudio({ [key]: Number(e.target.value) / 100 })} className="w-full" aria-label={`${label} volume`} />
+            </label>
+          ))}
+          <p className="mt-2 text-xs text-foam/50">Browsers allow sound only after you click or press a key. The music follows the campaign: a plucked hijaz scale for Siraf, a pentatonic zither for the Ming fleets, a bowed Dorian line for Venice, synthesiser pads for the modern line. It is a mood, not a reconstruction of period music.</p>
+        </Panel>
         <Panel title="Gameplay">
           <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={settings.autosave} onChange={(e) => settings.setAutosave(e.target.checked)} /> Autosave every 30 seconds and when the tab is hidden</label>
           <label className="mt-2 flex items-center gap-2 text-sm"><input type="checkbox" checked={settings.showTutorialHints} onChange={(e) => settings.setShowTutorialHints(e.target.checked)} /> Show tutorial hints in the sailing view</label>

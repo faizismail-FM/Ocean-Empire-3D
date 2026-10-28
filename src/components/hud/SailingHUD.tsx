@@ -20,6 +20,7 @@ import { useSettingsStore } from "@/store/settings-store";
 import { viewState } from "@/components/three/scene-state";
 import { Badge, Button } from "@/components/ui";
 import { GuideOverlay } from "@/components/game/Guide";
+import { SoundToggle } from "@/components/game/SoundToggle";
 import { visibleNav } from "@/components/game/nav";
 
 /** Subscribe to the store at a modest rate so the HUD does not re-render 60 times a second. */
@@ -397,6 +398,7 @@ export function SailingHUD() {
                 ))}
               </select>
             )}
+            <SoundToggle />
             <button onClick={() => setGuideOpen(true)} className="rounded-md border border-white/10 p-2 hover:bg-white/10" title="How to play (?)" aria-label="How to play"><HelpCircle size={14} /></button>
             <button onClick={() => setMenuOpen(true)} className="rounded-md border border-white/10 px-3 py-2 text-xs hover:bg-white/10" title="Menu (Esc)">Menu</button>
           </div>
