@@ -145,4 +145,28 @@ export const HISTORICAL_FIGURES: HistoricalFigure[] = [
     summary: "Inherited an overextended Estado and a Crown deep in debt to its Antwerp bankers; settled the Moluccas question at Zaragoza in 1529 and saw off the Ottoman siege of Diu in 1538.",
     evidence_status: "established", sources: ["src_newitt_2005", "src_boxer_1969"],
   },
+  {
+    id: "fig_coen", name: "Jan Pieterszoon Coen", alternate_names: [], role: "Governor-general of the VOC (1619–1623, 1627–1629)",
+    period: { start: 1587, end: 1629 }, polity_id: "civ_dutch_republic",
+    summary: "Founded Batavia in 1619 and conquered Banda in 1621 with great loss of life; the architect of the Company's monopoly by force and of its intra-Asian trade. He died at Batavia during the Mataram siege of 1629.",
+    evidence_status: "established", sources: ["src_gaastra_2003", "src_boxer_1965"],
+  },
+  {
+    id: "fig_brouwer", name: "Hendrik Brouwer", alternate_names: [], role: "Navigator; governor-general (1632–1636)",
+    period: { start: 1581, end: 1643 }, polity_id: "civ_dutch_republic",
+    summary: "Pioneered the southern route from the Cape in 1611, which the Company made compulsory in 1617; later governor-general and commander of a failed expedition to Chile, where he died in 1643.",
+    evidence_status: "established", sources: ["src_das_bruijn", "src_gaastra_2003"],
+  },
+  {
+    id: "fig_oldenbarnevelt", name: "Johan van Oldenbarnevelt", alternate_names: [], role: "Advocate of Holland",
+    period: { start: 1547, end: 1619 }, polity_id: "civ_dutch_republic",
+    summary: "The statesman who drove the union of the competing companies into the VOC in 1602 and negotiated the truce of 1609; executed in 1619 after his quarrel with Maurice of Nassau.",
+    evidence_status: "established", sources: ["src_israel_1989"],
+  },
+  {
+    id: "fig_van_diemen", name: "Anthony van Diemen", alternate_names: [], role: "Governor-general of the VOC (1636–1645)",
+    period: { start: 1593, end: 1645 }, polity_id: "civ_dutch_republic",
+    summary: "Took Malacca (1641) and the Portuguese forts of Ceylon, sent Tasman south in 1642, and presided over the Company's most profitable decade.",
+    evidence_status: "established", sources: ["src_gaastra_2003", "src_boxer_1965"],
+  },
 ];

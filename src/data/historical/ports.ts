@@ -11,6 +11,7 @@ const MELAKA_PERIOD = { start: 1400, end: 1511, note: "Scenario window; the port
 const KILWA_PERIOD = { start: 1300, end: 1400, note: "Scenario window; the port's history extends beyond it." };
 const VENICE_PERIOD = { start: 1400, end: 1470, note: "Scenario window; the port's history extends beyond it." };
 const PORTUGAL_PERIOD = { start: 1500, end: 1550, note: "Scenario window; the port's history extends beyond it." };
+const DUTCH_PERIOD = { start: 1595, end: 1660, note: "Scenario window; the port's history extends beyond it." };
 
 export const SIRAF_PORTS: PortRecord[] = [
   {
@@ -593,4 +594,152 @@ export const PORTUGAL_PORTS: PortRecord[] = [
   },
 ];
 
-export const HISTORICAL_PORTS: PortRecord[] = [...SIRAF_PORTS, ...MELAKA_PORTS, ...KILWA_PORTS, ...VENICE_PORTS, ...PORTUGAL_PORTS];
+export const DUTCH_PORTS: PortRecord[] = [
+  {
+    id: "port_amsterdam", name: "Amsterdam", modern_reference_name: "Amsterdam, Netherlands",
+    historical_names: ["Amstelredam"], latitude: 52.37, longitude: 4.9, location_certainty: "precise",
+    active_period: DUTCH_PERIOD, historical_polity: "Dutch Republic (VOC Amsterdam chamber)", polity_id: "civ_dutch_republic", country: "Netherlands",
+    historical_significance: "The largest of the Company's six chambers, with half the capital; the Exchange (1611) and the Exchange Bank (1609) made it Europe's financial centre. Ships cleared through the Zuiderzee to the Texel roads.",
+    supplies: ["good_dutch_cloth", "good_silver_reales"], demands: ["good_pepper", "good_cloves", "good_nutmeg", "good_cinnamon", "good_silk", "good_porcelain", "good_indigo", "good_coffee_mocha", "good_persian_silk", "good_coromandel_cloth"],
+    infrastructure: { docks: 2, warehouse: 2, shipyard: 2, administration: 2, commercial_district: 1 }, default_access: "home", fee_modifier: 1, lane_nodes: ["texel_roads", "north_sea_s"],
+    evidence_status: "established", sources: ["src_gaastra_2003", "src_israel_1989"], size: "hub",
+  },
+  {
+    id: "port_middelburg", name: "Middelburg", modern_reference_name: "Middelburg and Vlissingen, Zeeland, Netherlands",
+    historical_names: ["Middelburgh"], latitude: 51.5, longitude: 3.61, location_certainty: "precise",
+    active_period: DUTCH_PERIOD, historical_polity: "Dutch Republic (VOC Zeeland chamber)", polity_id: "civ_dutch_republic", country: "Netherlands",
+    historical_significance: "Seat of the Zeeland chamber, the Company's second largest, whose ships sailed from the Vlissingen roads.",
+    supplies: ["good_dutch_cloth"], demands: ["good_pepper", "good_cloves", "good_nutmeg", "good_porcelain"],
+    infrastructure: { docks: 1, warehouse: 1, shipyard: 1, administration: 1 }, default_access: "agreement", fee_modifier: 0.9, lane_nodes: ["north_sea_s", "dover"],
+    evidence_status: "established", sources: ["src_gaastra_2003"], size: "regional",
+  },
+  {
+    id: "port_bantam", name: "Bantam", modern_reference_name: "Banten, Java, Indonesia",
+    historical_names: ["Banten"], latitude: -6.04, longitude: 106.15, location_certainty: "precise",
+    active_period: DUTCH_PERIOD, historical_polity: "Sultanate of Banten", polity_id: "civ_banten", country: "Indonesia",
+    historical_significance: "The pepper market of western Java and the first Dutch and English factories in the archipelago (1603). After the Dutch seizure of Jayakarta in 1619 the sultan closed Bantam to them for long periods.",
+    supplies: ["good_pepper"], demands: ["good_coromandel_cloth", "good_gujarati_cloth", "good_silver_reales", "good_porcelain"],
+    infrastructure: { docks: 2, warehouse: 2, administration: 1, commercial_district: 1 }, default_access: "open", fee_modifier: 1.1, lane_nodes: ["sunda_strait"],
+    evidence_status: "established", sources: ["src_reid_1993", "src_gaastra_2003"], size: "hub",
+  },
+  {
+    id: "port_batavia", name: "Jayakarta / Batavia", modern_reference_name: "Jakarta, Indonesia",
+    historical_names: ["Jacatra", "Jayakarta", "Batavia (from 1619)"], latitude: -6.13, longitude: 106.82, location_certainty: "precise",
+    active_period: DUTCH_PERIOD, historical_polity: "Vassal of Banten; VOC headquarters from 30 May 1619", polity_id: "civ_banten", country: "Indonesia",
+    historical_significance: "A small pepper port under a vassal of Banten where the Company rented a lodge in 1610; Coen stormed it on 30 May 1619 and built Batavia, the Company's Asian capital, on its ruins. Chinese junks and settlers made its trade.",
+    supplies: ["good_pepper", "good_porcelain"], demands: ["good_coromandel_cloth", "good_gujarati_cloth", "good_silver_reales", "good_japanese_silver", "good_dutch_cloth"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["sunda_java_sea_w"],
+    evidence_status: "established", sources: ["src_gaastra_2003", "src_blusse_1986"], size: "major",
+  },
+  {
+    id: "port_amboina", name: "Amboina", modern_reference_name: "Ambon, Maluku, Indonesia",
+    historical_names: ["Ambon", "Fort Victoria"], latitude: -3.7, longitude: 128.18, location_certainty: "precise",
+    active_period: DUTCH_PERIOD, historical_polity: "Portuguese fort until 22 February 1605; VOC thereafter", polity_id: "civ_portugal", country: "Indonesia",
+    historical_significance: "The clove island whose Portuguese fort surrendered to Steven van der Hagen in 1605, the Company's first territorial conquest; the seat of its government in Maluku and the scene of the 1623 executions of English factors.",
+    supplies: ["good_cloves"], demands: ["good_coromandel_cloth", "good_gujarati_cloth", "good_silver_reales"],
+    infrastructure: { docks: 1, warehouse: 1, administration: 1 }, default_access: "closed", fee_modifier: 1, lane_nodes: ["banda_sea"],
+    evidence_status: "established", sources: ["src_andaya_maluku_1993", "src_gaastra_2003"], size: "regional",
+  },
+  {
+    id: "port_banda_neira", name: "Banda Neira", modern_reference_name: "Banda Neira, Maluku, Indonesia",
+    historical_names: ["Neira", "Fort Nassau (1609)"], latitude: -4.53, longitude: 129.9, location_certainty: "precise",
+    active_period: DUTCH_PERIOD, historical_polity: "Bandanese orang kaya until 1621; VOC thereafter", polity_id: "civ_banda", country: "Indonesia",
+    historical_significance: "The only source of nutmeg and mace. The Company built Fort Nassau in 1609, and in 1621 Coen conquered the islands, killing, deporting or enslaving most of the Bandanese and installing Dutch planters with enslaved labour.",
+    notes: "The conquest of 1621 is documented as a massacre; the game applies its commercial consequence and says so in the event record.",
+    supplies: ["good_nutmeg"], demands: ["good_coromandel_cloth", "good_gujarati_cloth", "good_silver_reales"],
+    infrastructure: { docks: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["banda_sea"],
+    evidence_status: "established", sources: ["src_andaya_maluku_1993", "src_gaastra_2003"], size: "minor",
+  },
+  {
+    id: "port_ternate_1602", name: "Ternate", modern_reference_name: "Ternate, North Maluku, Indonesia",
+    historical_names: ["Fort Oranje (1607)"], latitude: 0.79, longitude: 127.38, location_certainty: "precise",
+    active_period: DUTCH_PERIOD, historical_polity: "Sultanate of Ternate, allied to the VOC from 1607; Spanish fort on the island 1606–1663", polity_id: "civ_ternate", country: "Indonesia",
+    historical_significance: "The clove sultanate of northern Maluku, divided after 1606 between a Spanish garrison and the Dutch Fort Oranje (1607), whose sultan allied with the Company against Spain.",
+    supplies: ["good_cloves"], demands: ["good_coromandel_cloth", "good_silver_reales", "good_porcelain"],
+    infrastructure: { docks: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["maluku_sea"],
+    evidence_status: "established", sources: ["src_andaya_maluku_1993"], size: "regional",
+  },
+  {
+    id: "port_malacca_1602", name: "Malacca", modern_reference_name: "Melaka, Malaysia",
+    historical_names: ["Malaca", "Melaka"], latitude: 2.19, longitude: 102.25, location_certainty: "precise",
+    active_period: DUTCH_PERIOD, historical_polity: "Portuguese Estado da Índia until 14 January 1641; VOC thereafter", polity_id: "civ_portugal", country: "Malaysia",
+    historical_significance: "The Portuguese fortress of the Straits, blockaded by the Dutch from 1606 and taken with Johor's help on 14 January 1641 after a five-month siege.",
+    supplies: ["good_pepper", "good_porcelain"], demands: ["good_coromandel_cloth", "good_gujarati_cloth", "good_silver_reales"],
+    infrastructure: { docks: 2, warehouse: 2, administration: 2 }, default_access: "closed", fee_modifier: 1, lane_nodes: ["malacca_s"],
+    evidence_status: "established", sources: ["src_gaastra_2003", "src_boxer_1965"], size: "major",
+  },
+  {
+    id: "port_hirado", name: "Hirado", modern_reference_name: "Hirado, Nagasaki prefecture, Japan",
+    historical_names: ["Firando"], latitude: 33.37, longitude: 129.55, location_certainty: "precise",
+    active_period: DUTCH_PERIOD, historical_polity: "Tokugawa Japan (domain of the Matsura)", polity_id: "civ_tokugawa", country: "Japan",
+    historical_significance: "The Company's Japanese factory from 20 September 1609, under Jacques Specx, until the shogunate moved the Dutch to Dejima in 1641. Silver and copper went out; silk, deerskins and sugar came in.",
+    supplies: ["good_japanese_silver", "good_japanese_copper"], demands: ["good_silk", "good_persian_silk", "good_deerskins_taiwan", "good_dutch_cloth"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "closed", fee_modifier: 1.1, lane_nodes: ["kyushu_w"],
+    evidence_status: "established", sources: ["src_boxer_1965", "src_gaastra_2003"], size: "regional",
+  },
+  {
+    id: "port_nagasaki", name: "Nagasaki (Dejima)", modern_reference_name: "Nagasaki, Japan",
+    historical_names: ["Deshima"], latitude: 32.74, longitude: 129.87, location_certainty: "precise",
+    active_period: DUTCH_PERIOD, historical_polity: "Tokugawa Japan (shogunal city)", polity_id: "civ_tokugawa", country: "Japan",
+    historical_significance: "The artificial island of Dejima, built for the Portuguese in 1636, housed the Dutch factory from 1641 and remained Japan's only European trading post for two centuries.",
+    supplies: ["good_japanese_silver", "good_japanese_copper"], demands: ["good_silk", "good_persian_silk", "good_deerskins_taiwan", "good_dutch_cloth"],
+    infrastructure: { docks: 1, warehouse: 1, administration: 1 }, default_access: "closed", fee_modifier: 1.2, lane_nodes: ["kyushu_w"],
+    evidence_status: "established", sources: ["src_boxer_1965"], size: "regional",
+  },
+  {
+    id: "port_masulipatnam", name: "Masulipatnam", modern_reference_name: "Machilipatnam, Andhra Pradesh, India",
+    historical_names: ["Masulipatam", "Bandar"], latitude: 16.17, longitude: 81.13, location_certainty: "precise",
+    active_period: DUTCH_PERIOD, historical_polity: "Qutb Shahi Sultanate of Golconda", polity_id: "civ_golconda", country: "India",
+    historical_significance: "Golconda's port and the Company's first Indian factory (1605), buying the painted and dyed cottons that bought spices in the archipelago.",
+    supplies: ["good_coromandel_cloth", "good_indigo"], demands: ["good_cloves", "good_nutmeg", "good_pepper", "good_silver_reales", "good_japanese_copper"],
+    infrastructure: { docks: 1, warehouse: 2, administration: 1 }, default_access: "open", fee_modifier: 1.1, lane_nodes: ["coromandel"],
+    evidence_status: "established", sources: ["src_glamann_1958", "src_israel_1989"], size: "major",
+  },
+  {
+    id: "port_pulicat_1610", name: "Pulicat", modern_reference_name: "Pulicat, Tamil Nadu, India",
+    historical_names: ["Paliacatta", "Fort Geldria"], latitude: 13.42, longitude: 80.32, location_certainty: "precise",
+    active_period: DUTCH_PERIOD, historical_polity: "Vijayanagara's successor state of Chandragiri; VOC fort Geldria from 1610", polity_id: "civ_vijayanagara", country: "India",
+    historical_significance: "The Company's Coromandel headquarters from 1610, when Fort Geldria was built by treaty with the ruler of Chandragiri, until 1690.",
+    supplies: ["good_coromandel_cloth"], demands: ["good_cloves", "good_nutmeg", "good_pepper", "good_silver_reales"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["coromandel"],
+    evidence_status: "established", sources: ["src_glamann_1958"], size: "regional",
+  },
+  {
+    id: "port_surat", name: "Surat", modern_reference_name: "Surat, Gujarat, India",
+    historical_names: ["Suratte"], latitude: 21.17, longitude: 72.83, location_certainty: "precise",
+    active_period: DUTCH_PERIOD, historical_polity: "Mughal Empire", polity_id: "civ_mughal", country: "India",
+    historical_significance: "The Mughal Empire's chief port and the pilgrim harbour for Mecca. The Company opened a factory here in 1616 (dates between 1616 and 1618 are given) for Gujarati cloth and indigo.",
+    supplies: ["good_gujarati_cloth", "good_indigo"], demands: ["good_cloves", "good_nutmeg", "good_pepper", "good_silver_reales", "good_japanese_copper"],
+    infrastructure: { docks: 2, warehouse: 2, administration: 2, commercial_district: 1 }, default_access: "restricted", fee_modifier: 1.2, lane_nodes: ["gujarat_offshore"],
+    evidence_status: "established", sources: ["src_israel_1989", "src_glamann_1958"], size: "hub",
+  },
+  {
+    id: "port_mocha", name: "Mocha", modern_reference_name: "Al-Mukha, Yemen",
+    historical_names: ["al-Mukhā", "Moka"], latitude: 13.32, longitude: 43.25, location_certainty: "precise",
+    active_period: DUTCH_PERIOD, historical_polity: "Ottoman Yemen; Qasimi imamate from the 1630s", polity_id: "civ_yemen_17c", country: "Yemen",
+    historical_significance: "The Red Sea coffee port where the Company opened a factory in 1621; trade was small at first and grew with Europe's taste for coffee.",
+    supplies: ["good_coffee_mocha"], demands: ["good_coromandel_cloth", "good_gujarati_cloth", "good_pepper", "good_silver_reales"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 1.1, lane_nodes: ["bab_el_mandeb"],
+    evidence_status: "established", sources: ["src_glamann_1958"], size: "regional",
+  },
+  {
+    id: "port_gamron", name: "Gamron (Bandar Abbas)", modern_reference_name: "Bandar Abbas, Iran",
+    historical_names: ["Gombroon", "Bandar-e ʿAbbās"], latitude: 27.18, longitude: 56.27, location_certainty: "precise",
+    active_period: DUTCH_PERIOD, historical_polity: "Safavid Persia", polity_id: "civ_safavid", country: "Iran",
+    historical_significance: "The mainland port that replaced Hormuz after the Persians and English took the island in 1622; the Company's factory from 1623 traded spices and sugar for Persian silk.",
+    supplies: ["good_persian_silk"], demands: ["good_pepper", "good_cloves", "good_nutmeg", "good_coromandel_cloth", "good_japanese_copper"],
+    infrastructure: { docks: 1, warehouse: 1, administration: 1 }, default_access: "restricted", fee_modifier: 1.1, lane_nodes: ["hormuz"],
+    evidence_status: "established", sources: ["src_glamann_1958", "src_israel_1989"], size: "regional",
+  },
+  {
+    id: "port_zeelandia", name: "Tayouan (Fort Zeelandia)", modern_reference_name: "Anping, Tainan, Taiwan",
+    historical_names: ["Tayouan", "Formosa"], latitude: 23.0, longitude: 120.16, location_certainty: "precise",
+    active_period: DUTCH_PERIOD, historical_polity: "Austronesian villages and Chinese settlers; VOC fort from 1624", polity_id: null, country: "Taiwan",
+    historical_significance: "The Company's base for the China and Japan trades from 1624 to 1662: Chinese silk and sugar came across the strait, Formosan deerskins went to Japan.",
+    supplies: ["good_deerskins_taiwan", "good_silk", "good_porcelain"], demands: ["good_silver_reales", "good_japanese_silver", "good_pepper", "good_cloves"],
+    infrastructure: { docks: 1 }, default_access: "closed", fee_modifier: 1, lane_nodes: ["taiwan_strait"],
+    evidence_status: "established", sources: ["src_blusse_1986", "src_gaastra_2003"], size: "regional",
+  },
+];
+
+export const HISTORICAL_PORTS: PortRecord[] = [...SIRAF_PORTS, ...MELAKA_PORTS, ...KILWA_PORTS, ...VENICE_PORTS, ...PORTUGAL_PORTS, ...DUTCH_PORTS];

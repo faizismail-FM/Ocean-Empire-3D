@@ -39,7 +39,7 @@ import { HISTORICAL_ROUTES } from "./historical/routes";
 import { CIVILIZATIONS } from "./historical/civilizations";
 import { SOURCES } from "./historical/sources";
 import { SETTLEMENTS, TERRITORIAL_EXTENTS } from "./historical/territories";
-import { KILWA_SCENARIO, MELAKA_SCENARIO, PORTUGAL_SCENARIO, SIRAF_SCENARIO, VENICE_SCENARIO } from "./historical/scenarios";
+import { DUTCH_SCENARIO, KILWA_SCENARIO, MELAKA_SCENARIO, PORTUGAL_SCENARIO, SIRAF_SCENARIO, VENICE_SCENARIO } from "./historical/scenarios";
 
 /**
  * The immutable reference database. Everything is validated once at module load so that
@@ -68,7 +68,7 @@ export const ALL_CIVILIZATIONS: Civilization[] = validateAll(CivilizationSchema,
 export const ALL_SOURCES: HistoricalSource[] = validateAll(HistoricalSourceSchema, SOURCES, "source");
 export const ALL_EXTENTS: TerritorialExtent[] = validateAll(TerritorialExtentSchema, TERRITORIAL_EXTENTS, "territorial extent");
 export const ALL_SETTLEMENTS: SettlementRecord[] = validateAll(SettlementRecordSchema, SETTLEMENTS, "settlement");
-export const ALL_SCENARIOS: Scenario[] = validateAll(ScenarioSchema, [MODERN_SCENARIO, SIRAF_SCENARIO, KILWA_SCENARIO, MELAKA_SCENARIO, VENICE_SCENARIO, PORTUGAL_SCENARIO], "scenario");
+export const ALL_SCENARIOS: Scenario[] = validateAll(ScenarioSchema, [MODERN_SCENARIO, SIRAF_SCENARIO, KILWA_SCENARIO, MELAKA_SCENARIO, VENICE_SCENARIO, PORTUGAL_SCENARIO, DUTCH_SCENARIO], "scenario");
 
 function indexById<T extends { id: string }>(items: T[]): Map<string, T> {
   const map = new Map<string, T>();
