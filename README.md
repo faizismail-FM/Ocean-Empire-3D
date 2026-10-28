@@ -53,6 +53,10 @@ Manual:
 
 Only the public anon key is used client-side; rows are protected by row-level security. Never put a service-role key in a `NEXT_PUBLIC_` variable.
 
+### Historical map layers
+
+The world map and the encyclopedia's Historical maps page draw dated layers (`src/data/historical/territories.ts`, helpers in `src/lib/map-layers.ts`): territorial control as coarse, approximate outlines with a control type (direct rule, suzerainty, sphere, rebel-held), a period, an evidence rating and sources, read at the current game year so Zanj Iraq, Thessalonica, Constantinople, Cyprus and the Morea change during their campaigns; inland capitals and settlements for that year; port ownership by polity; documented routes; the player's own trade network and influence; and present-day borders, which historical campaigns draw only on request and mark as reference only. Hovering an outline shows its period and source ids; the maps page has a year slider, jump buttons for the years in which control changes, and a panel listing every extent with its sources. Polities without a dated extent fall back to their undated approximate region.
+
 ### Territory
 
 Sovereign territory is never for sale. Historical scenarios define regions (groupings of their ports, rated as reconstructions) and a territorial rule with its historical basis (`regions` and `territory_rules` in the scenario data; engine in `src/engine/territory.ts`). Every port carries the house's commercial influence (0 to 100), which relaxes daily toward a target set by the house's share of the port's traffic, its facilities, its holdings and rival development, and is always 100 at home. Where the rules allow, the house can found a trading settlement at a port it has called at (influence 25, relations 50 with the ruler): building and ship purchase rights, an extra weekly contract, agreement-level fees and a daily upkeep. Kilwa and Melaka also allow a settled port with influence 70, the larger part of its traffic and the ruler's favour to be brought under the house's protection: lower fees, two extra contracts and customs duties at half the home rate, at the cost of relations with its ruler; great cities are never available. The Empire screen summarises influence by region, the world map draws influence rings and holding markers, and the port panel offers the actions with the reason when one is unavailable. Holdings are gameplay inventions and the encyclopedia keeps the documented rulers.
@@ -123,7 +127,7 @@ src/persistence   Storage adapters: localStorage (default) + optional Supabase m
 src/components    UI primitives, game screens, the d3-geo world map, the R3F sailing scene and HUD
 src/app           Next.js routes: menu, new game, /play/* screens, /encyclopedia/*
 supabase          Optional database schema with RLS
-tests             Vitest suites (88 tests)
+tests             Vitest suites (89 tests)
 docs              Master design prompt and research notes
 ```
 
@@ -140,7 +144,7 @@ Quality presets (low / medium / high) control device pixel ratio, shadows and oc
 
 ## Verification
 
-`npm run check` (typecheck, lint, 88 unit/integration tests, production build) passes. The production build was also driven end to end in headless Chromium with Playwright: new game → accept the Port Klang→Singapore contract → depart → autopilot voyage at accelerated time → automatic docking, payment and voyage report → save restored after reload, plus the Siraf, Kilwa, Venice and Melaka sailing scenes, diplomacy, history and encyclopedia pages.
+`npm run check` (typecheck, lint, 89 unit/integration tests, production build) passes. The production build was also driven end to end in headless Chromium with Playwright: new game → accept the Port Klang→Singapore contract → depart → autopilot voyage at accelerated time → automatic docking, payment and voyage report → save restored after reload, plus the Siraf, Kilwa, Venice and Melaka sailing scenes, diplomacy, history and encyclopedia pages.
 
 ## Status and limitations
 

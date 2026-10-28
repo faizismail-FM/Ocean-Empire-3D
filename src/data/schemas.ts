@@ -343,6 +343,47 @@ export const RivalDefinitionSchema = z.object({
 export type RivalDefinition = z.infer<typeof RivalDefinitionSchema>;
 
 /**
+ * Dated territorial control for the map layers (brief Part 14). Every extent carries the
+ * period it applies to, the kind of control, an evidence rating and sources; polygons are
+ * deliberately coarse and are always drawn and labelled as approximate.
+ */
+export const TerritorialControlSchema = z.enum(["direct", "suzerainty", "sphere", "rebel"]);
+export type TerritorialControl = z.infer<typeof TerritorialControlSchema>;
+
+export const TerritorialExtentSchema = z.object({
+  id: z.string(),
+  /** Polity holding the territory; null for rebel or stateless areas (then `label` names them). */
+  polity_id: z.string().nullable(),
+  label: z.string(),
+  control: TerritorialControlSchema,
+  period: PeriodSchema,
+  /** Approximate outline, [lon, lat] pairs. */
+  polygon: z.array(z.tuple([z.number(), z.number()])).min(3),
+  note: z.string().optional(),
+  evidence_status: EvidenceStatusSchema,
+  sources: z.array(z.string()).min(1),
+  scenario_ids: z.array(z.string()).min(1),
+});
+export type TerritorialExtent = z.infer<typeof TerritorialExtentSchema>;
+
+/** Inland or non-port settlements worth showing on the map: capitals, gold sources, fairs. */
+export const SettlementRecordSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  kind: z.enum(["capital", "city", "inland_centre", "religious_centre"]),
+  latitude: z.number(),
+  longitude: z.number(),
+  location_certainty: z.enum(["precise", "approximate", "disputed"]),
+  period: PeriodSchema,
+  polity_id: z.string().nullable(),
+  description: z.string(),
+  evidence_status: EvidenceStatusSchema,
+  sources: z.array(z.string()).min(1),
+  scenario_ids: z.array(z.string()).min(1),
+});
+export type SettlementRecord = z.infer<typeof SettlementRecordSchema>;
+
+/**
  * A region groups a scenario's ports for the territory system: commercial influence is
  * tracked per port and summarised per region. Groupings are gameplay conveniences, rated
  * as reconstructions unless a source defines the grouping.

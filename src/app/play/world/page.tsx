@@ -16,7 +16,7 @@ export default function WorldPage() {
   const catalog = useGameStore((s) => s.catalog)!;
   const setActiveShip = useGameStore((s) => s.setActiveShip);
   const [selected, setSelected] = useState<string | null>(null);
-  const [layers, setLayers] = useState<MapLayers>(DEFAULT_LAYERS);
+  const [layers, setLayers] = useState<MapLayers>({ ...DEFAULT_LAYERS, borders: catalog.scenario.features.modern_borders });
   const [layersOpen, setLayersOpen] = useState(false);
   const ships = Object.values(state.ships);
 
@@ -29,8 +29,11 @@ export default function WorldPage() {
     { key: "influence", label: "Your influence and holdings", hide: !catalog.scenario.features.territory },
     { key: "sealanes", label: "Sea-lane network" },
     { key: "historical_routes", label: "Documented trade routes", hide: catalog.routes.length === 0 },
-    { key: "regions", label: "Approximate historical regions", hide: catalog.scenario.features.modern_borders },
-    { key: "borders", label: "Modern borders", hide: !catalog.scenario.features.modern_borders },
+    { key: "network", label: "Your trade network" },
+    { key: "ownership", label: "Port ownership (colour by polity)", hide: catalog.scenario.features.modern_borders },
+    { key: "regions", label: "Historical territorial control (dated)", hide: catalog.scenario.features.modern_borders },
+    { key: "settlements", label: "Settlements and capitals", hide: catalog.scenario.features.modern_borders },
+    { key: "borders", label: catalog.scenario.features.modern_borders ? "Modern borders" : "Modern borders (reference only)" },
   ];
 
   return (
