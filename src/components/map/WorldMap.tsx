@@ -10,6 +10,7 @@ import type { ScenarioCatalog } from "@/data";
 import type { GameState, ShipState } from "@/engine/state";
 import { getLaneNode } from "@/engine/routing";
 import { LANE_EDGES } from "@/data/sealanes";
+import { CONTROL_LABELS, extentsAt, formatPeriod, polityColor, settlementsAt, tradeNetwork } from "@/lib/map-layers";
 import { cn } from "@/lib/utils";
 
 /**
@@ -30,6 +31,12 @@ export interface MapLayers {
   rivals: boolean;
   /** Commercial influence rings and holdings (historical scenarios). */
   influence: boolean;
+  /** Inland settlements and capitals dated to the map year. */
+  settlements: boolean;
+  /** Colour ports by the polity that holds them instead of by your access. */
+  ownership: boolean;
+  /** Your recorded trade network: voyages aggregated by port pair. */
+  network: boolean;
 }
 
 export const DEFAULT_LAYERS: MapLayers = {
@@ -43,6 +50,9 @@ export const DEFAULT_LAYERS: MapLayers = {
   contracts: true,
   rivals: true,
   influence: true,
+  settlements: true,
+  ownership: false,
+  network: false,
 };
 
 interface Props {
@@ -56,6 +66,8 @@ interface Props {
   /** Lon/lat bounds override (defaults to the scenario bounds). */
   bounds?: { west: number; south: number; east: number; north: number };
   interactive?: boolean;
+  /** Year the dated layers are drawn for; defaults to the game date or the scenario start. */
+  year?: number;
 }
 
 const land = feature(landTopo as unknown as Topology, (landTopo as unknown as Topology).objects.land as GeometryCollection);
@@ -70,8 +82,14 @@ const ACCESS_COLORS: Record<string, string> = {
   closed: "#7f1d1d",
 };
 
-export function WorldMap({ catalog, state, selectedPortId, onSelectPort, onSelectShip, layers: layerOverrides, className, bounds, interactive = true }: Props) {
+export function WorldMap({ catalog, state, selectedPortId, onSelectPort, onSelectShip, layers: layerOverrides, className, bounds, interactive = true, year: yearOverride }: Props) {
   const layers = { ...DEFAULT_LAYERS, ...layerOverrides };
+  const modern = catalog.scenario.features.modern_borders;
+  const year = yearOverride ?? state?.date.year ?? Number(catalog.scenario.start_date.slice(0, 4));
+  const extents = useMemo(() => (modern ? [] : extentsAt(catalog, year)), [catalog, year, modern]);
+  const datedPolities = useMemo(() => new Set(extents.map((e) => e.polity_id).filter((id): id is string => !!id)), [extents]);
+  const settlements = useMemo(() => (modern ? [] : settlementsAt(catalog, year)), [catalog, year, modern]);
+  const network = useMemo(() => (layers.network ? tradeNetwork(state) : []), [layers.network, state]);
   const containerRef = useRef<HTMLDivElement>(null);
   const [size, setSize] = useState({ width: 900, height: 520 });
   const [transform, setTransform] = useState({ k: 1, x: 0, y: 0 });
@@ -175,11 +193,37 @@ export function WorldMap({ catalog, state, selectedPortId, onSelectPort, onSelec
         <g transform={`translate(${transform.x},${transform.y}) scale(${k})`}>
           <path d={graticulePath} fill="none" stroke="rgba(103,232,249,0.07)" strokeWidth={0.6 * inv} />
           <path d={landPath} fill="#1d3b52" stroke="#3b6b86" strokeWidth={0.6 * inv} />
-          {layers.borders && catalog.scenario.features.modern_borders && <path d={borderPath} fill="none" stroke="rgba(230,244,255,0.22)" strokeWidth={0.5 * inv} />}
+          {layers.borders && <path d={borderPath} fill="none" stroke={modern ? "rgba(230,244,255,0.22)" : "rgba(230,244,255,0.12)"} strokeWidth={0.5 * inv} strokeDasharray={modern ? undefined : `${1.5 * inv} ${2 * inv}`} />}
 
           {layers.regions &&
-            !catalog.scenario.features.modern_borders &&
-            catalog.civilizations.filter((c) => c.approximate_region).map((c) => {
+            !modern &&
+            extents.map((e) => {
+              const color = e.polity_id ? polityColor(catalog, e.polity_id) : "#f87171";
+              const geometry = { type: "Polygon" as const, coordinates: [[...e.polygon, e.polygon[0]!]] };
+              const d = path(geometry);
+              const [cx, cy] = path.centroid(geometry);
+              const fillOpacity = e.control === "direct" ? 0.24 : e.control === "rebel" ? 0.28 : e.control === "suzerainty" ? 0.14 : 0.08;
+              const dash = e.control === "direct" ? undefined : e.control === "rebel" ? `${2 * inv} ${2 * inv}` : `${3 * inv} ${3 * inv}`;
+              const small = e.polygon.length <= 4;
+              return (
+                <g
+                  key={e.id}
+                  onPointerEnter={() => setHover({ x: cx, y: cy, text: `${e.label} · ${CONTROL_LABELS[e.control]} · ${formatPeriod(e.period)} · ${e.evidence_status.replace("_", " ")} · sources: ${e.sources.join(", ")}` })}
+                  onPointerLeave={() => setHover(null)}
+                >
+                  <path d={d ?? ""} fill={color} fillOpacity={fillOpacity} stroke={color} strokeOpacity={0.7} strokeDasharray={dash} strokeWidth={(e.control === "direct" ? 0.9 : 0.7) * inv} />
+                  {(!small || k > 2.5) && (
+                    <text x={cx} y={cy} fontSize={(small ? 8 : 9.5) * inv} fill={color} textAnchor="middle" opacity={0.9} stroke="#040b16" strokeWidth={2 * inv} paintOrder="stroke">
+                      {e.label} ({formatPeriod(e.period)}{e.period.approximate ? "" : ""}, approx.)
+                    </text>
+                  )}
+                </g>
+              );
+            })}
+
+          {layers.regions &&
+            !modern &&
+            catalog.civilizations.filter((c) => c.approximate_region && !datedPolities.has(c.id)).map((c) => {
               const d = path({ type: "Polygon", coordinates: [[...(c.approximate_region as [number, number][]), c.approximate_region![0] as [number, number]]] });
               const anchor = c.map_anchor ? project(c.map_anchor.lon, c.map_anchor.lat) : null;
               return (
@@ -187,9 +231,44 @@ export function WorldMap({ catalog, state, selectedPortId, onSelectPort, onSelec
                   <path d={d ?? ""} fill={`${c.color ?? "#c8a24a"}22`} stroke={`${c.color ?? "#c8a24a"}88`} strokeDasharray={`${3 * inv} ${3 * inv}`} strokeWidth={0.8 * inv} />
                   {anchor && (
                     <text x={anchor[0]} y={anchor[1]} fontSize={10 * inv} fill={c.color ?? "#c8a24a"} textAnchor="middle" opacity={0.85}>
-                      {c.canonical_name} (approx.)
+                      {c.canonical_name} (undated, approx.)
                     </text>
                   )}
+                </g>
+              );
+            })}
+
+          {layers.settlements &&
+            settlements.map((st) => {
+              const [x, y] = project(st.longitude, st.latitude);
+              const color = st.polity_id ? polityColor(catalog, st.polity_id) : "#cbd5e1";
+              const size = (st.kind === "capital" ? 4.2 : 3.2) * inv;
+              return (
+                <g
+                  key={st.id}
+                  transform={`translate(${x},${y})`}
+                  onPointerEnter={() => setHover({ x, y, text: `${st.name} · ${st.kind.replace("_", " ")} · ${formatPeriod(st.period)}${st.location_certainty !== "precise" ? ` · ${st.location_certainty} location` : ""} · ${st.description}` })}
+                  onPointerLeave={() => setHover(null)}
+                >
+                  <rect x={-size / 2} y={-size / 2} width={size} height={size} fill={color} stroke="#040b16" strokeWidth={0.6 * inv} opacity={0.9} />
+                  {st.kind === "capital" && <rect x={-size * 0.9} y={-size * 0.9} width={size * 1.8} height={size * 1.8} fill="none" stroke={color} strokeWidth={0.5 * inv} opacity={0.7} />}
+                  <text x={size} y={size * 0.9} fontSize={8.5 * inv} fill="#cbd5e1" stroke="#040b16" strokeWidth={2 * inv} paintOrder="stroke" opacity={k > 1.4 || st.kind === "capital" ? 0.9 : 0.55}>
+                    {st.name}
+                  </text>
+                </g>
+              );
+            })}
+
+          {layers.network &&
+            network.map((edge) => {
+              const a = catalog.portMap.get(edge.a);
+              const b = catalog.portMap.get(edge.b);
+              if (!a || !b) return null;
+              const d = path({ type: "LineString", coordinates: [[a.longitude, a.latitude], [b.longitude, b.latitude]] });
+              return (
+                <g key={`${edge.a}-${edge.b}`}>
+                  <title>{`${a.name} – ${b.name}: ${edge.count} voyage${edge.count === 1 ? "" : "s"}`}</title>
+                  <path d={d ?? ""} fill="none" stroke={state?.empire.emblem.color ?? "#f5c842"} strokeOpacity={0.75} strokeWidth={(0.8 + Math.log2(edge.count + 1)) * inv} strokeLinecap="round" />
                 </g>
               );
             })}
@@ -233,7 +312,7 @@ export function WorldMap({ catalog, state, selectedPortId, onSelectPort, onSelec
               const [x, y] = project(port.longitude, port.latitude);
               const ps = state?.ports[port.id];
               const access = ps?.access ?? port.default_access;
-              const color = ACCESS_COLORS[access] ?? "#22d3ee";
+              const color = layers.ownership ? polityColor(catalog, port.polity_id) : (ACCESS_COLORS[access] ?? "#22d3ee");
               const r = ({ minor: 3, regional: 3.8, major: 4.6, hub: 5.4 }[port.size] ?? 4) * inv;
               const selected = selectedPortId === port.id;
               const offers = layers.contracts && state ? Object.values(state.contracts).filter((c) => c.status === "available" && c.origin_port_id === port.id).length : 0;
@@ -334,24 +413,41 @@ export function WorldMap({ catalog, state, selectedPortId, onSelectPort, onSelec
           </button>
         </div>
       )}
-      <MapLegend modern={catalog.scenario.features.modern_borders} />
+      <MapLegend modern={modern} year={year} layers={layers} catalog={catalog} extentCount={extents.length} />
     </div>
   );
 }
 
-function MapLegend({ modern }: { modern: boolean }) {
+function MapLegend({ modern, year, layers, catalog, extentCount }: { modern: boolean; year: number; layers: MapLayers; catalog: ScenarioCatalog; extentCount: number }) {
+  const owners = layers.ownership ? catalog.civilizations.filter((c) => catalog.ports.some((p) => p.polity_id === c.id)) : [];
   return (
-    <div className="hud-glass absolute right-2 top-2 hidden p-2 text-[0.65rem] text-foam/70 sm:block">
-      <div className="label-caps mb-1">Legend</div>
-      {(["home", "open", "agreement", "restricted", "closed"] as const).map((a) => (
-        <div key={a} className="flex items-center gap-1.5 capitalize">
-          <span className="inline-block h-2 w-2 rounded-full" style={{ background: ACCESS_COLORS[a] }} /> {a} port
-        </div>
-      ))}
+    <div className="hud-glass absolute right-2 top-2 hidden max-w-[220px] p-2 text-[0.65rem] text-foam/70 sm:block">
+      <div className="label-caps mb-1">Legend{!modern ? ` · ${year < 1600 ? `${year} CE` : year}` : ""}</div>
+      {!layers.ownership &&
+        (["home", "open", "agreement", "restricted", "closed"] as const).map((a) => (
+          <div key={a} className="flex items-center gap-1.5 capitalize">
+            <span className="inline-block h-2 w-2 rounded-full" style={{ background: ACCESS_COLORS[a] }} /> {a} port
+          </div>
+        ))}
+      {layers.ownership &&
+        owners.map((c) => (
+          <div key={c.id} className="flex items-center gap-1.5">
+            <span className="inline-block h-2 w-2 rounded-full" style={{ background: c.color ?? "#9ca3af" }} /> <span className="truncate">{c.canonical_name}</span>
+          </div>
+        ))}
       <div className="mt-1 flex items-center gap-1.5">
         <span className="inline-block h-0 w-4 border-t border-dashed border-gold-400" /> documented route
       </div>
-      {!modern && <div className="mt-1 text-foam/50">Shaded regions are approximate.</div>}
+      {!modern && layers.regions && (
+        <>
+          <div className="mt-1 flex items-center gap-1.5"><span className="inline-block h-2 w-3 border border-foam/60 bg-foam/25" /> direct rule</div>
+          <div className="flex items-center gap-1.5"><span className="inline-block h-2 w-3 border border-dashed border-foam/60 bg-foam/10" /> suzerainty or sphere</div>
+          <div className="text-foam/50">{extentCount} dated extent{extentCount === 1 ? "" : "s"} for {year}; outlines approximate, hover for sources.</div>
+        </>
+      )}
+      {!modern && layers.settlements && <div className="mt-1 flex items-center gap-1.5"><span className="inline-block h-2 w-2 bg-foam/70" /> settlement or capital</div>}
+      {layers.network && <div className="mt-1 flex items-center gap-1.5"><span className="inline-block h-0 w-4 border-t-2 border-gold-300" /> your trade network</div>}
+      {!modern && layers.borders && <div className="mt-1 text-coral-300/80">Modern borders shown for reference only; not valid for {year}.</div>}
       {modern && <div className="mt-1 text-foam/50">Borders: present-day (Natural Earth).</div>}
     </div>
   );

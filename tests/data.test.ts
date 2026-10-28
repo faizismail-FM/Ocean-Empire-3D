@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { ALL_CIVILIZATIONS, ALL_EVENTS, ALL_FIGURES, ALL_GOODS, ALL_PORTS, ALL_ROUTES, ALL_SCENARIOS, ALL_SHIPS, ALL_SOURCES, ALL_TECHNOLOGIES, getCatalog, getSource } from "@/data";
+import { ALL_CIVILIZATIONS, ALL_EVENTS, ALL_EXTENTS, ALL_FIGURES, ALL_GOODS, ALL_PORTS, ALL_ROUTES, ALL_SCENARIOS, ALL_SETTLEMENTS, ALL_SHIPS, ALL_SOURCES, ALL_TECHNOLOGIES, getCatalog, getSource } from "@/data";
 import { LANE_EDGES, LANE_NODES } from "@/data/sealanes";
 import { planRoute } from "@/engine/routing";
 import { dateFromIso } from "@/engine/calendar";
@@ -27,7 +27,40 @@ describe("reference database integrity", () => {
     for (const r of ALL_ROUTES) check(r.sources, r.id);
     for (const r of ALL_CIVILIZATIONS) check(r.historical_sources, r.id);
     for (const r of ALL_SCENARIOS) check(r.sources, r.id);
+    for (const r of ALL_EXTENTS) check(r.sources, r.id);
+    for (const r of ALL_SETTLEMENTS) check(r.sources, r.id);
+    for (const r of ALL_SCENARIOS) for (const reg of r.regions) check(reg.sources, reg.id);
+    for (const r of ALL_SCENARIOS) check(r.territory_rules.sources, `${r.id} territory rules`);
     expect(ALL_SOURCES.length).toBeGreaterThan(20);
+  });
+
+  it("dated map layers reference real scenarios and polities and carry consistent periods", () => {
+    const scenarioIds = new Set(ALL_SCENARIOS.map((s) => s.id));
+    const civIds = new Set(ALL_CIVILIZATIONS.map((c) => c.id));
+    for (const e of [...ALL_EXTENTS, ...ALL_SETTLEMENTS]) {
+      for (const id of e.scenario_ids) expect(scenarioIds.has(id), `${e.id} scenario ${id}`).toBe(true);
+      if (e.polity_id) expect(civIds.has(e.polity_id), `${e.id} polity ${e.polity_id}`).toBe(true);
+      if (e.period.end !== null) expect(e.period.end, `${e.id} period`).toBeGreaterThanOrEqual(e.period.start);
+    }
+    for (const e of ALL_EXTENTS) {
+      for (const [lon, lat] of e.polygon) {
+        expect(Math.abs(lon)).toBeLessThanOrEqual(180);
+        expect(Math.abs(lat)).toBeLessThanOrEqual(90);
+      }
+    }
+    // Every historical campaign has dated control for its own polity at its start date, within its map bounds.
+    for (const s of ALL_SCENARIOS.filter((x) => x.mode === "historical")) {
+      const c = getCatalog(s.id);
+      const year = dateFromIso(s.start_date).year;
+      const own = c.extents.filter((e) => e.polity_id === s.player_polity_id && e.period.start <= year && (e.period.end === null || e.period.end >= year));
+      expect(own.length, `${s.id} has no dated extent for its polity`).toBeGreaterThan(0);
+      for (const e of c.extents) for (const [lon, lat] of e.polygon) {
+        expect(lon, `${e.id} outside ${s.id} bounds`).toBeGreaterThanOrEqual(s.map_bounds.west - 8);
+        expect(lon, `${e.id} outside ${s.id} bounds`).toBeLessThanOrEqual(s.map_bounds.east + 8);
+        expect(lat, `${e.id} outside ${s.id} bounds`).toBeGreaterThanOrEqual(s.map_bounds.south - 8);
+        expect(lat, `${e.id} outside ${s.id} bounds`).toBeLessThanOrEqual(s.map_bounds.north + 8);
+      }
+    }
   });
 
   it("every port references existing lane nodes", () => {

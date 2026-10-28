@@ -174,6 +174,7 @@ export const GUIDE: GuideSection[] = [
     points: [
       "The History screen lists events that have happened and what they changed. Upcoming events are hidden unless the scenario reveals them.",
       "Evidence badges: Established, Interpretation, Reconstruction, Uncertain and Fictional. Gameplay numbers such as prices and speeds are abstractions even when the record is well documented.",
+      "The world map's layers carry dates and sources: territorial control is drawn for the current game year from dated extents (direct rule solid, suzerainty and spheres dashed, every outline approximate), inland capitals and settlements appear for that year, ports can be coloured by the polity that holds them, and your own trade network can be overlaid. Present-day borders are only drawn on request in historical campaigns and are marked as reference only. The encyclopedia's Historical maps page adds a year slider.",
       "The Encyclopedia is available from the main menu without a game in progress.",
       "Where the deployment enables it, each encyclopedia entry has an 'Ask about this entry' box. The assistant answers only from that entry's record and listed sources, says when the record does not cover a question, and labels interpretation, reconstruction and fiction. Treat it as a reading aid, not a source: check the bibliography before relying on a detail.",
     ],

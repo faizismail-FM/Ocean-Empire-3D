@@ -6,6 +6,8 @@ import {
   HistoricalSourceSchema,
   PortRecordSchema,
   ScenarioSchema,
+  SettlementRecordSchema,
+  TerritorialExtentSchema,
   TechnologySchema,
   TradeGoodSchema,
   VesselClassSchema,
@@ -16,7 +18,9 @@ import {
   type HistoricalSource,
   type PortRecord,
   type Scenario,
+  type SettlementRecord,
   type Technology,
+  type TerritorialExtent,
   type TradeGood,
   type VesselClass,
 } from "./schemas";
@@ -34,6 +38,7 @@ import { HISTORICAL_FIGURES } from "./historical/figures";
 import { HISTORICAL_ROUTES } from "./historical/routes";
 import { CIVILIZATIONS } from "./historical/civilizations";
 import { SOURCES } from "./historical/sources";
+import { SETTLEMENTS, TERRITORIAL_EXTENTS } from "./historical/territories";
 import { KILWA_SCENARIO, MELAKA_SCENARIO, SIRAF_SCENARIO, VENICE_SCENARIO } from "./historical/scenarios";
 
 /**
@@ -61,6 +66,8 @@ export const ALL_FIGURES: HistoricalFigure[] = validateAll(HistoricalFigureSchem
 export const ALL_ROUTES: HistoricalRoute[] = validateAll(HistoricalRouteSchema, HISTORICAL_ROUTES, "route");
 export const ALL_CIVILIZATIONS: Civilization[] = validateAll(CivilizationSchema, CIVILIZATIONS, "civilization");
 export const ALL_SOURCES: HistoricalSource[] = validateAll(HistoricalSourceSchema, SOURCES, "source");
+export const ALL_EXTENTS: TerritorialExtent[] = validateAll(TerritorialExtentSchema, TERRITORIAL_EXTENTS, "territorial extent");
+export const ALL_SETTLEMENTS: SettlementRecord[] = validateAll(SettlementRecordSchema, SETTLEMENTS, "settlement");
 export const ALL_SCENARIOS: Scenario[] = validateAll(ScenarioSchema, [MODERN_SCENARIO, SIRAF_SCENARIO, KILWA_SCENARIO, MELAKA_SCENARIO, VENICE_SCENARIO], "scenario");
 
 function indexById<T extends { id: string }>(items: T[]): Map<string, T> {
@@ -127,6 +134,9 @@ export interface ScenarioCatalog {
   events: HistoricalEvent[];
   routes: HistoricalRoute[];
   civilizations: Civilization[];
+  /** Dated territorial control and inland settlements for the map layers. */
+  extents: TerritorialExtent[];
+  settlements: SettlementRecord[];
 }
 
 const catalogCache = new Map<string, ScenarioCatalog>();
@@ -167,6 +177,9 @@ export function getCatalog(scenarioId: string): ScenarioCatalog {
       if (!goodIndex.has(g)) throw new Error(`Port ${p.id} references unknown good ${g}`);
     }
   }
+  const extents = ALL_EXTENTS.filter((e) => e.scenario_ids.includes(scenarioId));
+  const settlements = ALL_SETTLEMENTS.filter((e) => e.scenario_ids.includes(scenarioId));
+  for (const e of extents) if (e.polity_id && !civIndex.has(e.polity_id)) throw new Error(`Extent ${e.id} references unknown civilization ${e.polity_id}`);
   const catalog: ScenarioCatalog = {
     scenario,
     ports,
@@ -178,9 +191,11 @@ export function getCatalog(scenarioId: string): ScenarioCatalog {
     events,
     routes,
     civilizations,
+    extents,
+    settlements,
   };
   catalogCache.set(scenarioId, catalog);
   return catalog;
 }
 
-export type { Scenario, PortRecord, VesselClass, TradeGood, Technology, HistoricalEvent, HistoricalFigure, HistoricalRoute, Civilization, HistoricalSource };
+export type { Scenario, PortRecord, VesselClass, TradeGood, Technology, HistoricalEvent, HistoricalFigure, HistoricalRoute, Civilization, HistoricalSource, TerritorialExtent, SettlementRecord };
