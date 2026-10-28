@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useCallback, useEffect, useRef, useState } from "react";
-import { Anchor, Camera, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Compass as CompassIcon, Gauge, Globe2, HelpCircle, Minus, Pause, Play, Plus, RotateCcw, Save, Ship, Wind, X, Zap, ZapOff } from "lucide-react";
+import { Anchor, BookOpen, Camera, ChevronDown, ChevronLeft, ChevronRight, ChevronUp, Compass as CompassIcon, Gauge, HelpCircle, Minus, Pause, Play, Plus, RotateCcw, Save, Wind, X, Zap, ZapOff } from "lucide-react";
 import type { VesselClass } from "@/data/schemas";
 import { cargoCapacity, cargoUsed } from "@/engine/contracts";
 import { formatClock, formatDuration, formatGameDate } from "@/engine/calendar";
@@ -20,6 +20,7 @@ import { useSettingsStore } from "@/store/settings-store";
 import { viewState } from "@/components/three/scene-state";
 import { Badge, Button } from "@/components/ui";
 import { GuideOverlay } from "@/components/game/Guide";
+import { visibleNav } from "@/components/game/nav";
 
 /** Subscribe to the store at a modest rate so the HUD does not re-render 60 times a second. */
 function useThrottledState(intervalMs = 120): GameState | null {
@@ -151,6 +152,15 @@ export function SailingHUD() {
         case "escape":
           setMenuOpen((v) => !v);
           break;
+        default: {
+          // Screen hotkeys (M world, F fleet, T trade, ...), as on the dock at the bottom right.
+          const cat = useGameStore.getState().catalog;
+          const target = cat ? visibleNav(cat).find((n) => n.hotkey === e.key.toLowerCase()) : undefined;
+          if (target) {
+            e.preventDefault();
+            router.push(target.href);
+          }
+        }
       }
     };
     const onUp = (e: KeyboardEvent) => {
@@ -169,10 +179,11 @@ export function SailingHUD() {
       window.removeEventListener("keydown", onDown);
       window.removeEventListener("keyup", onUp);
     };
-  }, [manual, togglePaused, cycleCamera, setControls]);
+  }, [manual, togglePaused, cycleCamera, setControls, router]);
 
   if (!state || !catalog || !ship || !cls) return null;
   const mods = computeModifiers(catalog, state);
+  const screens = visibleNav(catalog).filter((n) => n.href !== "/play/sail");
   const destination = ship.route[ship.route.length - 1];
   const destPort = destination?.port_id ? catalog.portMap.get(destination.port_id) : null;
   const nextWp = ship.route[Math.min(ship.waypoint_index, ship.route.length - 1)];
@@ -392,6 +403,21 @@ export function SailingHUD() {
         </div>
       </div>
 
+      {/* Screens dock: every game screen one click or one key away, as in an MMORPG hotbar. */}
+      <nav className="hud-glass pointer-events-auto absolute bottom-[6.5rem] right-3 hidden grid-cols-2 gap-1 p-1.5 md:grid" aria-label="Game screens">
+        {screens.map((item) => (
+          <Link key={item.href} href={item.href} className="group relative flex w-[4.5rem] flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[0.65rem] text-foam/70 hover:bg-white/10 hover:text-foam" title={item.hotkey ? `${item.label} (${item.hotkey.toUpperCase()})` : item.label}>
+            <item.icon size={16} className="text-cyan-300/80 group-hover:text-cyan-300" />
+            <span>{item.label}</span>
+            {item.hotkey && <span className="absolute right-1 top-1 rounded bg-white/10 px-1 font-mono text-[0.55rem] text-foam/50">{item.hotkey.toUpperCase()}</span>}
+          </Link>
+        ))}
+        <Link href="/encyclopedia" className="group flex w-[4.5rem] flex-col items-center gap-0.5 rounded-md px-1 py-1.5 text-[0.65rem] text-foam/70 hover:bg-white/10 hover:text-foam" title="Encyclopedia">
+          <BookOpen size={16} className="text-cyan-300/80 group-hover:text-cyan-300" />
+          <span>Encyclopedia</span>
+        </Link>
+      </nav>
+
       {/* Escape menu */}
       {menuOpen && (
         <div className="pointer-events-auto absolute inset-0 flex items-center justify-center bg-navy-950/60 backdrop-blur-sm" onClick={() => setMenuOpen(false)}>
@@ -400,10 +426,17 @@ export function SailingHUD() {
             <div className="mt-4 grid gap-2">
               <Button onClick={() => setMenuOpen(false)}><Play size={14} /> Resume</Button>
               <Button variant="secondary" onClick={async () => { await saveGame(); setMenuOpen(false); }}><Save size={14} /> Save game</Button>
-              <Button variant="secondary" onClick={() => router.push("/play/world")}><Globe2 size={14} /> World map</Button>
-              <Button variant="secondary" onClick={() => router.push("/play/fleet")}><Ship size={14} /> Fleet</Button>
+              <div className="grid grid-cols-3 gap-1">
+                {screens.map((item) => (
+                  <Link key={item.href} href={item.href} className="flex flex-col items-center gap-1 rounded-md bg-white/5 px-1 py-2 text-[0.65rem] text-foam/80 hover:bg-white/10 hover:text-foam">
+                    <item.icon size={16} className="text-cyan-300" /> {item.label}
+                  </Link>
+                ))}
+                <Link href="/encyclopedia" className="flex flex-col items-center gap-1 rounded-md bg-white/5 px-1 py-2 text-[0.65rem] text-foam/80 hover:bg-white/10 hover:text-foam">
+                  <BookOpen size={16} className="text-cyan-300" /> Encyclopedia
+                </Link>
+              </div>
               <Button variant="secondary" onClick={() => { setMenuOpen(false); setGuideOpen(true); }}><HelpCircle size={14} /> How to play</Button>
-              <Button variant="secondary" onClick={() => router.push("/play/settings")}>Settings</Button>
               <Button variant="ghost" onClick={() => router.push("/")}>Main menu</Button>
             </div>
             <p className="mt-3 text-[0.65rem] text-foam/45">The simulation keeps running while the menu is open unless paused.</p>

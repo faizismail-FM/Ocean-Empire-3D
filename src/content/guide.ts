@@ -57,6 +57,7 @@ export const GUIDE: GuideSection[] = [
       "Three cameras: Chase follows behind the ship, Free orbits with the mouse, Overhead is a north-up chart view. Zoom with + and −, reset with R.",
       "A red-and-white buoy marks the next waypoint. Sailing ships cannot sail straight into the wind: the wind panel turns red when you are 'in irons' and the autopilot tacks for you.",
       "Fuel (or provisions) are consumed every hour at sea. Running out leaves an engine ship drifting; refuel at any port from the Fleet screen.",
+      "The dock at the bottom right opens any game screen without leaving the voyage; the ship keeps sailing while you trade, develop ports or read the history. Each screen also has a key (M for the World map, F for the Fleet, T for Trade), and the Sail entry in the sidebar brings you back to the helm.",
     ],
     controls: [
       { keys: "W / S", action: "Throttle or sail up and down" },
@@ -66,6 +67,8 @@ export const GUIDE: GuideSection[] = [
       { keys: "+ / −", action: "Zoom" },
       { keys: "R", action: "Reset camera" },
       { keys: "?", action: "Open this guide" },
+      { keys: "M / E / F / T / P", action: "Open the World, Empire, Fleet, Trade or Ports screen" },
+      { keys: "G / N / V / J / O", action: "Technology, Diplomacy, Rivals, History or Missions (where the scenario has them)" },
       { keys: "Esc", action: "Game menu" },
     ],
   },
