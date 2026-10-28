@@ -40,6 +40,10 @@ export function ProceduralShip({ model, length, sailYaw = 0, sailSet = 1, accent
       return <Galley length={length} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />;
     case "cog":
       return <Cog length={length} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />;
+    case "carrack":
+      return <Carrack length={length} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />;
+    case "caravel":
+      return <Caravel length={length} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />;
   }
 }
 
@@ -654,6 +658,89 @@ function SquareRig({ z, mastHeight, width, sailYaw, sailSet, accent }: { z: numb
           <meshStandardMaterial color={accent} side={THREE.DoubleSide} />
         </mesh>
       </group>
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Portuguese nau / carrack: high forecastle and sterncastle, square fore and main, lateen mizzen, bowsprit.
+
+function Carrack({ length, sailYaw, sailSet, accent }: { length: number; sailYaw: number; sailSet: number; accent: string }) {
+  const beam = length / 3.3;
+  const height = length / 5.2;
+  const draft = height * 0.45;
+  const hull = useMemo(() => hullGeometry(length, beam, height, 0.22, 0.2, true), [length, beam, height]);
+  return (
+    <group>
+      <mesh geometry={hull} material={materials.woodDark} position={[0, -draft, 0]} castShadow receiveShadow />
+      {[0.35, 0.6, 0.85].map((f) => (
+        <mesh key={f} position={[0, -draft + height * f, 0]}>
+          <boxGeometry args={[beam * 1.02, 0.1, length * 0.72]} />
+          <primitive object={materials.wood} attach="material" />
+        </mesh>
+      ))}
+      <mesh position={[0, height * 0.56, 0]} receiveShadow>
+        <boxGeometry args={[beam * 0.9, 0.3, length * 0.74]} />
+        <primitive object={materials.woodLight} attach="material" />
+      </mesh>
+      {/* sterncastle, two tiers */}
+      <mesh position={[0, height * 1.0, length * 0.3]} castShadow>
+        <boxGeometry args={[beam * 0.95, height * 0.9, length * 0.26]} />
+        <primitive object={materials.woodLight} attach="material" />
+      </mesh>
+      <mesh position={[0, height * 1.6, length * 0.36]} castShadow>
+        <boxGeometry args={[beam * 0.8, height * 0.5, length * 0.14]} />
+        <primitive object={materials.wood} attach="material" />
+      </mesh>
+      {/* forecastle */}
+      <mesh position={[0, height * 1.0, -length * 0.33]} castShadow>
+        <boxGeometry args={[beam * 0.8, height * 0.8, length * 0.16]} />
+        <primitive object={materials.woodLight} attach="material" />
+      </mesh>
+      {/* bowsprit */}
+      <mesh position={[0, height * 1.1, -length * 0.56]} rotation={[Math.PI / 2 - 0.45, 0, 0]}>
+        <cylinderGeometry args={[0.1, 0.16, length * 0.28, 6]} />
+        <primitive object={materials.mast} attach="material" />
+      </mesh>
+      <mesh position={[0, -draft * 0.3, length * 0.51]}>
+        <boxGeometry args={[0.4, height * 1.6, 1.3]} />
+        <primitive object={materials.woodDark} attach="material" />
+      </mesh>
+      <SquareRig z={-length * 0.26} mastHeight={length * 0.62} width={beam * 1.5} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />
+      <SquareRig z={length * 0.02} mastHeight={length * 0.95} width={beam * 2.1} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />
+      <LateenRig z={length * 0.3} mastHeight={length * 0.52} yardLength={length * 0.5} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />
+    </group>
+  );
+}
+
+// ---------------------------------------------------------------------------
+// Caravel: slim low hull, stern rudder, two or three lateen masts.
+
+function Caravel({ length, sailYaw, sailSet, accent }: { length: number; sailYaw: number; sailSet: number; accent: string }) {
+  const beam = length / 3.8;
+  const height = length / 8;
+  const draft = height * 0.5;
+  const hull = useMemo(() => hullGeometry(length, beam, height, 0.3, 0.22, true), [length, beam, height]);
+  const masts = length >= 22 ? [length * 0.18, -length * 0.1, -length * 0.34] : [length * 0.14, -length * 0.26];
+  return (
+    <group>
+      <mesh geometry={hull} material={materials.wood} position={[0, -draft, 0]} castShadow receiveShadow />
+      <mesh position={[0, height * 0.52, 0]} receiveShadow>
+        <boxGeometry args={[beam * 0.88, 0.25, length * 0.78]} />
+        <primitive object={materials.woodLight} attach="material" />
+      </mesh>
+      {/* low sterncastle */}
+      <mesh position={[0, height * 0.85, length * 0.34]} castShadow>
+        <boxGeometry args={[beam * 0.8, height * 0.55, length * 0.18]} />
+        <primitive object={materials.woodLight} attach="material" />
+      </mesh>
+      <mesh position={[0, -draft * 0.35, length * 0.5]}>
+        <boxGeometry args={[0.3, height * 1.5, 1]} />
+        <primitive object={materials.woodDark} attach="material" />
+      </mesh>
+      {masts.map((z, i) => (
+        <LateenRig key={i} z={z} mastHeight={length * (i === 0 ? 0.6 : i === 1 ? 0.8 : 0.5)} yardLength={length * (i === 0 ? 0.6 : i === 1 ? 0.85 : 0.5)} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />
+      ))}
     </group>
   );
 }

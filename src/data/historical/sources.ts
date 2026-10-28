@@ -333,6 +333,49 @@ export const SOURCES: HistoricalSource[] = [
     source_type: "book", url_or_reference: "Cambridge University Press (Past and Present Publications)", related_records: ["tech_portolan"],
     notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in October 2026. Describes the Mediterranean's winds and currents and their effect on sailing routes.",
   },
+  // Sixteenth-century Portuguese expansion
+  {
+    id: "src_subrahmanyam_1993", title: "The Portuguese Empire in Asia, 1500–1700: A Political and Economic History",
+    author_or_institution: "Sanjay Subrahmanyam", publication_year: 1993,
+    source_type: "book", url_or_reference: "Longman, London, 1993; second edition Wiley-Blackwell, 2012", related_records: ["civ_portugal", "port_lisbon", "port_goa", "evt_pepper_monopoly_1506", "evt_diu_1509", "tech_cartaz", "ship_nau"],
+    notes: "The 2012 second edition (Wiley-Blackwell) is confirmed against publisher and bookseller listings (October 2026); the 1993 Longman first edition is recorded from the implementer's knowledge.",
+  },
+  {
+    id: "src_boxer_1969", title: "The Portuguese Seaborne Empire, 1415–1825",
+    author_or_institution: "C. R. Boxer", publication_year: 1969,
+    source_type: "book", url_or_reference: "Hutchinson, London, xxvi + 426 pp.", related_records: ["civ_portugal", "tech_casa_licence", "good_copper_european", "fig_joao_iii"],
+    notes: "Confirmed against catalogue records (October 2026).",
+  },
+  {
+    id: "src_diffie_winius_1977", title: "Foundations of the Portuguese Empire, 1415–1580",
+    author_or_institution: "Bailey W. Diffie and George D. Winius", publication_year: 1977,
+    source_type: "book", url_or_reference: "University of Minnesota Press, Minneapolis (Europe and the World in the Age of Expansion, vol. 1)", related_records: ["port_mina", "port_funchal", "good_gold_mina", "good_malagueta", "tech_roteiro", "tech_astrolabe", "ship_caravela"],
+    notes: "Series and date confirmed from listings (October 2026); the publisher is recorded from the implementer's knowledge.",
+  },
+  {
+    id: "src_pearson_1987", title: "The Portuguese in India",
+    author_or_institution: "M. N. Pearson", publication_year: 1987,
+    source_type: "book", url_or_reference: "The New Cambridge History of India I.1, Cambridge University Press, xviii + 178 pp., ISBN 0-521-25713-1", related_records: ["civ_cochin", "port_cochin", "port_calicut_1505", "port_diu", "evt_calicut_treaty_1513", "evt_diu_fort_1535"],
+    notes: "Confirmed against catalogue records (October 2026).",
+  },
+  {
+    id: "src_newitt_2005", title: "A History of Portuguese Overseas Expansion, 1400–1668",
+    author_or_institution: "Malyn Newitt", publication_year: 2005,
+    source_type: "book", url_or_reference: "Routledge, London and New York, xiv + 300 pp.", related_records: ["port_sofala_1505", "port_kilwa_1505", "port_mozambique_isl", "evt_kilwa_1505", "evt_sofala_fort_1505", "evt_kilwa_abandoned_1512", "fig_manuel_i"],
+    notes: "Confirmed against the publisher's page and catalogue records (October 2026).",
+  },
+  {
+    id: "src_barbosa_dames", title: "The Book of Duarte Barbosa: An Account of the Countries bordering on the Indian Ocean and their Inhabitants, written by Duarte Barbosa and completed about the year 1518",
+    author_or_institution: "Duarte Barbosa; translated and edited by Mansel Longworth Dames", publication_year: 1918,
+    source_type: "primary_source", url_or_reference: "Hakluyt Society, second series nos. 44 and 49, London, 1918–1921, 2 vols", related_records: ["port_cochin", "port_cannanore", "port_calicut_1505", "ship_malabar_parau", "good_ginger"],
+    notes: "Volume I (1918, second series no. 44) confirmed from the digitised text (October 2026); the second volume's date is recorded from the implementer's knowledge.",
+  },
+  {
+    id: "src_albuquerque_commentaries", title: "The Commentaries of the Great Afonso Dalboquerque, Second Viceroy of India",
+    author_or_institution: "Brás de Albuquerque; translated and edited by Walter de Gray Birch", publication_year: 1875,
+    source_type: "primary_source", url_or_reference: "Hakluyt Society, first series nos. 53, 55, 62 and 69, London, 1875–1884, 4 vols", related_records: ["port_goa", "port_hormuz_1505", "port_malacca_1511", "evt_goa_1510", "evt_malacca_1511", "evt_hormuz_1515"],
+    notes: "Confirmed against catalogue records (October 2026). Written by Albuquerque's son from his father's letters; partisan but detailed.",
+  },
   // Modern shipping
   {
     id: "src_unctad_rmt", title: "Review of Maritime Transport 2023",

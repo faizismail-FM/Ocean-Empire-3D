@@ -289,4 +289,47 @@ export const HISTORICAL_GOODS: TradeGood[] = [
     historical_availability: { start: 1000, end: 1800 }, base_price: 30, cargo_space: 1,
     evidence_status: "established", sources: ["src_lane_1973", "src_ashtor_1983"],
   },
+  // Sixteenth-century Portuguese
+  {
+    id: "good_ginger", name: "Ginger", category: "spice",
+    description: "Malabar ginger, the second spice of the Carreira after pepper, loaded at Cochin and Cannanore.",
+    historical_availability: { start: 500, end: null }, base_price: 70, cargo_space: 1,
+    evidence_status: "established", sources: ["src_barbosa_dames", "src_subrahmanyam_1993"],
+  },
+  {
+    id: "good_gold_mina", name: "Mina gold", category: "luxury",
+    description: "Akan gold bartered at São Jorge da Mina for cloth, metals and manillas; it paid for the Crown's India fleets.",
+    historical_availability: { start: 1470, end: 1700 }, base_price: 650, cargo_space: 0.1,
+    evidence_status: "established", sources: ["src_diffie_winius_1977", "src_newitt_2005"],
+  },
+  {
+    id: "good_malagueta", name: "Malagueta pepper", category: "spice",
+    description: "Grains of paradise from the Guinea coast, sold in Europe as a cheaper pepper before Malabar pepper arrived in quantity.",
+    historical_availability: { start: 1460, end: 1700 }, base_price: 45, cargo_space: 1,
+    evidence_status: "established", sources: ["src_diffie_winius_1977"],
+  },
+  {
+    id: "good_sugar_madeira", name: "Madeira sugar", category: "food",
+    description: "Cane sugar from Madeira, Europe's chief source around 1500, shipped to Lisbon, Antwerp and Italy.",
+    historical_availability: { start: 1450, end: 1700 }, base_price: 110, cargo_space: 0.8,
+    evidence_status: "established", sources: ["src_diffie_winius_1977", "src_newitt_2005"],
+  },
+  {
+    id: "good_copper_european", name: "European copper", category: "metal",
+    description: "Copper from the Fugger and Welser mines of Hungary and Tyrol, shipped from Antwerp and Lisbon to India and Africa, where it was wanted for coin, vessels and manillas.",
+    historical_availability: { start: 1400, end: 1700 }, base_price: 120, cargo_space: 0.6,
+    evidence_status: "established", sources: ["src_subrahmanyam_1993", "src_boxer_1969"],
+  },
+  {
+    id: "good_silver_coin", name: "Silver coin", category: "metal",
+    description: "Silver, as coin and bullion, that the Portuguese carried east to pay for pepper when goods would not sell.",
+    historical_availability: { start: 1500, end: 1800 }, base_price: 400, cargo_space: 0.2,
+    evidence_status: "established", sources: ["src_subrahmanyam_1993", "src_pearson_1987"],
+  },
+  {
+    id: "good_wine_portuguese", name: "Portuguese wine", category: "food",
+    description: "Wine from the Tagus valley and Madeira, carried to the forts and factories and sold to the Portuguese communities of Asia.",
+    historical_availability: { start: 1000, end: null }, base_price: 35, cargo_space: 1.2, storage: "liquid",
+    evidence_status: "established", sources: ["src_boxer_1969"],
+  },
 ];

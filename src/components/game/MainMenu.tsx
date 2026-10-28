@@ -14,7 +14,7 @@ import { AccountPanel } from "./AccountPanel";
 
 const ENTRIES = [
   { href: "/new", label: "New Game", icon: Play, description: "Choose a scenario and found your empire or company." },
-  { href: "/new?mode=historical", label: "Historical Campaigns", icon: Compass, description: "Siraf 850, Kilwa 1330, Venice 1423 and Melaka 1460, with sources." },
+  { href: "/new?mode=historical", label: "Historical Campaigns", icon: Compass, description: "Siraf 850, Kilwa 1330, Venice 1423, Melaka 1460 and the Carreira da Índia 1505, with sources." },
   { href: "/new?mode=modern", label: "Modern Shipping Empire", icon: Container, description: "Build a container line from a single feeder ship." },
   { href: "/guide", label: "How to Play", icon: BookOpenText, description: "The core loop, sailing controls, time, trade and ports." },
   { href: "/encyclopedia", label: "Civilization Encyclopedia", icon: BookOpen, description: "Ports, ships, goods, events and their evidence." },
@@ -57,7 +57,7 @@ export function MainMenu() {
           </div>
           <h1 className="text-glow mt-3 text-5xl text-foam md:text-7xl">Ocean Empire 3D</h1>
           <p className="mt-3 max-w-2xl text-base text-foam/70 md:text-lg">
-            Sail a living ocean, carry cargo between real ports, and grow a trading house across the monsoon seas of 850 CE, the Swahili gold coast of 1330, the galley convoys of Venice in 1423, the Straits of 1460, or the container lanes of today.
+            Sail a living ocean, carry cargo between real ports, and grow a trading house across the monsoon seas of 850 CE, the Swahili gold coast of 1330, the galley convoys of Venice in 1423, the Straits of 1460, the Cape route of 1505, or the container lanes of today.
           </p>
         </header>
 

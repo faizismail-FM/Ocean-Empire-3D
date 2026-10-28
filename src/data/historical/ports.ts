@@ -10,6 +10,7 @@ const SIRAF_PERIOD = { start: 800, end: 900, note: "Scenario window; the port's 
 const MELAKA_PERIOD = { start: 1400, end: 1511, note: "Scenario window; the port's history extends beyond it." };
 const KILWA_PERIOD = { start: 1300, end: 1400, note: "Scenario window; the port's history extends beyond it." };
 const VENICE_PERIOD = { start: 1400, end: 1470, note: "Scenario window; the port's history extends beyond it." };
+const PORTUGAL_PERIOD = { start: 1500, end: 1550, note: "Scenario window; the port's history extends beyond it." };
 
 export const SIRAF_PORTS: PortRecord[] = [
   {
@@ -460,4 +461,136 @@ export const VENICE_PORTS: PortRecord[] = [
   },
 ];
 
-export const HISTORICAL_PORTS: PortRecord[] = [...SIRAF_PORTS, ...MELAKA_PORTS, ...KILWA_PORTS, ...VENICE_PORTS];
+export const PORTUGAL_PORTS: PortRecord[] = [
+  {
+    id: "port_lisbon", name: "Lisbon", modern_reference_name: "Lisbon, Portugal",
+    historical_names: ["Lisboa", "Olisipo"], latitude: 38.71, longitude: -9.14, location_certainty: "precise",
+    active_period: PORTUGAL_PERIOD, historical_polity: "Kingdom of Portugal", polity_id: "civ_portugal", country: "Portugal",
+    historical_significance: "Capital of the kingdom and home of the Casa da Índia, which fitted out the yearly Carreira fleets, received the pepper and sold it to the Crown's contractors. The Ribeira das Naus built the naus; German and Italian merchant houses kept factors in the city.",
+    supplies: ["good_wine_portuguese", "good_copper_european", "good_silver_coin"], demands: ["good_pepper", "good_ginger", "good_cinnamon", "good_cloves", "good_nutmeg", "good_gold_mina", "good_sugar_madeira", "good_malagueta", "good_silk", "good_porcelain", "good_ivory"],
+    infrastructure: { docks: 2, warehouse: 2, shipyard: 2, administration: 2, commercial_district: 1 }, default_access: "home", fee_modifier: 1, lane_nodes: ["tagus_mouth"],
+    evidence_status: "established", sources: ["src_subrahmanyam_1993", "src_boxer_1969", "src_diffie_winius_1977"], size: "hub",
+  },
+  {
+    id: "port_funchal", name: "Funchal", modern_reference_name: "Funchal, Madeira, Portugal",
+    historical_names: ["Funchal"], latitude: 32.65, longitude: -16.91, location_certainty: "precise",
+    active_period: PORTUGAL_PERIOD, historical_polity: "Kingdom of Portugal (captaincy of Madeira)", polity_id: "civ_portugal", country: "Portugal",
+    historical_significance: "Settled from the 1420s, Madeira became Europe's chief sugar producer by 1500; its cane, worked by enslaved and free labour, was shipped to Lisbon, Flanders and Italy. The Carreira fleets watered at the island on the way south.",
+    supplies: ["good_sugar_madeira", "good_wine_portuguese"], demands: ["good_copper_european", "good_ivory"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 0.9, lane_nodes: ["madeira"],
+    evidence_status: "established", sources: ["src_diffie_winius_1977", "src_newitt_2005"], size: "regional",
+  },
+  {
+    id: "port_antwerp", name: "Antwerp", modern_reference_name: "Antwerp, Belgium",
+    historical_names: ["Antuérpia", "Antwerpen"], latitude: 51.22, longitude: 4.4, location_certainty: "precise",
+    active_period: PORTUGAL_PERIOD, historical_polity: "Habsburg Netherlands (city of Antwerp)", polity_id: "civ_burgundy_flanders", country: "Belgium",
+    historical_significance: "The Portuguese factory (feitoria de Flandres) moved from Bruges to Antwerp in 1499, and the city became the distribution centre of the Crown's pepper in northern Europe, where it was exchanged for German copper and silver.",
+    notes: "The County of Flanders passed to the Habsburgs in 1482; the polity record used here covers the Burgundian period and is labelled accordingly.",
+    supplies: ["good_copper_european", "good_silver_coin"], demands: ["good_pepper", "good_ginger", "good_cinnamon", "good_sugar_madeira", "good_malagueta", "good_cloves"],
+    infrastructure: { docks: 2, warehouse: 2, administration: 1, commercial_district: 1 }, default_access: "open", fee_modifier: 1.1, lane_nodes: ["north_sea_s", "dover"],
+    evidence_status: "established", sources: ["src_subrahmanyam_1993", "src_boxer_1969"], size: "major",
+  },
+  {
+    id: "port_mina", name: "São Jorge da Mina", modern_reference_name: "Elmina, Ghana",
+    historical_names: ["A Mina", "Elmina"], latitude: 5.08, longitude: -1.35, location_certainty: "precise",
+    active_period: PORTUGAL_PERIOD, historical_polity: "Kingdom of Portugal (fortress and factory)", polity_id: "civ_portugal", country: "Ghana",
+    historical_significance: "The fortress built in 1482 under João II to secure the gold of the Akan hinterland, exchanged for cloth, metals and enslaved people brought from Benin and elsewhere. Its gold underwrote the Crown's India voyages.",
+    notes: "The game represents gold, pepper and cloth at Mina; it does not represent the trade in enslaved people as cargo, and says so in the scenario note.",
+    supplies: ["good_gold_mina", "good_malagueta", "good_ivory"], demands: ["good_copper_european", "good_gujarati_cloth", "good_wine_portuguese"],
+    infrastructure: { docks: 1, warehouse: 1, administration: 1 }, default_access: "agreement", fee_modifier: 0.8, lane_nodes: ["gulf_of_guinea"],
+    evidence_status: "established", sources: ["src_diffie_winius_1977", "src_newitt_2005"], size: "regional",
+  },
+  {
+    id: "port_mozambique_isl", name: "Mozambique Island", modern_reference_name: "Ilha de Moçambique, Mozambique",
+    historical_names: ["Moçambique", "Musanbīj"], latitude: -15.04, longitude: 40.73, location_certainty: "precise",
+    active_period: PORTUGAL_PERIOD, historical_polity: "Swahili town; Portuguese fort from 1507", polity_id: "civ_portugal", country: "Mozambique",
+    historical_significance: "Vasco da Gama's first Swahili landfall in 1498. The Portuguese built a fort and factory in 1507 and the island became the Carreira's wintering station and the Estado's East African headquarters.",
+    supplies: ["good_ivory"], demands: ["good_gujarati_cloth", "good_copper_european", "good_wine_portuguese"],
+    infrastructure: { docks: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["mozambique_mid"],
+    evidence_status: "established", sources: ["src_newitt_2005", "src_pearson_1998"], size: "minor",
+  },
+  {
+    id: "port_sofala_1505", name: "Sofala", modern_reference_name: "Nova Sofala, near Beira, Mozambique",
+    historical_names: ["Sufāla", "Çofala"], latitude: -20.17, longitude: 34.72, location_certainty: "approximate",
+    active_period: PORTUGAL_PERIOD, historical_polity: "Swahili town; Portuguese fort São Caetano from 1505", polity_id: "civ_portugal", country: "Mozambique",
+    historical_significance: "Pêro de Anaia built the fort of São Caetano in September to November 1505 to capture the gold trade of the Zimbabwe plateau. The gold proved less than hoped and the trade drifted to Angoche and the Zambezi.",
+    supplies: ["good_sofala_gold", "good_ivory"], demands: ["good_gujarati_cloth", "good_copper_european", "good_glass_beads"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 0.9, lane_nodes: ["sofala_offshore"],
+    evidence_status: "established", sources: ["src_newitt_2005", "src_pearson_1998"], size: "regional",
+  },
+  {
+    id: "port_kilwa_1505", name: "Kilwa", modern_reference_name: "Kilwa Kisiwani, Tanzania",
+    historical_names: ["Quiloa", "Kilwa Kisiwani"], latitude: -8.96, longitude: 39.51, location_certainty: "precise",
+    active_period: PORTUGAL_PERIOD, historical_polity: "Kilwa Sultanate; Portuguese fort 1505–1512", polity_id: "civ_kilwa", country: "Tanzania",
+    historical_significance: "Almeida took the town on 22 July 1505, installed a client sultan and built Fort Santiago in seventeen days. The garrison was withdrawn in 1512 and the town, already past its medieval wealth, declined further.",
+    supplies: ["good_ivory", "good_mangrove"], demands: ["good_gujarati_cloth", "good_copper_european"],
+    infrastructure: { docks: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["kilwa_offshore"],
+    evidence_status: "established", sources: ["src_newitt_2005", "src_sutton_1998"], size: "regional",
+  },
+  {
+    id: "port_cochin", name: "Cochin", modern_reference_name: "Kochi, Kerala, India",
+    historical_names: ["Cochim", "Kochi"], latitude: 9.97, longitude: 76.26, location_certainty: "precise",
+    active_period: PORTUGAL_PERIOD, historical_polity: "Kingdom of Cochin, allied to Portugal; Portuguese fort from 1503", polity_id: "civ_cochin", country: "India",
+    historical_significance: "The Carreira's first Indian base: a factory from 1500, Fort Manuel from 1503, and the loading port of most of the Crown's pepper until Goa overtook it. Vasco da Gama died here in December 1524.",
+    supplies: ["good_pepper", "good_ginger", "good_cinnamon"], demands: ["good_copper_european", "good_silver_coin", "good_wine_portuguese", "good_horses_hormuz", "good_gujarati_cloth"],
+    infrastructure: { docks: 2, warehouse: 2, administration: 1 }, default_access: "agreement", fee_modifier: 0.9, lane_nodes: ["laccadive_sea"],
+    evidence_status: "established", sources: ["src_pearson_1987", "src_subrahmanyam_1993", "src_barbosa_dames"], size: "major",
+  },
+  {
+    id: "port_cannanore", name: "Cannanore", modern_reference_name: "Kannur, Kerala, India",
+    historical_names: ["Cananor", "Kannur"], latitude: 11.87, longitude: 75.37, location_certainty: "precise",
+    active_period: PORTUGAL_PERIOD, historical_polity: "Kolathiri raja, allied to Portugal; Portuguese fort from 1505", polity_id: "civ_cochin", country: "India",
+    historical_significance: "A pepper and ginger port whose raja, the Kolathiri, allied with the Portuguese against Calicut; Almeida built the fort of Santo Ângelo here in 1505.",
+    notes: "The Kolathiri kingdom was distinct from Cochin; it is grouped under the Cochin record here for the game's polity relations and labelled so.",
+    supplies: ["good_pepper", "good_ginger"], demands: ["good_copper_european", "good_silver_coin", "good_horses_hormuz"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "agreement", fee_modifier: 0.9, lane_nodes: ["laccadive_sea"],
+    evidence_status: "established", sources: ["src_pearson_1987", "src_barbosa_dames"], size: "regional",
+  },
+  {
+    id: "port_calicut_1505", name: "Calicut", modern_reference_name: "Kozhikode, Kerala, India",
+    historical_names: ["Calecut", "Kozhikode"], latitude: 11.25, longitude: 75.78, location_certainty: "precise",
+    active_period: PORTUGAL_PERIOD, historical_polity: "Zamorin of Calicut, at war with Portugal until 1513", polity_id: "civ_calicut", country: "India",
+    historical_significance: "The greatest pepper market of Malabar and the home of the Mappila and Arab merchants who fought the Portuguese for the trade. Closed to Portuguese ships from 1500 until the treaty of 1513, which allowed a fort and factory, abandoned again in 1525.",
+    supplies: ["good_pepper", "good_ginger", "good_gujarati_cloth"], demands: ["good_horses_hormuz", "good_copper_european", "good_silver_coin"],
+    infrastructure: { docks: 2, warehouse: 2, administration: 1, commercial_district: 1 }, default_access: "restricted", fee_modifier: 1.2, lane_nodes: ["laccadive_sea"],
+    evidence_status: "established", sources: ["src_pearson_1987", "src_subrahmanyam_1993", "src_barbosa_dames"], size: "hub",
+  },
+  {
+    id: "port_goa", name: "Goa", modern_reference_name: "Old Goa (Velha Goa), India",
+    historical_names: ["Gova", "Goa Velha"], latitude: 15.5, longitude: 73.83, location_certainty: "precise",
+    active_period: PORTUGAL_PERIOD, historical_polity: "Adil Shahi Bijapur until 1510; Portuguese Estado da Índia thereafter", polity_id: "civ_bijapur", country: "India",
+    historical_significance: "A Bijapur port importing Arabian horses, taken by Albuquerque in February 1510, lost in May and retaken on 25 November 1510. It became the capital of the Estado da Índia and the Carreira's main terminus.",
+    supplies: ["good_gujarati_cloth", "good_pepper"], demands: ["good_horses_hormuz", "good_copper_european", "good_silver_coin", "good_wine_portuguese", "good_cinnamon"],
+    infrastructure: { docks: 2, warehouse: 2, shipyard: 1, administration: 2 }, default_access: "restricted", fee_modifier: 1.1, lane_nodes: ["goa_offshore"],
+    evidence_status: "established", sources: ["src_albuquerque_commentaries", "src_subrahmanyam_1993", "src_pearson_1987"], size: "major",
+  },
+  {
+    id: "port_diu", name: "Diu", modern_reference_name: "Diu, India",
+    historical_names: ["Dio", "Diu"], latitude: 20.71, longitude: 70.98, location_certainty: "precise",
+    active_period: PORTUGAL_PERIOD, historical_polity: "Gujarat Sultanate (governor Malik Ayaz); Portuguese fort from 1535", polity_id: "civ_gujarat_sultanate", country: "India",
+    historical_significance: "Gujarat's chief outport under its governor Malik Ayaz, off which Almeida destroyed the Mamluk–Gujarati fleet on 3 February 1509. Bahadur Shah allowed a Portuguese fort in 1535; the Ottoman siege of 1538 failed to take it.",
+    supplies: ["good_gujarati_cloth"], demands: ["good_horses_hormuz", "good_copper_european", "good_silver_coin", "good_pepper", "good_cloves"],
+    infrastructure: { docks: 2, warehouse: 2, administration: 1 }, default_access: "restricted", fee_modifier: 1.2, lane_nodes: ["gujarat_offshore"],
+    evidence_status: "established", sources: ["src_pearson_1987", "src_subrahmanyam_1993"], size: "major",
+  },
+  {
+    id: "port_hormuz_1505", name: "Hormuz", modern_reference_name: "Hormuz island, Iran",
+    historical_names: ["Ormuz", "Jarūn"], latitude: 27.1, longitude: 56.46, location_certainty: "precise",
+    active_period: PORTUGAL_PERIOD, historical_polity: "Kingdom of Hormuz; Portuguese tributary from 1515", polity_id: "civ_hormuz", country: "Iran",
+    historical_significance: "The emporium of the Gulf, whose kings paid tribute to Albuquerque in 1507 and again, with a Portuguese fort, from 1515. Horses, pearls and Persian goods went out; Indian cloth and spices came in.",
+    supplies: ["good_horses_hormuz", "good_pearls", "good_silk"], demands: ["good_pepper", "good_gujarati_cloth", "good_ginger", "good_cloves", "good_copper_european"],
+    infrastructure: { docks: 2, warehouse: 1, administration: 1 }, default_access: "open", fee_modifier: 1.1, lane_nodes: ["hormuz"],
+    evidence_status: "established", sources: ["src_albuquerque_commentaries", "src_subrahmanyam_1993", "src_iranica_hormuz"], size: "major",
+  },
+  {
+    id: "port_malacca_1511", name: "Malacca", modern_reference_name: "Melaka, Malaysia",
+    historical_names: ["Malaca", "Melaka"], latitude: 2.19, longitude: 102.25, location_certainty: "precise",
+    active_period: PORTUGAL_PERIOD, historical_polity: "Melaka Sultanate until 1511; Portuguese Estado da Índia thereafter", polity_id: "civ_melaka", country: "Malaysia",
+    historical_significance: "The spice emporium of the Straits, closed to the Portuguese after the seizure of Sequeira's men in 1509 and taken by Albuquerque on 24 August 1511. The fortress A Famosa held it until 1641; cloves and nutmeg from Maluku were loaded here.",
+    supplies: ["good_cloves", "good_nutmeg", "good_porcelain", "good_silk"], demands: ["good_gujarati_cloth", "good_pepper", "good_copper_european", "good_silver_coin"],
+    infrastructure: { docks: 2, warehouse: 2, administration: 2, commercial_district: 1 }, default_access: "closed", fee_modifier: 1, lane_nodes: ["malacca_s"],
+    evidence_status: "established", sources: ["src_albuquerque_commentaries", "src_pires_suma", "src_subrahmanyam_1993"], size: "hub",
+  },
+];
+
+export const HISTORICAL_PORTS: PortRecord[] = [...SIRAF_PORTS, ...MELAKA_PORTS, ...KILWA_PORTS, ...VENICE_PORTS, ...PORTUGAL_PORTS];

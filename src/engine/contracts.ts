@@ -83,12 +83,15 @@ export function buildContract(
   // Quantity: a fraction of the fleet's largest hold, in whole units.
   const cap = Math.max(ctx.fleet_capacity, smallest);
   const maxUnits = Math.max(1, Math.floor(cap / good.cargo_space));
-  const quantity = Math.max(1, Math.round(maxUnits * quantityFraction));
+  // Precious cargoes ship in smaller lots: one contract's goods are worth at most a few times the house's starting capital.
+  const valueCap = Math.max(1, Math.floor((catalog.scenario.initial_treasury * 1.5) / good.base_price));
+  const quantity = Math.max(1, Math.min(Math.round(maxUnits * quantityFraction), valueCap));
 
   const originPrice = marketPrice(origin, good, state.seed, state.sim_seconds, ctx.event_price_mods[good.id] ?? 1);
   const destPrice = marketPrice(destination, good, state.seed, state.sim_seconds, ctx.event_price_mods[good.id] ?? 1);
   const spread = Math.max(destPrice - originPrice, good.base_price * 0.25);
-  const distanceFactor = 1 + route.distance_nm / 4000;
+  // Payment grows with distance, but more slowly beyond 3,000 nm so ocean-spanning runs stay in proportion.
+  const distanceFactor = 1 + Math.min(route.distance_nm, 3000) / 4000 + Math.max(0, route.distance_nm - 3000) / 12000;
   const payment = Math.round(quantity * spread * catalog.scenario.contract_margin * distanceFactor * ctx.payment_multiplier * paymentJitter + quantity * good.base_price * 0.08);
 
   const travel = estimateVoyageSeconds(refClass, route.distance_nm);

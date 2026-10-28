@@ -13,6 +13,7 @@ const SIRAF = ["siraf_850"];
 const KILWA = ["kilwa_1330"];
 const VENICE = ["venice_1423"];
 const MELAKA = ["melaka_1460"];
+const PORTUGAL = ["portugal_1505"];
 
 export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
   // ---- Ninth century ------------------------------------------------------------------
@@ -91,7 +92,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_kilwa_direct", polity_id: "civ_kilwa", label: "Kilwa Sultanate", control: "direct",
     period: { start: 1300, end: 1505, approximate: true },
     polygon: [[39, -8], [40, -8], [40.2, -9.5], [39.3, -10.5], [38.9, -9.5]],
-    evidence_status: "scholarly_interpretation", sources: ["src_sutton_1998", "src_chittick_kilwa"], scenario_ids: KILWA,
+    evidence_status: "scholarly_interpretation", sources: ["src_sutton_1998", "src_chittick_kilwa"], scenario_ids: [...KILWA, ...PORTUGAL],
   },
   {
     id: "ext_kilwa_sphere", polity_id: "civ_kilwa", label: "Kilwa's control of the Sofala trade", control: "sphere",
@@ -128,13 +129,13 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_hormuz_direct", polity_id: "civ_hormuz", label: "Kingdom of Hormuz", control: "direct",
     period: { start: 1300, end: 1507, approximate: true },
     polygon: [[55.5, 27.5], [57.5, 27.5], [57.5, 26.3], [56, 26.3]],
-    evidence_status: "scholarly_interpretation", sources: ["src_iranica_hormuz"], scenario_ids: KILWA,
+    evidence_status: "scholarly_interpretation", sources: ["src_iranica_hormuz"], scenario_ids: [...KILWA, ...PORTUGAL],
   },
   {
     id: "ext_hormuz_oman", polity_id: "civ_hormuz", label: "Hormuz on the Omani coast", control: "suzerainty",
     period: { start: 1300, end: 1507, approximate: true, note: "Qalhat and the coast acknowledged Hormuz; inland Oman did not." },
     polygon: [[56, 24.8], [59.8, 23], [59.9, 22], [58.6, 21.6], [56.5, 23.5]],
-    evidence_status: "scholarly_interpretation", sources: ["src_iranica_hormuz", "src_ibn_battuta_gibb"], scenario_ids: KILWA,
+    evidence_status: "scholarly_interpretation", sources: ["src_iranica_hormuz", "src_ibn_battuta_gibb"], scenario_ids: [...KILWA, ...PORTUGAL],
   },
   {
     id: "ext_delhi_tughluq", polity_id: "civ_delhi_tughluq", label: "Delhi Sultanate (Tughluq)", control: "direct",
@@ -232,7 +233,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_mamluk", polity_id: "civ_mamluk", label: "Mamluk Sultanate", control: "direct",
     period: { start: 1250, end: 1517 },
     polygon: [[25, 31.8], [32, 31.6], [36, 37], [38.5, 37.5], [41, 36.5], [39, 33], [36, 29], [34.5, 27], [32.5, 24], [25, 22]],
-    evidence_status: "established", sources: ["src_ashtor_1983"], scenario_ids: VENICE,
+    evidence_status: "established", sources: ["src_ashtor_1983"], scenario_ids: [...VENICE, ...PORTUGAL],
   },
   {
     id: "ext_mamluk_cyprus", polity_id: "civ_mamluk", label: "Cyprus under Mamluk tribute", control: "suzerainty",
@@ -274,7 +275,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_burgundy_flanders", polity_id: "civ_burgundy_flanders", label: "Burgundian Low Countries", control: "direct",
     period: { start: 1384, end: 1482, approximate: true, note: "Flanders from 1384; Holland, Zeeland and Brabant added in the 1420s and 1430s." },
     polygon: [[2.5, 51.3], [4.5, 52.5], [6, 52.3], [6, 50.5], [4, 50], [2.5, 50.8]],
-    evidence_status: "established", sources: ["src_lane_1973"], scenario_ids: VENICE,
+    evidence_status: "established", sources: ["src_lane_1973"], scenario_ids: [...VENICE, ...PORTUGAL],
   },
   {
     id: "ext_england_15c", polity_id: "civ_england_15c", label: "Kingdom of England", control: "direct",
@@ -288,7 +289,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_melaka_direct", polity_id: "civ_melaka", label: "Melaka Sultanate", control: "direct",
     period: { start: 1400, end: 1511, approximate: true },
     polygon: [[100.3, 3.5], [102.3, 2.8], [103.1, 1.6], [102.6, 1.5], [101.3, 2.6]],
-    evidence_status: "scholarly_interpretation", sources: ["src_andaya_malaysia", "src_thomaz_1993"], scenario_ids: MELAKA,
+    evidence_status: "scholarly_interpretation", sources: ["src_andaya_malaysia", "src_thomaz_1993"], scenario_ids: [...MELAKA, ...PORTUGAL],
   },
   {
     id: "ext_melaka_sphere", polity_id: "civ_melaka", label: "Melaka's suzerainty over the peninsula and eastern Sumatra", control: "suzerainty",
@@ -331,19 +332,19 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_calicut", polity_id: "civ_calicut", label: "Zamorin of Calicut", control: "direct",
     period: { start: 1400, end: 1600, approximate: true },
     polygon: [[75.5, 12.3], [76.5, 12.3], [76.3, 10.2], [75.6, 10.3]],
-    evidence_status: "uncertain", sources: ["src_malekandathil_2010", "src_pires_suma"], scenario_ids: MELAKA,
+    evidence_status: "uncertain", sources: ["src_malekandathil_2010", "src_pires_suma"], scenario_ids: [...MELAKA, ...PORTUGAL],
   },
   {
     id: "ext_gujarat_sultanate", polity_id: "civ_gujarat_sultanate", label: "Gujarat Sultanate", control: "direct",
     period: { start: 1407, end: 1573 },
     polygon: [[68.5, 24.5], [72, 24.8], [73.8, 22.5], [72.5, 20.5], [70, 20.8], [68.8, 22.5]],
-    evidence_status: "established", sources: ["src_pires_suma", "src_reid_1988"], scenario_ids: MELAKA,
+    evidence_status: "established", sources: ["src_pires_suma", "src_reid_1988"], scenario_ids: [...MELAKA, ...PORTUGAL],
   },
   {
     id: "ext_vijayanagara", polity_id: "civ_vijayanagara", label: "Vijayanagara", control: "direct",
     period: { start: 1336, end: 1565, approximate: true },
     polygon: [[73.5, 17], [79, 17], [80.3, 14], [79, 11], [77, 10], [75, 12], [73.8, 15]],
-    evidence_status: "scholarly_interpretation", sources: ["src_reid_1988", "src_malekandathil_2010"], scenario_ids: MELAKA,
+    evidence_status: "scholarly_interpretation", sources: ["src_reid_1988", "src_malekandathil_2010"], scenario_ids: [...MELAKA, ...PORTUGAL],
   },
   {
     id: "ext_ternate", polity_id: "civ_ternate", label: "Ternate", control: "direct",
@@ -363,6 +364,92 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     polygon: [[113.5, 5.5], [115.5, 5.5], [115.5, 4.2], [113.5, 4.2]],
     evidence_status: "uncertain", sources: ["src_reid_1988"], scenario_ids: MELAKA,
   },
+  // ---- Sixteenth century: the Carreira da Índia --------------------------------------
+  {
+    id: "ext_portugal", polity_id: "civ_portugal", label: "Kingdom of Portugal", control: "direct",
+    period: { start: 1249, end: 1580, note: "Borders settled with Castile by 1297; shown to the union of crowns in 1580." },
+    polygon: [[-9.5, 42.1], [-6.2, 41.9], [-6.9, 37.1], [-8.9, 37], [-9.5, 39]],
+    evidence_status: "established", sources: ["src_newitt_2005"], scenario_ids: PORTUGAL,
+  },
+  {
+    id: "ext_madeira", polity_id: "civ_portugal", label: "Madeira", control: "direct",
+    period: { start: 1420, end: 1910, approximate: true },
+    polygon: [[-17.3, 32.9], [-16.6, 32.9], [-16.6, 32.6], [-17.3, 32.6]],
+    evidence_status: "established", sources: ["src_diffie_winius_1977"], scenario_ids: PORTUGAL,
+  },
+  {
+    id: "ext_mina", polity_id: "civ_portugal", label: "São Jorge da Mina", control: "direct",
+    period: { start: 1482, end: 1637, note: "The fortress and its immediate surroundings; the Akan states of the hinterland were independent." },
+    polygon: [[-1.6, 5.3], [-1.1, 5.3], [-1.1, 4.95], [-1.6, 4.95]],
+    evidence_status: "established", sources: ["src_diffie_winius_1977", "src_newitt_2005"], scenario_ids: PORTUGAL,
+  },
+  {
+    id: "ext_estado_cochin", polity_id: "civ_portugal", label: "Portuguese Cochin and Cannanore (forts)", control: "suzerainty",
+    period: { start: 1503, end: 1663, note: "Forts within allied kingdoms; the rajas kept their lands." },
+    polygon: [[75.2, 12.1], [76.5, 12.1], [76.6, 9.8], [76, 9.8]],
+    evidence_status: "established", sources: ["src_pearson_1987"], scenario_ids: PORTUGAL,
+  },
+  {
+    id: "ext_estado_kilwa", polity_id: "civ_portugal", label: "Portuguese Kilwa", control: "suzerainty",
+    period: { start: 1505, end: 1512 },
+    polygon: [[39.2, -8.7], [39.9, -8.7], [39.9, -9.3], [39.2, -9.3]],
+    evidence_status: "established", sources: ["src_newitt_2005"], scenario_ids: PORTUGAL,
+  },
+  {
+    id: "ext_estado_sofala", polity_id: "civ_portugal", label: "Portuguese Sofala and Mozambique", control: "direct",
+    period: { start: 1505, end: 1975, approximate: true, note: "The forts and their surroundings only; the Mozambique fort dates from 1507." },
+    polygon: [[34.3, -14.6], [41.2, -14.6], [41.2, -15.6], [36, -19.5], [34.3, -20.6]],
+    evidence_status: "established", sources: ["src_newitt_2005"], scenario_ids: PORTUGAL,
+  },
+  {
+    id: "ext_estado_goa", polity_id: "civ_portugal", label: "Portuguese Goa", control: "direct",
+    period: { start: 1510, end: 1961, note: "The island of Goa and, later, the Old Conquests." },
+    polygon: [[73.7, 15.7], [74.1, 15.7], [74.1, 15.2], [73.7, 15.2]],
+    evidence_status: "established", sources: ["src_albuquerque_commentaries", "src_subrahmanyam_1993"], scenario_ids: PORTUGAL,
+  },
+  {
+    id: "ext_estado_malacca", polity_id: "civ_portugal", label: "Portuguese Malacca", control: "direct",
+    period: { start: 1511, end: 1641 },
+    polygon: [[102, 2.5], [102.5, 2.5], [102.5, 2], [102, 2]],
+    evidence_status: "established", sources: ["src_albuquerque_commentaries", "src_andaya_malaysia"], scenario_ids: PORTUGAL,
+  },
+  {
+    id: "ext_estado_hormuz", polity_id: "civ_portugal", label: "Hormuz under Portuguese tribute", control: "suzerainty",
+    period: { start: 1515, end: 1622 },
+    polygon: [[55.5, 27.5], [57.5, 27.5], [57.5, 26.3], [56, 26.3]],
+    evidence_status: "established", sources: ["src_albuquerque_commentaries", "src_iranica_hormuz"], scenario_ids: PORTUGAL,
+  },
+  {
+    id: "ext_estado_diu", polity_id: "civ_portugal", label: "Portuguese Diu", control: "direct",
+    period: { start: 1535, end: 1961 },
+    polygon: [[70.85, 20.8], [71.05, 20.8], [71.05, 20.65], [70.85, 20.65]],
+    evidence_status: "established", sources: ["src_pearson_1987"], scenario_ids: PORTUGAL,
+  },
+  {
+    id: "ext_bijapur", polity_id: "civ_bijapur", label: "Adil Shahi Bijapur", control: "direct",
+    period: { start: 1490, end: 1686, approximate: true },
+    polygon: [[73.5, 18], [77, 18], [77.5, 15.5], [75, 14.5], [73.8, 15.3]],
+    evidence_status: "scholarly_interpretation", sources: ["src_subrahmanyam_1993"], scenario_ids: PORTUGAL,
+  },
+  {
+    id: "ext_bijapur_goa", polity_id: "civ_bijapur", label: "Bijapur's Goa", control: "direct",
+    period: { start: 1490, end: 1510 },
+    polygon: [[73.7, 15.7], [74.1, 15.7], [74.1, 15.2], [73.7, 15.2]],
+    evidence_status: "established", sources: ["src_subrahmanyam_1993"], scenario_ids: PORTUGAL,
+  },
+  {
+    id: "ext_cochin_kingdom", polity_id: "civ_cochin", label: "Kingdom of Cochin", control: "direct",
+    period: { start: 1341, end: 1663, approximate: true },
+    polygon: [[76, 10.5], [76.9, 10.5], [76.9, 9.5], [76.1, 9.5]],
+    evidence_status: "uncertain", sources: ["src_pearson_1987"], scenario_ids: PORTUGAL,
+  },
+  {
+    id: "ext_ottoman_egypt", polity_id: "civ_ottoman_early", label: "Ottoman Egypt and the Red Sea", control: "direct",
+    period: { start: 1517, end: 1867, approximate: true },
+    polygon: [[25, 31.8], [32, 31.6], [36, 37], [38.5, 37.5], [41, 36.5], [39, 33], [36, 29], [39, 23], [43, 13], [42.5, 12.8], [36, 22], [32, 24], [25, 22]],
+    note: "Yemen was occupied in 1538; the Hijaz acknowledged the sultan from 1517.",
+    evidence_status: "scholarly_interpretation", sources: ["src_subrahmanyam_1993"], scenario_ids: PORTUGAL,
+  },
 ];
 
 export const SETTLEMENTS: SettlementRecord[] = [
@@ -371,7 +458,7 @@ export const SETTLEMENTS: SettlementRecord[] = [
   { id: "stl_samarra", name: "Samarra", kind: "capital", latitude: 34.2, longitude: 43.88, location_certainty: "precise", period: { start: 836, end: 892 }, polity_id: "civ_abbasid", description: "The caliphs' residence from 836 to 892, built for the Turkish guard regiments.", evidence_status: "established", sources: ["src_kennedy_caliphates"], scenario_ids: SIRAF },
   { id: "stl_shiraz", name: "Shiraz", kind: "city", latitude: 29.6, longitude: 52.53, location_certainty: "precise", period: { start: 693, end: null }, polity_id: "civ_abbasid", description: "Provincial capital of Fars, Siraf's hinterland, and the road-head for goods landed at the port.", evidence_status: "established", sources: ["src_whitehouse_siraf", "src_kennedy_caliphates"], scenario_ids: SIRAF },
   { id: "stl_mansura", name: "al-Mansura", kind: "capital", latitude: 25.88, longitude: 68.78, location_certainty: "approximate", period: { start: 734, end: 1026, approximate: true }, polity_id: "civ_abbasid_sind", description: "Capital of Arab Sind, inland from Daybul on the Indus.", evidence_status: "scholarly_interpretation", sources: ["src_wink_al_hind"], scenario_ids: SIRAF },
-  { id: "stl_mecca", name: "Mecca", kind: "religious_centre", latitude: 21.42, longitude: 39.83, location_certainty: "precise", period: { start: 630, end: null }, polity_id: null, description: "The pilgrimage city; its yearly gathering was a market for goods from the Indian Ocean and the Mediterranean.", evidence_status: "established", sources: ["src_kennedy_caliphates"], scenario_ids: [...SIRAF, ...KILWA] },
+  { id: "stl_mecca", name: "Mecca", kind: "religious_centre", latitude: 21.42, longitude: 39.83, location_certainty: "precise", period: { start: 630, end: null }, polity_id: null, description: "The pilgrimage city; its yearly gathering was a market for goods from the Indian Ocean and the Mediterranean.", evidence_status: "established", sources: ["src_kennedy_caliphates"], scenario_ids: [...SIRAF, ...KILWA, ...PORTUGAL] },
   // Fourteenth century
   { id: "stl_great_zimbabwe", name: "Great Zimbabwe", kind: "inland_centre", latitude: -20.27, longitude: 30.93, location_certainty: "precise", period: { start: 1100, end: 1450, approximate: true }, polity_id: null, description: "The stone-built capital of the plateau state whose gold reached Sofala and Kilwa; Kilwa coins and Chinese ceramics have been found there.", evidence_status: "established", sources: ["src_pearson_1998", "src_sutton_1998"], scenario_ids: KILWA },
   { id: "stl_taizz", name: "Taʿizz", kind: "capital", latitude: 13.58, longitude: 44.02, location_certainty: "precise", period: { start: 1229, end: 1454 }, polity_id: "civ_rasulid", description: "The Rasulid capital in the highlands above Aden.", evidence_status: "established", sources: ["src_margariti_aden"], scenario_ids: KILWA },
@@ -382,12 +469,18 @@ export const SETTLEMENTS: SettlementRecord[] = [
   { id: "stl_lodi", name: "Lodi", kind: "city", latitude: 45.31, longitude: 9.5, location_certainty: "precise", period: { start: 1454, end: 1454 }, polity_id: null, description: "Where Venice and Milan made peace on 9 April 1454.", evidence_status: "established", sources: ["src_lane_1973"], scenario_ids: VENICE },
   { id: "stl_florence", name: "Florence", kind: "city", latitude: 43.77, longitude: 11.25, location_certainty: "precise", period: { start: 1400, end: null }, polity_id: null, description: "Venice's ally against Milan from 1425 and a rival in the cloth and banking trades.", evidence_status: "established", sources: ["src_lane_1973"], scenario_ids: VENICE },
   { id: "stl_rome", name: "Rome", kind: "religious_centre", latitude: 41.9, longitude: 12.5, location_certainty: "precise", period: { start: 1420, end: null }, polity_id: null, description: "Seat of the papacy after its return in 1420; the alum of Tolfa, found in 1462, lay in its territory.", evidence_status: "established", sources: ["src_ashtor_1983"], scenario_ids: VENICE },
-  { id: "stl_cairo", name: "Cairo", kind: "capital", latitude: 30.04, longitude: 31.24, location_certainty: "precise", period: { start: 1250, end: 1517 }, polity_id: "civ_mamluk", description: "The Mamluk capital, where the sultan's spice stocks and the Kārimī merchants set the prices the Venetians paid at Alexandria.", evidence_status: "established", sources: ["src_ashtor_1983"], scenario_ids: VENICE },
+  { id: "stl_cairo", name: "Cairo", kind: "capital", latitude: 30.04, longitude: 31.24, location_certainty: "precise", period: { start: 1250, end: 1517 }, polity_id: "civ_mamluk", description: "The Mamluk capital, where the sultan's spice stocks and the Kārimī merchants set the prices the Venetians paid at Alexandria.", evidence_status: "established", sources: ["src_ashtor_1983"], scenario_ids: [...VENICE, ...PORTUGAL] },
   { id: "stl_damascus", name: "Damascus", kind: "city", latitude: 33.51, longitude: 36.29, location_certainty: "precise", period: { start: 1260, end: 1517 }, polity_id: "civ_mamluk", description: "The Syrian capital whose markets supplied Beirut with cotton, silk and spices.", evidence_status: "established", sources: ["src_ashtor_1983"], scenario_ids: VENICE },
   { id: "stl_edirne", name: "Adrianople (Edirne)", kind: "capital", latitude: 41.68, longitude: 26.56, location_certainty: "precise", period: { start: 1369, end: 1453, approximate: true }, polity_id: "civ_ottoman_early", description: "The Ottoman capital in Europe until the conquest of Constantinople.", evidence_status: "established", sources: ["src_nicol_1988"], scenario_ids: VENICE },
   { id: "stl_nuremberg", name: "Nuremberg", kind: "city", latitude: 49.45, longitude: 11.08, location_certainty: "precise", period: { start: 1400, end: null }, polity_id: null, description: "A centre of the south German metal and merchant houses that traded through the Fondaco dei Tedeschi.", evidence_status: "established", sources: ["src_lane_1973"], scenario_ids: VENICE },
   // Fifteenth century: Melaka
   { id: "stl_trowulan", name: "Trowulan", kind: "capital", latitude: -7.56, longitude: 112.38, location_certainty: "approximate", period: { start: 1293, end: 1500, approximate: true }, polity_id: "civ_majapahit", description: "The inland capital of Majapahit, identified with the Trowulan site in East Java.", evidence_status: "scholarly_interpretation", sources: ["src_reid_1988"], scenario_ids: MELAKA },
-  { id: "stl_vijayanagara", name: "Vijayanagara", kind: "capital", latitude: 15.33, longitude: 76.46, location_certainty: "precise", period: { start: 1336, end: 1565 }, polity_id: "civ_vijayanagara", description: "The capital of the southern empire whose demand for horses and whose textiles fed the coastal trade.", evidence_status: "established", sources: ["src_reid_1988", "src_malekandathil_2010"], scenario_ids: MELAKA },
+  { id: "stl_vijayanagara", name: "Vijayanagara", kind: "capital", latitude: 15.33, longitude: 76.46, location_certainty: "precise", period: { start: 1336, end: 1565 }, polity_id: "civ_vijayanagara", description: "The capital of the southern empire whose demand for horses and whose textiles fed the coastal trade.", evidence_status: "established", sources: ["src_reid_1988", "src_malekandathil_2010"], scenario_ids: [...MELAKA, ...PORTUGAL] },
   { id: "stl_ava", name: "Ava", kind: "capital", latitude: 21.86, longitude: 95.98, location_certainty: "precise", period: { start: 1365, end: 1555 }, polity_id: null, description: "Capital of the upper Burmese kingdom at war with Pegu for much of the fifteenth century.", evidence_status: "established", sources: ["src_reid_1988"], scenario_ids: MELAKA },
+  // Sixteenth century: Portugal
+  { id: "stl_evora", name: "Évora", kind: "city", latitude: 38.57, longitude: -7.91, location_certainty: "precise", period: { start: 1500, end: null }, polity_id: "civ_portugal", description: "A favoured residence of the court under Manuel I and João III, away from Lisbon's plagues.", evidence_status: "established", sources: ["src_newitt_2005"], scenario_ids: PORTUGAL },
+  { id: "stl_seville", name: "Seville", kind: "city", latitude: 37.39, longitude: -5.99, location_certainty: "precise", period: { start: 1503, end: null }, polity_id: null, description: "Seat of Castile's Casa de Contratación from 1503, Lisbon's rival as the gateway to the new oceans.", evidence_status: "established", sources: ["src_boxer_1969"], scenario_ids: PORTUGAL },
+  { id: "stl_augsburg", name: "Augsburg", kind: "city", latitude: 48.37, longitude: 10.9, location_certainty: "precise", period: { start: 1500, end: null }, polity_id: null, description: "Home of the Welser, Fugger and Höchstetter houses that financed ships in the 1505 fleet and supplied the copper the Portuguese carried east.", evidence_status: "established", sources: ["src_subrahmanyam_1993"], scenario_ids: PORTUGAL },
+  { id: "stl_bijapur", name: "Bijapur", kind: "capital", latitude: 16.83, longitude: 75.72, location_certainty: "precise", period: { start: 1490, end: 1686 }, polity_id: "civ_bijapur", description: "Capital of the Adil Shahi sultans, whose cavalry depended on horses landed at Goa.", evidence_status: "established", sources: ["src_subrahmanyam_1993"], scenario_ids: PORTUGAL },
+  { id: "stl_ahmedabad", name: "Ahmedabad", kind: "capital", latitude: 23.02, longitude: 72.57, location_certainty: "precise", period: { start: 1411, end: 1573 }, polity_id: "civ_gujarat_sultanate", description: "Capital of the Gujarat sultans, whose cloth filled the ships of Cambay and Diu.", evidence_status: "established", sources: ["src_pearson_1987"], scenario_ids: PORTUGAL },
 ];
