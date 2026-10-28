@@ -119,4 +119,22 @@ export const HISTORICAL_ROUTES: HistoricalRoute[] = [
     evidence_status: "established",
     sources: ["src_subrahmanyam_1993", "src_boxer_1969"],
   },
+  {
+    id: "route_brouwer",
+    name: "The Brouwer route to Java",
+    description: "From the Texel roads down the Atlantic, round the Cape, east in the westerlies of the fortieth parallel and north through the Sunda Strait to Batavia: the Company's compulsory route from 1617.",
+    period: { start: 1611, end: 1795 },
+    waypoints: [[4.65, 53.05], [-9.6, 36.6], [-17.3, 32.4], [-25, 14.5], [-30, 0], [-5, -34], [17, -35], [55, -36], [95, -32], [103.5, -7.5], [105.3, -6], [106.82, -6.13]],
+    evidence_status: "established",
+    sources: ["src_das_bruijn", "src_gaastra_2003"],
+  },
+  {
+    id: "route_intra_asia_voc",
+    name: "The Company's intra-Asian circuit",
+    description: "Batavia to Formosa and Japan for silver and copper, to Coromandel and Surat for cloth, to Gamron for silk and to Maluku for the fine spices.",
+    period: { start: 1619, end: 1700 },
+    waypoints: [[72.83, 21.17], [81.13, 16.17], [102.25, 2.19], [106.82, -6.13], [120.16, 23], [129.55, 33.37]],
+    evidence_status: "established",
+    sources: ["src_glamann_1958", "src_blusse_1986"],
+  },
 ];

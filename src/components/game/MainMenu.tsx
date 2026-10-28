@@ -14,7 +14,7 @@ import { AccountPanel } from "./AccountPanel";
 
 const ENTRIES = [
   { href: "/new", label: "New Game", icon: Play, description: "Choose a scenario and found your empire or company." },
-  { href: "/new?mode=historical", label: "Historical Campaigns", icon: Compass, description: "Siraf 850, Kilwa 1330, Venice 1423, Melaka 1460 and the Carreira da Índia 1505, with sources." },
+  { href: "/new?mode=historical", label: "Historical Campaigns", icon: Compass, description: "Siraf 850, Kilwa 1330, Venice 1423, Melaka 1460, the Carreira da Índia 1505 and the Dutch Company 1602, with sources." },
   { href: "/new?mode=modern", label: "Modern Shipping Empire", icon: Container, description: "Build a container line from a single feeder ship." },
   { href: "/guide", label: "How to Play", icon: BookOpenText, description: "The core loop, sailing controls, time, trade and ports." },
   { href: "/encyclopedia", label: "Civilization Encyclopedia", icon: BookOpen, description: "Ports, ships, goods, events and their evidence." },

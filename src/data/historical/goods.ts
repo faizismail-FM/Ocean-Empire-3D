@@ -332,4 +332,53 @@ export const HISTORICAL_GOODS: TradeGood[] = [
     historical_availability: { start: 1000, end: null }, base_price: 35, cargo_space: 1.2, storage: "liquid",
     evidence_status: "established", sources: ["src_boxer_1969"],
   },
+  // Seventeenth-century Dutch
+  {
+    id: "good_japanese_silver", name: "Japanese silver", category: "metal",
+    description: "Silver from the Iwami and other mines, exported through Hirado and Nagasaki until the shogunate banned its export in 1668; the Company's main means of payment in Asia in the 1620s and 1630s.",
+    historical_availability: { start: 1540, end: 1668 }, base_price: 420, cargo_space: 0.2,
+    evidence_status: "established", sources: ["src_glamann_1958", "src_boxer_1965"],
+  },
+  {
+    id: "good_japanese_copper", name: "Japanese copper", category: "metal",
+    description: "Bar copper that replaced silver as Japan's chief export in the Company's trade, sold in India and Europe.",
+    historical_availability: { start: 1600, end: 1800 }, base_price: 110, cargo_space: 0.6,
+    evidence_status: "established", sources: ["src_glamann_1958"],
+  },
+  {
+    id: "good_indigo", name: "Indigo", category: "luxury",
+    description: "Blue dye from Gujarat (Sarkhej) and the Coromandel coast, a leading return cargo to Europe until Caribbean indigo undercut it.",
+    historical_availability: { start: 1500, end: 1800 }, base_price: 160, cargo_space: 0.6,
+    evidence_status: "established", sources: ["src_glamann_1958"],
+  },
+  {
+    id: "good_coffee_mocha", name: "Mocha coffee", category: "food",
+    description: "Yemeni coffee from the Mocha trade, bought by the Company from the 1620s and a rising European fashion by mid-century.",
+    historical_availability: { start: 1550, end: null }, base_price: 90, cargo_space: 0.9,
+    evidence_status: "established", sources: ["src_glamann_1958"],
+  },
+  {
+    id: "good_persian_silk", name: "Persian raw silk", category: "textile",
+    description: "Raw silk from Gilan and Mazandaran, shipped from Gamron and the Company's rival to Chinese silk in the Japan and Europe trades.",
+    historical_availability: { start: 1500, end: 1750 }, base_price: 200, cargo_space: 0.5,
+    evidence_status: "established", sources: ["src_glamann_1958", "src_israel_1989"],
+  },
+  {
+    id: "good_deerskins_taiwan", name: "Formosan deerskins", category: "luxury",
+    description: "Deerskins hunted on Taiwan and shipped from Tayouan to Japan, where they were wanted for armour and clothing.",
+    historical_availability: { start: 1600, end: 1700 }, base_price: 60, cargo_space: 0.5,
+    evidence_status: "established", sources: ["src_blusse_1986"],
+  },
+  {
+    id: "good_dutch_cloth", name: "Dutch woollen cloth", category: "textile",
+    description: "Leiden and other Dutch woollens, carried east for the Japanese and Persian markets, which took far less of them than the Company hoped.",
+    historical_availability: { start: 1500, end: 1800 }, base_price: 100, cargo_space: 0.7,
+    evidence_status: "established", sources: ["src_israel_1989"],
+  },
+  {
+    id: "good_silver_reales", name: "Spanish silver reales", category: "metal",
+    description: "American silver coin, the Company's main export to Asia from Europe, where Dutch goods found few buyers.",
+    historical_availability: { start: 1540, end: 1800 }, base_price: 400, cargo_space: 0.2,
+    evidence_status: "established", sources: ["src_glamann_1958", "src_israel_1989"],
+  },
 ];

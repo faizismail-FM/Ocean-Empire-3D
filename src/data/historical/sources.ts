@@ -376,6 +376,55 @@ export const SOURCES: HistoricalSource[] = [
     source_type: "primary_source", url_or_reference: "Hakluyt Society, first series nos. 53, 55, 62 and 69, London, 1875–1884, 4 vols", related_records: ["port_goa", "port_hormuz_1505", "port_malacca_1511", "evt_goa_1510", "evt_malacca_1511", "evt_hormuz_1515"],
     notes: "Confirmed against catalogue records (October 2026). Written by Albuquerque's son from his father's letters; partisan but detailed.",
   },
+  // Seventeenth-century Dutch expansion
+  {
+    id: "src_gaastra_2003", title: "The Dutch East India Company: Expansion and Decline",
+    author_or_institution: "Femme S. Gaastra", publication_year: 2003,
+    source_type: "book", url_or_reference: "Walburg Pers, Zutphen, 192 pp. (Dutch editions 1982, 1991)", related_records: ["civ_dutch_republic", "port_amsterdam", "port_batavia", "evt_voc_charter", "evt_batavia_1619", "tech_factorij"],
+    notes: "Confirmed against bookseller and university listings (October 2026).",
+  },
+  {
+    id: "src_boxer_1965", title: "The Dutch Seaborne Empire, 1600–1800",
+    author_or_institution: "C. R. Boxer", publication_year: 1965,
+    source_type: "book", url_or_reference: "Hutchinson, London", related_records: ["civ_tokugawa", "port_hirado", "port_nagasaki", "evt_amboyna_1623", "evt_dejima_1641", "ship_jacht"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in October 2026.",
+  },
+  {
+    id: "src_israel_1989", title: "Dutch Primacy in World Trade, 1585–1740",
+    author_or_institution: "Jonathan I. Israel", publication_year: 1989,
+    source_type: "book", url_or_reference: "Clarendon Press, Oxford, xxi + 462 pp.", related_records: ["civ_dutch_republic", "civ_mughal", "evt_santa_catarina_1603", "evt_truce_1609", "tech_exchange_bank", "ship_fluyt"],
+    notes: "Confirmed against catalogue records (October 2026).",
+  },
+  {
+    id: "src_das_bruijn", title: "Dutch-Asiatic Shipping in the 17th and 18th Centuries",
+    author_or_institution: "J. R. Bruijn, F. S. Gaastra and I. Schöffer (eds.)", publication_year: 1979,
+    source_type: "reference_work", url_or_reference: "Martinus Nijhoff, The Hague, 1979–1987, 3 vols (Rijks Geschiedkundige Publicatiën, Grote Serie 165–167)", related_records: ["ship_retourschip", "tech_brouwer_route", "route_brouwer", "fig_brouwer"],
+    notes: "Confirmed against the Bibliothèque nationale de France record (October 2026); the volumes list every Company voyage out and home.",
+  },
+  {
+    id: "src_glamann_1958", title: "Dutch-Asiatic Trade, 1620–1740",
+    author_or_institution: "Kristof Glamann", publication_year: 1958,
+    source_type: "book", url_or_reference: "Danish Science Press, Copenhagen, and Martinus Nijhoff, The Hague, xi + 334 pp.; reprinted Nijhoff 1981", related_records: ["civ_golconda", "civ_safavid", "port_masulipatnam", "port_gamron", "port_mocha", "good_japanese_silver", "good_persian_silk", "good_indigo"],
+    notes: "Confirmed against reviews in BSOAS and the Journal of Asian Studies and the Springer reprint record (October 2026).",
+  },
+  {
+    id: "src_andaya_maluku_1993", title: "The World of Maluku: Eastern Indonesia in the Early Modern Period",
+    author_or_institution: "Leonard Y. Andaya", publication_year: 1993,
+    source_type: "book", url_or_reference: "University of Hawaii Press, Honolulu", related_records: ["port_amboina", "port_banda_neira", "port_ternate_1602", "evt_amboina_1605", "evt_banda_1621"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in October 2026.",
+  },
+  {
+    id: "src_parthesius_2010", title: "Dutch Ships in Tropical Waters: The Development of the Dutch East India Company (VOC) Shipping Network in Asia 1595–1660",
+    author_or_institution: "Robert Parthesius", publication_year: 2010,
+    source_type: "book", url_or_reference: "Amsterdam University Press (Amsterdam Studies in the Dutch Golden Age)", related_records: ["ship_jacht", "ship_fluyt", "ship_retourschip"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in October 2026.",
+  },
+  {
+    id: "src_blusse_1986", title: "Strange Company: Chinese Settlers, Mestizo Women and the Dutch in VOC Batavia",
+    author_or_institution: "Leonard Blussé", publication_year: 1986,
+    source_type: "book", url_or_reference: "Foris, Dordrecht (Verhandelingen van het KITLV 122)", related_records: ["port_batavia", "port_zeelandia", "ship_junk_batavia", "good_deerskins_taiwan"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in October 2026.",
+  },
   // Modern shipping
   {
     id: "src_unctad_rmt", title: "Review of Maritime Transport 2023",

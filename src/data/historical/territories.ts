@@ -14,6 +14,7 @@ const KILWA = ["kilwa_1330"];
 const VENICE = ["venice_1423"];
 const MELAKA = ["melaka_1460"];
 const PORTUGAL = ["portugal_1505"];
+const DUTCH = ["dutch_1602"];
 
 export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
   // ---- Ninth century ------------------------------------------------------------------
@@ -302,7 +303,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     period: { start: 1368, end: 1644 },
     polygon: [[98, 22], [110, 21.5], [118, 23], [122, 30], [121, 34], [117, 35], [105, 35], [99, 30], [98, 28]],
     note: "Southern and eastern provinces only.",
-    evidence_status: "established", sources: ["src_dreyer_zheng_he"], scenario_ids: MELAKA,
+    evidence_status: "established", sources: ["src_dreyer_zheng_he"], scenario_ids: [...MELAKA, ...DUTCH],
   },
   {
     id: "ext_majapahit", polity_id: "civ_majapahit", label: "Majapahit (core)", control: "direct",
@@ -387,7 +388,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_estado_cochin", polity_id: "civ_portugal", label: "Portuguese Cochin and Cannanore (forts)", control: "suzerainty",
     period: { start: 1503, end: 1663, note: "Forts within allied kingdoms; the rajas kept their lands." },
     polygon: [[75.2, 12.1], [76.5, 12.1], [76.6, 9.8], [76, 9.8]],
-    evidence_status: "established", sources: ["src_pearson_1987"], scenario_ids: PORTUGAL,
+    evidence_status: "established", sources: ["src_pearson_1987"], scenario_ids: [...PORTUGAL, ...DUTCH],
   },
   {
     id: "ext_estado_kilwa", polity_id: "civ_portugal", label: "Portuguese Kilwa", control: "suzerainty",
@@ -405,19 +406,19 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_estado_goa", polity_id: "civ_portugal", label: "Portuguese Goa", control: "direct",
     period: { start: 1510, end: 1961, note: "The island of Goa and, later, the Old Conquests." },
     polygon: [[73.7, 15.7], [74.1, 15.7], [74.1, 15.2], [73.7, 15.2]],
-    evidence_status: "established", sources: ["src_albuquerque_commentaries", "src_subrahmanyam_1993"], scenario_ids: PORTUGAL,
+    evidence_status: "established", sources: ["src_albuquerque_commentaries", "src_subrahmanyam_1993"], scenario_ids: [...PORTUGAL, ...DUTCH],
   },
   {
     id: "ext_estado_malacca", polity_id: "civ_portugal", label: "Portuguese Malacca", control: "direct",
     period: { start: 1511, end: 1641 },
     polygon: [[102, 2.5], [102.5, 2.5], [102.5, 2], [102, 2]],
-    evidence_status: "established", sources: ["src_albuquerque_commentaries", "src_andaya_malaysia"], scenario_ids: PORTUGAL,
+    evidence_status: "established", sources: ["src_albuquerque_commentaries", "src_andaya_malaysia"], scenario_ids: [...PORTUGAL, ...DUTCH],
   },
   {
     id: "ext_estado_hormuz", polity_id: "civ_portugal", label: "Hormuz under Portuguese tribute", control: "suzerainty",
     period: { start: 1515, end: 1622 },
     polygon: [[55.5, 27.5], [57.5, 27.5], [57.5, 26.3], [56, 26.3]],
-    evidence_status: "established", sources: ["src_albuquerque_commentaries", "src_iranica_hormuz"], scenario_ids: PORTUGAL,
+    evidence_status: "established", sources: ["src_albuquerque_commentaries", "src_iranica_hormuz"], scenario_ids: [...PORTUGAL, ...DUTCH],
   },
   {
     id: "ext_estado_diu", polity_id: "civ_portugal", label: "Portuguese Diu", control: "direct",
@@ -449,6 +450,122 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     polygon: [[25, 31.8], [32, 31.6], [36, 37], [38.5, 37.5], [41, 36.5], [39, 33], [36, 29], [39, 23], [43, 13], [42.5, 12.8], [36, 22], [32, 24], [25, 22]],
     note: "Yemen was occupied in 1538; the Hijaz acknowledged the sultan from 1517.",
     evidence_status: "scholarly_interpretation", sources: ["src_subrahmanyam_1993"], scenario_ids: PORTUGAL,
+  },
+
+  // ---- Seventeenth century: the Dutch East India Company ----------------------------
+  {
+    id: "ext_dutch_republic", polity_id: "civ_dutch_republic", label: "Dutch Republic (the United Provinces)", control: "direct",
+    period: { start: 1588, end: 1795, note: "The seven provinces and the Generality Lands; the frontier with the Spanish Netherlands moved until Münster (1648)." },
+    polygon: [[3.4, 51.4], [4.2, 51.95], [4.6, 53.1], [6.9, 53.5], [7.2, 52.9], [6.0, 52.0], [6.1, 51.0], [5.7, 50.8], [4.3, 51.3]],
+    evidence_status: "established", sources: ["src_israel_1989"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_iberian_union_portugal", polity_id: "civ_portugal", label: "Portugal under the Habsburg crowns", control: "direct",
+    period: { start: 1580, end: 1640, note: "The union of crowns, 1580–1640; Portugal regained a king of its own in December 1640." },
+    polygon: [[-9.5, 42.1], [-6.2, 41.9], [-6.9, 37.1], [-8.9, 37], [-9.5, 39]],
+    evidence_status: "established", sources: ["src_boxer_1965"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_portugal_1640", polity_id: "civ_portugal", label: "Kingdom of Portugal (restored)", control: "direct",
+    period: { start: 1641, end: null, note: "From the Braganza restoration of 1640." },
+    polygon: [[-9.5, 42.1], [-6.2, 41.9], [-6.9, 37.1], [-8.9, 37], [-9.5, 39]],
+    evidence_status: "established", sources: ["src_boxer_1965"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_voc_amboina", polity_id: "civ_dutch_republic", label: "Company Amboina", control: "direct",
+    period: { start: 1605, end: 1795, note: "Fort Victoria and the clove-bearing Ambon-Lease islands after van der Hagen's capture of 1605." },
+    polygon: [[127.8, -3.5], [128.4, -3.5], [128.4, -3.9], [127.8, -3.9]],
+    evidence_status: "established", sources: ["src_andaya_maluku_1993", "src_gaastra_2003"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_voc_ternate", polity_id: "civ_dutch_republic", label: "Ternate under Company protection", control: "suzerainty",
+    period: { start: 1607, end: 1795, note: "The treaty of 1607 made the sultan a Company client; the Spanish held forts on the island until 1663." },
+    polygon: [[127.2, 1.0], [127.6, 1.0], [127.6, 0.6], [127.2, 0.6]],
+    evidence_status: "established", sources: ["src_andaya_maluku_1993"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_voc_pulicat", polity_id: "civ_dutch_republic", label: "Fort Geldria (Pulicat)", control: "direct",
+    period: { start: 1610, end: 1690, note: "The Company's Coromandel headquarters until the move to Nagapattinam." },
+    polygon: [[80.2, 13.5], [80.4, 13.5], [80.4, 13.3], [80.2, 13.3]],
+    evidence_status: "established", sources: ["src_das_bruijn"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_voc_batavia", polity_id: "civ_dutch_republic", label: "Batavia and its Ommelanden", control: "direct",
+    period: { start: 1619, end: 1795, note: "The town and its surrounding lands; the boundary with Banten and Mataram remained contested for decades." },
+    polygon: [[106.5, -5.9], [107.2, -5.9], [107.3, -6.5], [106.5, -6.5]],
+    evidence_status: "established", sources: ["src_blusse_1986", "src_gaastra_2003"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_voc_banda", polity_id: "civ_dutch_republic", label: "Company Banda", control: "direct",
+    period: { start: 1621, end: 1795, note: "After the conquest of 1621 and the destruction of the Bandanese." },
+    polygon: [[129.7, -4.4], [130.2, -4.4], [130.2, -4.7], [129.7, -4.7]],
+    evidence_status: "established", sources: ["src_andaya_maluku_1993"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_voc_zeelandia", polity_id: "civ_dutch_republic", label: "Formosa (Fort Zeelandia)", control: "direct",
+    period: { start: 1624, end: 1662, note: "The south-western plain around Tayouan; the Company never held the whole island. Taken by Koxinga in 1662." },
+    polygon: [[120.0, 23.6], [120.6, 23.6], [120.6, 22.5], [120.0, 22.5]],
+    evidence_status: "established", sources: ["src_blusse_1986"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_voc_malacca", polity_id: "civ_dutch_republic", label: "Company Malacca", control: "direct",
+    period: { start: 1641, end: 1795 },
+    polygon: [[102, 2.5], [102.5, 2.5], [102.5, 2], [102, 2]],
+    evidence_status: "established", sources: ["src_boxer_1965"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_voc_cape", polity_id: "civ_dutch_republic", label: "Cape station", control: "direct",
+    period: { start: 1652, end: 1795, note: "Van Riebeeck's fort and gardens at Table Bay; the settlement grew far beyond this outline later in the century." },
+    polygon: [[18.3, -33.8], [18.7, -33.8], [18.7, -34.1], [18.3, -34.1]],
+    evidence_status: "established", sources: ["src_gaastra_2003"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_banten", polity_id: "civ_banten", label: "Sultanate of Banten", control: "direct",
+    period: { start: 1527, end: 1682, approximate: true, note: "West Java and the Lampung pepper lands across the Strait; the Company's frontier at Batavia from 1619." },
+    polygon: [[104.5, -4.8], [105.9, -5.9], [106.4, -5.9], [106.4, -6.9], [105.2, -6.9], [104.4, -5.6]],
+    evidence_status: "scholarly_interpretation", sources: ["src_blusse_1986"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_mataram", polity_id: "civ_mataram", label: "Sultanate of Mataram", control: "direct",
+    period: { start: 1587, end: 1755, approximate: true, note: "Central and east Java under Sultan Agung (1613–1645); the coastal ports owed tribute rather than direct rule." },
+    polygon: [[107.3, -6.5], [111.0, -6.4], [114.3, -7.6], [114.4, -8.6], [110.0, -8.2], [107.5, -7.6]],
+    evidence_status: "scholarly_interpretation", sources: ["src_blusse_1986"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_tokugawa", polity_id: "civ_tokugawa", label: "Tokugawa Japan", control: "direct",
+    period: { start: 1603, end: 1868, note: "The shogunate's rule over the home islands; the domains kept their own lords under it." },
+    polygon: [[129.5, 33.8], [131.0, 34.6], [135.0, 35.8], [138.5, 38.2], [141.5, 41.2], [142.0, 40.0], [141.0, 36.8], [139.9, 35.0], [137.0, 34.3], [133.0, 33.4], [131.2, 31.1], [130.0, 31.4]],
+    evidence_status: "established", sources: ["src_gaastra_2003"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_mughal_17c", polity_id: "civ_mughal", label: "Mughal Empire", control: "direct",
+    period: { start: 1573, end: 1707, approximate: true, note: "From the conquest of Gujarat (1573) to Aurangzeb's death; the Deccan frontier moved south through the period." },
+    polygon: [[66.5, 25.5], [68.5, 29.0], [74.0, 33.5], [78.0, 32.0], [88.0, 27.0], [90.5, 24.5], [88.5, 22.0], [80.0, 21.5], [74.0, 20.5], [72.5, 20.5], [70.0, 20.8], [68.0, 23.5]],
+    evidence_status: "scholarly_interpretation", sources: ["src_das_bruijn"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_golconda", polity_id: "civ_golconda", label: "Golconda (Qutb Shahi sultanate)", control: "direct",
+    period: { start: 1518, end: 1687, approximate: true, note: "The northern Coromandel coast from the Krishna delta to Masulipatnam and inland to Hyderabad." },
+    polygon: [[77.5, 19.5], [80.0, 19.3], [82.3, 17.3], [80.5, 15.6], [79.5, 14.5], [78.0, 15.5], [77.0, 17.5]],
+    evidence_status: "scholarly_interpretation", sources: ["src_das_bruijn"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_safavid", polity_id: "civ_safavid", label: "Safavid Persia", control: "direct",
+    period: { start: 1501, end: 1736, approximate: true, note: "Under Shah Abbas I (1588–1629) and his successors; the Gulf coast came under direct rule with the taking of Hormuz in 1622." },
+    polygon: [[44.5, 39.0], [48.0, 39.5], [53.0, 37.5], [60.0, 37.0], [61.5, 31.0], [59.5, 26.0], [57.0, 25.8], [52.0, 27.5], [50.0, 30.0], [48.0, 30.2], [46.0, 34.5]],
+    evidence_status: "scholarly_interpretation", sources: ["src_glamann_1958"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_ottoman_yemen", polity_id: "civ_yemen_17c", label: "Yemen (Ottoman province, then the Qasimi imamate)", control: "direct",
+    period: { start: 1538, end: 1872, approximate: true, note: "Ottoman from 1538; the Qasimi imams expelled the Ottomans by 1635 and ruled the Tihama and highlands." },
+    polygon: [[42.6, 16.6], [44.5, 17.4], [46.5, 16.0], [45.5, 13.5], [43.9, 12.7], [43.1, 13.6]],
+    evidence_status: "scholarly_interpretation", sources: ["src_glamann_1958"], scenario_ids: DUTCH,
+  },
+  {
+    id: "ext_vijayanagara_late", polity_id: "civ_vijayanagara", label: "Vijayanagara (the Aravidu kings and their nayakas)", control: "suzerainty",
+    period: { start: 1565, end: 1646, approximate: true, note: "After Talikota (1565) the kings at Penukonda, Chandragiri and Vellore held only loose suzerainty over the nayakas of the Tamil country." },
+    polygon: [[77.0, 14.5], [79.5, 14.3], [80.4, 13.4], [80.2, 11.5], [79.0, 10.5], [77.5, 11.5]],
+    evidence_status: "scholarly_interpretation", sources: ["src_das_bruijn"], scenario_ids: DUTCH,
   },
 ];
 
@@ -483,4 +600,12 @@ export const SETTLEMENTS: SettlementRecord[] = [
   { id: "stl_augsburg", name: "Augsburg", kind: "city", latitude: 48.37, longitude: 10.9, location_certainty: "precise", period: { start: 1500, end: null }, polity_id: null, description: "Home of the Welser, Fugger and Höchstetter houses that financed ships in the 1505 fleet and supplied the copper the Portuguese carried east.", evidence_status: "established", sources: ["src_subrahmanyam_1993"], scenario_ids: PORTUGAL },
   { id: "stl_bijapur", name: "Bijapur", kind: "capital", latitude: 16.83, longitude: 75.72, location_certainty: "precise", period: { start: 1490, end: 1686 }, polity_id: "civ_bijapur", description: "Capital of the Adil Shahi sultans, whose cavalry depended on horses landed at Goa.", evidence_status: "established", sources: ["src_subrahmanyam_1993"], scenario_ids: PORTUGAL },
   { id: "stl_ahmedabad", name: "Ahmedabad", kind: "capital", latitude: 23.02, longitude: 72.57, location_certainty: "precise", period: { start: 1411, end: 1573 }, polity_id: "civ_gujarat_sultanate", description: "Capital of the Gujarat sultans, whose cloth filled the ships of Cambay and Diu.", evidence_status: "established", sources: ["src_pearson_1987"], scenario_ids: PORTUGAL },
+  // Seventeenth century: the Dutch East India Company
+  { id: "stl_the_hague", name: "The Hague", kind: "capital", latitude: 52.08, longitude: 4.31, location_certainty: "precise", period: { start: 1588, end: null }, polity_id: "civ_dutch_republic", description: "Seat of the States General, which granted the Company its charter in 1602.", evidence_status: "established", sources: ["src_israel_1989"], scenario_ids: DUTCH },
+  { id: "stl_edo", name: "Edo", kind: "capital", latitude: 35.68, longitude: 139.75, location_certainty: "precise", period: { start: 1603, end: 1868 }, polity_id: "civ_tokugawa", description: "The shogun's capital, to which the Company's chief at Hirado and later Dejima paid an annual court visit.", evidence_status: "established", sources: ["src_gaastra_2003"], scenario_ids: DUTCH },
+  { id: "stl_agra", name: "Agra", kind: "capital", latitude: 27.18, longitude: 78.02, location_certainty: "precise", period: { start: 1556, end: 1648, approximate: true }, polity_id: "civ_mughal", description: "Mughal capital under Akbar, Jahangir and Shah Jahan until the move to Shahjahanabad (Delhi) in 1648; the Company kept an indigo factory here.", evidence_status: "established", sources: ["src_das_bruijn"], scenario_ids: DUTCH },
+  { id: "stl_isfahan", name: "Isfahan", kind: "capital", latitude: 32.65, longitude: 51.68, location_certainty: "precise", period: { start: 1598, end: 1736 }, polity_id: "civ_safavid", description: "Shah Abbas's capital from 1598, where the Company negotiated its silk contracts.", evidence_status: "established", sources: ["src_glamann_1958"], scenario_ids: DUTCH },
+  { id: "stl_golconda", name: "Golconda (Hyderabad)", kind: "capital", latitude: 17.38, longitude: 78.4, location_certainty: "precise", period: { start: 1518, end: 1687 }, polity_id: "civ_golconda", description: "Capital of the Qutb Shahi sultans, whose farmans governed the Masulipatnam factory.", evidence_status: "established", sources: ["src_das_bruijn"], scenario_ids: DUTCH },
+  { id: "stl_karta", name: "Karta (Mataram)", kind: "capital", latitude: -7.83, longitude: 110.4, location_certainty: "approximate", period: { start: 1613, end: 1645, approximate: true }, polity_id: "civ_mataram", description: "Sultan Agung's court near present-day Yogyakarta, from which the sieges of Batavia were launched; its exact site is uncertain.", evidence_status: "scholarly_interpretation", sources: ["src_blusse_1986"], scenario_ids: DUTCH },
+  { id: "stl_goa_estado", name: "Goa (Estado da Índia)", kind: "city", latitude: 15.5, longitude: 73.91, location_certainty: "precise", period: { start: 1530, end: 1961 }, polity_id: "civ_portugal", description: "Capital of the Portuguese Estado, blockaded by Company fleets almost every monsoon from 1636 to 1644.", evidence_status: "established", sources: ["src_boxer_1965"], scenario_ids: DUTCH },
 ];
