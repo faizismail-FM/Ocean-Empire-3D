@@ -121,4 +121,28 @@ export const HISTORICAL_FIGURES: HistoricalFigure[] = [
     summary: "Took Constantinople in 1453, made a treaty with Venice in 1454 and went to war with the republic in 1463.",
     evidence_status: "established", sources: ["src_nicol_1988", "src_lane_1973"],
   },
+  {
+    id: "fig_manuel_i", name: "Manuel I of Portugal", alternate_names: ["Manuel the Fortunate", "D. Manuel I"], role: "King of Portugal (1495–1521)",
+    period: { start: 1469, end: 1521 }, polity_id: "civ_portugal",
+    summary: "King during Gama's voyages, the founding of the Estado da Índia and the Crown's seizure of the pepper monopoly; styled himself lord of the conquest, navigation and commerce of Ethiopia, Arabia, Persia and India.",
+    evidence_status: "established", sources: ["src_newitt_2005", "src_subrahmanyam_1993"],
+  },
+  {
+    id: "fig_almeida", name: "Francisco de Almeida", alternate_names: ["D. Francisco de Almeida"], role: "First viceroy of India (1505–1509)",
+    period: { start: 1450, end: 1510, approximate: true }, polity_id: "civ_portugal",
+    summary: "Sailed in March 1505 with orders to build forts at Kilwa, Sofala and Cochin, destroyed the Mamluk–Gujarati fleet at Diu in 1509 and was killed by Khoikhoi at Table Bay on the voyage home in 1510. He favoured sea power over territorial forts.",
+    evidence_status: "established", sources: ["src_subrahmanyam_1993", "src_newitt_2005"],
+  },
+  {
+    id: "fig_vasco_da_gama", name: "Vasco da Gama", alternate_names: ["D. Vasco da Gama, Count of Vidigueira"], role: "Navigator; viceroy of India (1524)",
+    period: { start: 1469, end: 1524, approximate: true }, polity_id: "civ_portugal",
+    summary: "Commanded the first voyage to India (1497–1499) and a punitive second (1502–1503); sent out as viceroy in 1524 to reform the Estado, he died at Cochin on 24 December 1524. His birth year is uncertain.",
+    evidence_status: "established", sources: ["src_subrahmanyam_1993", "src_diffie_winius_1977"],
+  },
+  {
+    id: "fig_joao_iii", name: "João III of Portugal", alternate_names: ["John III", "D. João III"], role: "King of Portugal (1521–1557)",
+    period: { start: 1502, end: 1557 }, polity_id: "civ_portugal",
+    summary: "Inherited an overextended Estado and a Crown deep in debt to its Antwerp bankers; settled the Moluccas question at Zaragoza in 1529 and saw off the Ottoman siege of Diu in 1538.",
+    evidence_status: "established", sources: ["src_newitt_2005", "src_boxer_1969"],
+  },
 ];

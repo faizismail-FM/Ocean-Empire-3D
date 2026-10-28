@@ -124,7 +124,7 @@ export type PortRecord = z.infer<typeof PortRecordSchema>;
 export const PropulsionSchema = z.enum(["sail", "engine"]);
 export type Propulsion = z.infer<typeof PropulsionSchema>;
 
-export const ShipModelSchema = z.enum(["container_feeder", "container_large", "sewn_plank", "lateen_coaster", "jong", "lancaran", "junk", "galley", "cog"]);
+export const ShipModelSchema = z.enum(["container_feeder", "container_large", "sewn_plank", "lateen_coaster", "jong", "lancaran", "junk", "galley", "cog", "carrack", "caravel"]);
 export type ShipModel = z.infer<typeof ShipModelSchema>;
 
 export const VesselClassSchema = z.object({

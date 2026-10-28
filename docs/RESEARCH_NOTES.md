@@ -93,6 +93,15 @@ Dates checked at the same time: Ibn Battuta at Mogadishu, Mombasa and Kilwa (133
 - **Constantinople** closes on 29 May 1453 and reopens as a restricted Ottoman port on the treaty of 18 April 1454; the two per cent customs duty of the treaty is reflected only as a fee multiplier.
 - **Thessalonica after 1430** reopens restricted in 1431 as a simplification of the peace of 1430 and the Venetian withdrawal completed by 1432.
 
+### Carreira da Índia, 1505 CE
+- **Bibliography**: Boxer (1969), Pearson (1987), Newitt (2005), the Hakluyt *Commentaries* (1875–1884) and Subrahmanyam's 2012 second edition were confirmed against catalogue and publisher records in October 2026; the 1993 Longman first edition of Subrahmanyam, the University of Minnesota Press imprint of Diffie and Winius, and the 1921 second volume of Dames's *Barbosa* are recorded from the implementer's knowledge and say so on the entry.
+- **Dates checked**: Almeida's departure (25 March 1505), the capture of Kilwa (22 July 1505, fort built in seventeen days), Sofala's fort (September to November 1505), the 1507 Mozambique fort, Diu (3 February 1509), Goa (25 November 1510), Hormuz (1515), the withdrawal from Kilwa (1512), Manuel I's death (13 December 1521), Gama's death at Cochin (24 December 1524), the Antwerp factory (moved from Bruges in 1499), the Diu fort (1535) and siege (4 September to 6 November 1538). The 1513 Calicut treaty date, the Zaragoza signing (22 April 1529) and Ridaniya (22 January 1517) follow the standard accounts and were not re-checked.
+- **The 1505 investors** were the Welser, Fugger, Höchstetter and Gossembrot of Augsburg and the Imhoff and Hirschvogel of Nuremberg with Genoese and Florentine partners; Marchionni financed the 1501 fleet. The "Florentine house of Lisbon" rival is inspired by him, not a record of his firm.
+- **Ships**: the nau's 400 tons follows the Flor de la Mar; the caravel, galleon and Malabar paráu are reconstructions, and the early galleon's form is debated.
+- **Cannanore** is grouped under the Cochin polity record for relations; the Kolathiri kingdom was distinct, and the port record says so.
+- **Wind**: the Indian Ocean monsoon table is used for the whole map; the Atlantic trade winds are not modelled and the scenario note says so.
+- **Enslaved people** were traded at Mina and in the Estado; the game does not represent them as cargo and the scenario note says so.
+
 ### Modern scenario
 - Port coordinates point at the main container terminal areas and are accurate to roughly a kilometre; they are reference, not navigational, data.
 - Throughput rankings and port roles are described qualitatively from UNCTAD's Review of Maritime Transport; no specific statistics are quoted.
