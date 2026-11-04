@@ -12,6 +12,7 @@ const KILWA_PERIOD = { start: 1300, end: 1400, note: "Scenario window; the port'
 const VENICE_PERIOD = { start: 1400, end: 1470, note: "Scenario window; the port's history extends beyond it." };
 const PORTUGAL_PERIOD = { start: 1500, end: 1550, note: "Scenario window; the port's history extends beyond it." };
 const MING_PERIOD = { start: 1400, end: 1440, note: "Scenario window; the port's history extends beyond it." };
+const SRIVIJAYA_PERIOD = { start: 980, end: 1040, note: "Scenario window; the port's history extends beyond it." };
 const DUTCH_PERIOD = { start: 1595, end: 1660, note: "Scenario window; the port's history extends beyond it." };
 
 export const SIRAF_PORTS: PortRecord[] = [
@@ -769,6 +770,136 @@ export const MING_PORTS: PortRecord[] = [
   },
 ];
 
+export const SRIVIJAYA_PORTS: PortRecord[] = [
+  {
+    id: "port_palembang_992", name: "Palembang (Srivijaya)", modern_reference_name: "Palembang, South Sumatra, Indonesia",
+    historical_names: ["Śrīvijaya", "Sanfoqi (Song records)", "Zābaj (Arabic sources, probably)"], latitude: -2.99, longitude: 104.76, location_certainty: "approximate",
+    active_period: SRIVIJAYA_PERIOD, historical_polity: "Srivijaya (the maharaja's court)", polity_id: "civ_srivijaya", country: "Indonesia",
+    historical_significance: "The river-mouth capital of the maharajas on the Musi, identified with Palembang by the seventh-century Old Malay inscriptions and by excavation; the entrepôt where forest produce from upstream met the ships of China, India and the Gulf.",
+    notes: "The identification of the capital with Palembang rather than Jambi for this century is the usual view but not certain; the settlement's exact extent along the Musi is unknown.",
+    supplies: ["good_benzoin", "good_gharuwood", "good_lakawood", "good_sumatra_gold", "good_barus_camphor"], demands: ["good_silk", "good_song_ceramics", "good_chinese_iron", "good_chola_cotton", "good_rice", "good_cloves"],
+    infrastructure: { docks: 2, warehouse: 2, shipyard: 1, administration: 2, commercial_district: 1 }, default_access: "home", fee_modifier: 1, lane_nodes: ["palembang_mouth"],
+    evidence_status: "scholarly_interpretation", sources: ["src_wolters_1967", "src_coedes_1968", "src_bronson_1977"], size: "hub",
+  },
+  {
+    id: "port_jambi_992", name: "Jambi (Malayu)", modern_reference_name: "Jambi, Sumatra, Indonesia",
+    historical_names: ["Malāyu", "Malaiyur (Chola inscription)", "Zhanbei (Chinese sources)"], latitude: -1.59, longitude: 103.61, location_certainty: "approximate",
+    active_period: SRIVIJAYA_PERIOD, historical_polity: "Malayu under Srivijayan suzerainty", polity_id: "civ_srivijaya", country: "Indonesia",
+    historical_significance: "The Batang Hari river port, absorbed by Srivijaya in the seventh century and named among the places taken in 1025; the temple complex at Muara Jambi downstream belongs to the eleventh to thirteenth centuries, when the court itself moved here.",
+    supplies: ["good_sumatra_gold", "good_gharuwood", "good_benzoin", "good_lakawood"], demands: ["good_silk", "good_song_ceramics", "good_chinese_iron", "good_chola_cotton"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 0.9, lane_nodes: ["batanghari_mouth"],
+    evidence_status: "scholarly_interpretation", sources: ["src_wolters_1967", "src_bronson_1977"], size: "regional",
+  },
+  {
+    id: "port_kedah_992", name: "Kadaram (Kedah)", modern_reference_name: "Bujang valley (Sungai Mas and Pengkalan Bujang), Kedah, Malaysia",
+    historical_names: ["Kaṭāha", "Kadāram", "Kalah (Arabic sources, probably)", "Kedah"], latitude: 5.65, longitude: 100.42, location_certainty: "approximate",
+    active_period: SRIVIJAYA_PERIOD, historical_polity: "Within the Srivijayan sphere; the maharaja styled 'lord of Kataha' in the Leiden plates", polity_id: "civ_srivijaya", country: "Malaysia",
+    historical_significance: "The western gate of the Straits, where ships from India and the Gulf landed; the Leiden plates give the Srivijayan king the title of lord of Kataha, and the Cholas sacked Kadaram in 1025. The Bujang valley sites with their Hindu-Buddhist shrines and Chinese and Middle Eastern finds are the archaeological trace.",
+    supplies: ["good_tin", "good_gharuwood", "good_lakawood"], demands: ["good_chola_cotton", "good_song_ceramics", "good_silk", "good_pearls"],
+    infrastructure: { docks: 1, warehouse: 2, administration: 1 }, default_access: "open", fee_modifier: 0.9, lane_nodes: ["kedah_roads"],
+    evidence_status: "scholarly_interpretation", sources: ["src_jacq_hergoualch_2002", "src_wheatley_1961", "src_leiden_plates_ei22"], size: "major",
+  },
+  {
+    id: "port_takuapa_992", name: "Takuapa (Talaittakkolam)", modern_reference_name: "Ko Kho Khao, Phang Nga, Thailand",
+    historical_names: ["Talaittakkolam (Chola inscription)", "Takkola (possibly)"], latitude: 8.92, longitude: 98.27, location_certainty: "approximate",
+    active_period: SRIVIJAYA_PERIOD, historical_polity: "Uncertain: a trans-peninsular port in the Srivijayan sphere, raided by the Cholas in 1025", polity_id: null, country: "Thailand",
+    historical_significance: "A landing on the Andaman side of the isthmus with a ninth-century Tamil merchant-guild inscription, Middle Eastern glass and Chinese ceramics; goods were carried across the peninsula to the Gulf of Thailand.",
+    supplies: ["good_tin", "good_gharuwood"], demands: ["good_song_ceramics", "good_chola_cotton", "good_rice"],
+    infrastructure: { docks: 1 }, default_access: "open", fee_modifier: 0.9, lane_nodes: ["andaman_sea"],
+    evidence_status: "uncertain", sources: ["src_jacq_hergoualch_2002", "src_christie_1998"], size: "minor",
+  },
+  {
+    id: "port_ligor_992", name: "Tambralinga (Ligor)", modern_reference_name: "Nakhon Si Thammarat, Thailand",
+    historical_names: ["Tāmbraliṅga", "Madamalingam (Chola inscription)", "Ligor"], latitude: 8.43, longitude: 99.96, location_certainty: "approximate",
+    active_period: SRIVIJAYA_PERIOD, historical_polity: "Kingdom of Tambralinga", polity_id: "civ_tambralinga", country: "Thailand",
+    historical_significance: "The Gulf-side port of the isthmus kingdom that sent its own embassies to the Song and was raided by the Cholas in 1025.",
+    supplies: ["good_gharuwood", "good_lakawood", "good_ivory", "good_tin"], demands: ["good_silk", "good_song_ceramics", "good_rice", "good_chola_cotton"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["gulf_of_thailand_s"],
+    evidence_status: "uncertain", sources: ["src_jacq_hergoualch_2002", "src_wheatley_1961"], size: "regional",
+  },
+  {
+    id: "port_lamuri_992", name: "Lamuri", modern_reference_name: "Lamreh, near Banda Aceh, Indonesia",
+    historical_names: ["Lāmurī", "Ilamuridesam (Chola inscription)", "Lanwuli (Chinese sources)"], latitude: 5.55, longitude: 95.33, location_certainty: "approximate",
+    active_period: SRIVIJAYA_PERIOD, historical_polity: "Uncertain: a port at the northern tip of Sumatra, raided by the Cholas in 1025", polity_id: null, country: "Indonesia",
+    historical_significance: "The first Sumatran landfall for ships from India, named by the Arabic geographers and in the Chola list of 1025; its rulers in this century are unknown.",
+    supplies: ["good_benzoin", "good_barus_camphor"], demands: ["good_chola_cotton", "good_song_ceramics", "good_rice"],
+    infrastructure: { docks: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["malacca_n"],
+    evidence_status: "uncertain", sources: ["src_tibbetts_1979", "src_nilakanta_sastri_1955"], size: "minor",
+  },
+  {
+    id: "port_barus_992", name: "Barus (Fansur)", modern_reference_name: "Lobu Tua, near Barus, North Sumatra, Indonesia",
+    historical_names: ["Fanṣūr", "Pancur", "Lobu Tua"], latitude: 2.03, longitude: 98.39, location_certainty: "approximate",
+    active_period: SRIVIJAYA_PERIOD, historical_polity: "Uncertain: the camphor coast, with Tamil and Middle Eastern merchant communities", polity_id: null, country: "Indonesia",
+    historical_significance: "The source of the finest camphor, known to Arabic writers as Fansur; the Lobu Tua site has Chinese, Middle Eastern and Indian finds and the Tamil guild inscription of 1088.",
+    supplies: ["good_barus_camphor", "good_benzoin"], demands: ["good_song_ceramics", "good_chola_cotton", "good_silk", "good_rice"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["sumatra_w_n"],
+    evidence_status: "scholarly_interpretation", sources: ["src_christie_1998", "src_tibbetts_1979"], size: "regional",
+  },
+  {
+    id: "port_hujung_galuh", name: "Hujung Galuh (Brantas delta)", modern_reference_name: "Surabaya area, East Java, Indonesia",
+    historical_names: ["Ujung Galuh", "She-po (Chinese name for Java)"], latitude: -7.22, longitude: 112.7, location_certainty: "disputed",
+    active_period: SRIVIJAYA_PERIOD, historical_polity: "Kingdom of Medang (Isyana dynasty), Kahuripan from 1019", polity_id: "civ_medang", country: "Indonesia",
+    historical_significance: "The Javanese inscriptions' river-mouth port of the Brantas, through which the East Javanese court traded rice and eastern spices for Chinese goods; Airlangga's Kamalagyan inscription of 1037 names it as the harbour reached by ships from other islands. Its exact site in the delta is not known.",
+    supplies: ["good_rice", "good_cloves", "good_sandalwood"], demands: ["good_silk", "good_song_ceramics", "good_chinese_iron", "good_chola_cotton", "good_gharuwood"],
+    infrastructure: { docks: 1, warehouse: 2 }, default_access: "restricted", fee_modifier: 1.2, lane_nodes: ["java_sea_e"],
+    evidence_status: "scholarly_interpretation", sources: ["src_hall_1985", "src_coedes_1968"], size: "major",
+  },
+  {
+    id: "port_puni", name: "Puni (Boni)", modern_reference_name: "Brunei area, north-western Borneo",
+    historical_names: ["Boni", "P'o-ni"], latitude: 4.9, longitude: 114.9, location_certainty: "disputed",
+    active_period: SRIVIJAYA_PERIOD, historical_polity: "Puni, as described in the Song records", polity_id: "civ_puni", country: "Brunei (probable)",
+    historical_significance: "A Bornean kingdom known only from Chinese accounts of its embassies (977, 1082) and its products; usually placed in the Brunei area.",
+    supplies: ["good_barus_camphor", "good_tortoiseshell"], demands: ["good_song_ceramics", "good_silk", "good_chinese_iron"],
+    infrastructure: { docks: 1 }, default_access: "open", fee_modifier: 0.9, lane_nodes: ["brunei_offshore"],
+    evidence_status: "uncertain", sources: ["src_hirth_rockhill_1911", "src_heng_2009"], size: "minor",
+  },
+  {
+    id: "port_vijaya_992", name: "Thi Nai (Vijaya, Champa)", modern_reference_name: "Qui Nhon, Vietnam",
+    historical_names: ["Śrī Vinaya", "Xinzhou (Chinese sources)"], latitude: 13.78, longitude: 109.25, location_certainty: "approximate",
+    active_period: SRIVIJAYA_PERIOD, historical_polity: "Champa (the court moved to Vijaya about 1000 after Đại Việt sacked Indrapura in 982)", polity_id: "civ_champa", country: "Vietnam",
+    historical_significance: "The harbour of the Cham kingdom's new capital and the source of the most prized aloeswood; Cham embassies went regularly to the Song.",
+    supplies: ["good_gharuwood", "good_ivory"], demands: ["good_song_ceramics", "good_silk", "good_chola_cotton"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["champa_coast"],
+    evidence_status: "scholarly_interpretation", sources: ["src_coedes_1968", "src_hirth_rockhill_1911"], size: "regional",
+  },
+  {
+    id: "port_guangzhou_992", name: "Guangzhou (Song trade office)", modern_reference_name: "Guangzhou, China",
+    historical_names: ["Canton", "Khanfu (Arabic sources)"], latitude: 23.13, longitude: 113.26, location_certainty: "precise",
+    active_period: SRIVIJAYA_PERIOD, historical_polity: "Song dynasty", polity_id: "civ_song", country: "China",
+    historical_significance: "Seat of the first Song maritime trade office (971), where foreign ships were inspected, the court's share bought and envoys' missions sent on to Kaifeng; the Arab and Persian merchants of the foreign quarter lived under their own headman.",
+    supplies: ["good_silk", "good_song_ceramics", "good_chinese_iron"], demands: ["good_barus_camphor", "good_gharuwood", "good_benzoin", "good_pepper", "good_cloves", "good_ivory", "good_pearls", "good_tin", "good_lakawood", "good_sandalwood"],
+    infrastructure: { docks: 2, warehouse: 3, administration: 3, commercial_district: 1 }, default_access: "agreement", fee_modifier: 1.2, lane_nodes: ["pearl_river"],
+    evidence_status: "established", sources: ["src_heng_2009", "src_wang_gungwu_nanhai"], size: "hub",
+  },
+  {
+    id: "port_quanzhou_992", name: "Quanzhou (Zaitun)", modern_reference_name: "Quanzhou, Fujian, China",
+    historical_names: ["Zaitun", "Chinchew"], latitude: 24.9, longitude: 118.6, location_certainty: "precise",
+    active_period: SRIVIJAYA_PERIOD, historical_polity: "Song dynasty", polity_id: "civ_song", country: "China",
+    historical_significance: "Fujian's port, already trading with the south but without a trade office of its own until 1087; foreign ships were meant to clear at Guangzhou.",
+    supplies: ["good_silk", "good_song_ceramics"], demands: ["good_pepper", "good_gharuwood", "good_barus_camphor", "good_tin"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "restricted", fee_modifier: 1.3, lane_nodes: ["taiwan_strait"],
+    evidence_status: "established", sources: ["src_heng_2009"], size: "regional",
+  },
+  {
+    id: "port_nagapattinam_992", name: "Nagapattinam", modern_reference_name: "Nagapattinam, Tamil Nadu, India",
+    historical_names: ["Nāgapaṭṭinam", "Nagapattana"], latitude: 10.77, longitude: 79.84, location_certainty: "precise",
+    active_period: SRIVIJAYA_PERIOD, historical_polity: "Chola Empire", polity_id: "civ_chola", country: "India",
+    historical_significance: "The Chola port for the eastern ocean, where the Srivijayan kings built the Chudamani Vihara endowed by Rajaraja I about 1006, and from which Rajendra's fleet is thought to have sailed in 1025.",
+    supplies: ["good_chola_cotton", "good_pearls", "good_rice"], demands: ["good_barus_camphor", "good_gharuwood", "good_benzoin", "good_silk", "good_song_ceramics", "good_cloves", "good_sandalwood", "good_tin"],
+    infrastructure: { docks: 2, warehouse: 2, administration: 1 }, default_access: "agreement", fee_modifier: 1.1, lane_nodes: ["nagapattinam_roads"],
+    evidence_status: "established", sources: ["src_nilakanta_sastri_1955", "src_leiden_plates_ei22", "src_kulke_2009"], size: "major",
+  },
+  {
+    id: "port_kollam_992", name: "Kollam (Quilon)", modern_reference_name: "Kollam, Kerala, India",
+    historical_names: ["Kūlam Malī (Arabic)", "Kurakkeni Kollam"], latitude: 8.89, longitude: 76.59, location_certainty: "precise",
+    active_period: SRIVIJAYA_PERIOD, historical_polity: "Venad chiefs under the Chera Perumals, at war with the Cholas", polity_id: "civ_chera_venad", country: "India",
+    historical_significance: "The Malabar pepper port where Gulf and Chinese shipping met; the Chola–Chera wars of this period (Rajaraja's attack on Kandalur Salai, 988) are recorded in the Chola inscriptions.",
+    supplies: ["good_pepper"], demands: ["good_silk", "good_song_ceramics", "good_barus_camphor", "good_gharuwood", "good_benzoin", "good_cloves", "good_sandalwood"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["laccadive_sea", "cape_comorin"],
+    evidence_status: "established", sources: ["src_narayanan_perumals", "src_malekandathil_2010"], size: "major",
+  },
+];
+
 export const DUTCH_PORTS: PortRecord[] = [
   {
     id: "port_amsterdam", name: "Amsterdam", modern_reference_name: "Amsterdam, Netherlands",
@@ -917,4 +1048,4 @@ export const DUTCH_PORTS: PortRecord[] = [
   },
 ];
 
-export const HISTORICAL_PORTS: PortRecord[] = [...SIRAF_PORTS, ...MELAKA_PORTS, ...KILWA_PORTS, ...VENICE_PORTS, ...PORTUGAL_PORTS, ...DUTCH_PORTS, ...MING_PORTS];
+export const HISTORICAL_PORTS: PortRecord[] = [...SIRAF_PORTS, ...SRIVIJAYA_PORTS, ...MELAKA_PORTS, ...KILWA_PORTS, ...VENICE_PORTS, ...PORTUGAL_PORTS, ...DUTCH_PORTS, ...MING_PORTS];

@@ -430,4 +430,47 @@ export const HISTORICAL_GOODS: TradeGood[] = [
     historical_availability: { start: 1540, end: 1800 }, base_price: 400, cargo_space: 0.2,
     evidence_status: "established", sources: ["src_glamann_1958", "src_israel_1989"],
   },
+  // Late tenth and eleventh centuries: Srivijaya
+  {
+    id: "good_barus_camphor", name: "Barus camphor", category: "aromatic",
+    description: "Crystalline camphor from the forests behind Barus (Fansur), the grade the Arabic writers and the Song court valued above all others; Srivijaya's most prized export.",
+    historical_availability: { start: 500, end: 1600 }, base_price: 240, cargo_space: 0.5,
+    evidence_status: "established", sources: ["src_tibbetts_1979", "src_wolters_1967"],
+  },
+  {
+    id: "good_sumatra_gold", name: "Gold of Suvarnadvipa", category: "luxury",
+    description: "Gold dust and small ingots from the Sumatran interior, the 'island of gold' of the Sanskrit and Chinese sources, brought downriver to Palembang and Jambi.",
+    historical_availability: { start: 500, end: 1500 }, base_price: 600, cargo_space: 0.1,
+    evidence_status: "established", sources: ["src_wolters_1967", "src_bronson_1977"],
+  },
+  {
+    id: "good_chinese_iron", name: "Chinese iron and ironware", category: "metal",
+    description: "Iron bars, pans and tools from the Song foundries, listed by Zhao Rukuo among the goods Chinese merchants carried to Sanfoqi; iron cargoes dominate the later Java Sea wrecks.",
+    historical_availability: { start: 900, end: 1400 }, base_price: 55, cargo_space: 1,
+    evidence_status: "scholarly_interpretation", sources: ["src_hirth_rockhill_1911", "src_heng_2009"],
+  },
+  {
+    id: "good_gharuwood", name: "Gharuwood (aloeswood)", category: "aromatic",
+    description: "Resinous agarwood from Champa, the peninsula and Sumatra, burned as incense at the Song court and in the mosques of the Gulf; Zhao Rukuo grades it by origin.",
+    historical_availability: { start: 300, end: null }, base_price: 240, cargo_space: 0.6,
+    evidence_status: "established", sources: ["src_hirth_rockhill_1911", "src_wolters_1967"],
+  },
+  {
+    id: "good_lakawood", name: "Lakawood", category: "aromatic",
+    description: "A red, scented heartwood from Sumatra and the peninsula, listed among Sanfoqi's products by Zhao Rukuo and burned as a cheap incense in China.",
+    historical_availability: { start: 900, end: 1700 }, base_price: 50, cargo_space: 1,
+    evidence_status: "established", sources: ["src_hirth_rockhill_1911", "src_heng_2009"],
+  },
+  {
+    id: "good_song_ceramics", name: "Chinese stoneware (Yue and Guangdong wares)", category: "ceramic",
+    description: "Green-glazed Yue bowls, Guangdong and Fujian stonewares and northern white wares of the early Song, shipped by the ten thousand; the tenth-century Intan cargo is the type find.",
+    historical_availability: { start: 900, end: 1150 }, base_price: 105, cargo_space: 1, storage: "fragile",
+    evidence_status: "established", sources: ["src_flecker_2002", "src_heng_2009"],
+  },
+  {
+    id: "good_chola_cotton", name: "Coromandel cottons (Chola)", category: "textile",
+    description: "Plain and dyed cottons of the Tamil country, carried east by the merchant guilds; Chinese accounts list cotton cloth among the Chola kingdom's goods.",
+    historical_availability: { start: 800, end: 1300 }, base_price: 95, cargo_space: 0.7,
+    evidence_status: "scholarly_interpretation", sources: ["src_hirth_rockhill_1911", "src_nilakanta_sastri_1955"],
+  },
 ];

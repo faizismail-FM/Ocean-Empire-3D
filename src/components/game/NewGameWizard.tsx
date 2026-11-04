@@ -70,7 +70,7 @@ export function NewGameWizard() {
                 icon={Compass}
                 title="Historical Empire Campaign"
                 text="Lead a trading house inside a documented maritime civilization. Sail with the monsoons, trade period goods, develop your home port, negotiate access, and watch documented events unfold."
-                bullets={["Siraf 850, Kilwa 1330, Nanjing 1405, Venice 1423, Melaka 1460, Lisbon 1505, Amsterdam 1602", "Seven documented maritime civilizations", "Sailing vessels, wind, provisions, diplomacy"]}
+                bullets={["Siraf 850, Palembang 992, Kilwa 1330, Nanjing 1405, Venice 1423, Melaka 1460, Lisbon 1505, Amsterdam 1602", "Eight documented maritime civilizations", "Sailing vessels, wind, provisions, diplomacy"]}
                 onClick={() => {
                   setMode("historical");
                   setStep("scenario");
