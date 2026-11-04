@@ -1,10 +1,11 @@
 "use client";
 
 import dynamic from "next/dynamic";
-import { useEffect, useSyncExternalStore } from "react";
+import { useEffect } from "react";
 import { Waves } from "lucide-react";
 import { SailingHUD } from "@/components/hud/SailingHUD";
 import { LinkButton } from "@/components/ui";
+import { useWebGL } from "@/lib/webgl";
 import { useGameStore } from "@/store/game-store";
 
 // Three.js must never run during server rendering.
@@ -17,21 +18,8 @@ const SailingScene = dynamic(() => import("@/components/three/SailingScene").the
   ),
 });
 
-let webglCache: boolean | null = null;
-function webglAvailable(): boolean {
-  if (webglCache !== null) return webglCache;
-  try {
-    const canvas = document.createElement("canvas");
-    webglCache = !!(canvas.getContext("webgl2") || canvas.getContext("webgl"));
-  } catch {
-    webglCache = false;
-  }
-  return webglCache;
-}
-const noopSubscribe = () => () => {};
-
 export default function SailPage() {
-  const webgl = useSyncExternalStore(noopSubscribe, webglAvailable, () => null);
+  const webgl = useWebGL();
   const hasShip = useGameStore((s) => !!(s.state?.active_ship_id && s.state.ships[s.state.active_ship_id]));
   const setActiveShip = useGameStore((s) => s.setActiveShip);
   const firstShip = useGameStore((s) => Object.keys(s.state?.ships ?? {})[0]);

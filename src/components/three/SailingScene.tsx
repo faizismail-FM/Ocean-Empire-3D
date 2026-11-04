@@ -152,7 +152,7 @@ function FrameUpdater() {
   return <fog ref={fog} attach="fog" args={["#9fcbe6", 1500, 7500]} />;
 }
 
-function Lighting({ shadowMap, shadows }: { shadowMap: number; shadows: boolean }) {
+export function Lighting({ shadowMap, shadows }: { shadowMap: number; shadows: boolean }) {
   const light = useRef<THREE.DirectionalLight>(null);
   const target = useMemo(() => new THREE.Object3D(), []);
   useFrame(() => {
@@ -188,7 +188,7 @@ function Lighting({ shadowMap, shadows }: { shadowMap: number; shadows: boolean 
   );
 }
 
-function SkyDome() {
+export function SkyDome() {
   const [sun, setSun] = useState<[number, number, number]>([0.3, 0.3, 0.4]);
   const tick = useRef(0);
   useFrame((_, dt) => {

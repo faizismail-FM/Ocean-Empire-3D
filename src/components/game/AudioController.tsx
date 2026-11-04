@@ -4,7 +4,9 @@ import { usePathname } from "next/navigation";
 import { useEffect } from "react";
 import { windForDate } from "@/engine/wind";
 import { getAudioEngine, type AudioScene } from "@/lib/audio/engine";
+import { getScenario } from "@/data";
 import { useGameStore } from "@/store/game-store";
+import { useMenuStore } from "@/store/menu-store";
 import { useSettingsStore } from "@/store/settings-store";
 
 /**
@@ -42,7 +44,9 @@ export function AudioController() {
       const onPlay = pathname.startsWith("/play");
       const mode: AudioScene["mode"] = pathname === "/" || pathname.startsWith("/new") ? "menu" : onPlay && state && catalog ? (pathname.startsWith("/play/sail") ? "sailing" : "management") : "off";
       if (!state || !catalog || mode === "off" || mode === "menu") {
-        return { mode, family: catalog?.scenario.family ?? null, docked: true, paused: false, speedKnots: 0, windKnots: 0, throttle: 0, propulsion: null };
+        const showcase = mode === "menu" ? useMenuStore.getState().showcaseId : null;
+        const family = (showcase ? getScenario(showcase)?.family : null) ?? catalog?.scenario.family ?? null;
+        return { mode, family, docked: true, paused: false, speedKnots: 0, windKnots: 0, throttle: 0, propulsion: null };
       }
       const ship = state.active_ship_id ? state.ships[state.active_ship_id] : undefined;
       const cls = ship ? catalog.ships.find((c) => c.id === ship.class_id) : undefined;
@@ -68,8 +72,10 @@ export function AudioController() {
         push();
       }, 400);
     });
+    const unsubMenu = useMenuStore.subscribe(push);
     return () => {
       unsub();
+      unsubMenu();
       if (timer !== null) window.clearTimeout(timer);
     };
   }, [pathname]);
