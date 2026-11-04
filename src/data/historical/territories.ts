@@ -16,6 +16,7 @@ const MELAKA = ["melaka_1460"];
 const PORTUGAL = ["portugal_1505"];
 const DUTCH = ["dutch_1602"];
 const MING = ["ming_1405"];
+const SRIVIJAYA = ["srivijaya_992"];
 
 export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
   // ---- Ninth century ------------------------------------------------------------------
@@ -61,7 +62,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_chera", polity_id: "civ_chera_venad", label: "Chera (Kulasekhara) Kerala", control: "direct",
     period: { start: 800, end: 1124, approximate: true },
     polygon: [[75, 12.6], [76.6, 12.6], [77.2, 10], [77.3, 8.2], [76.5, 8], [75.5, 10.5]],
-    evidence_status: "scholarly_interpretation", sources: ["src_narayanan_perumals"], scenario_ids: SIRAF,
+    evidence_status: "scholarly_interpretation", sources: ["src_narayanan_perumals"], scenario_ids: [...SIRAF, ...SRIVIJAYA],
   },
   {
     id: "ext_anuradhapura", polity_id: "civ_anuradhapura", label: "Anuradhapura kingdom", control: "direct",
@@ -73,7 +74,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_srivijaya", polity_id: "civ_srivijaya", label: "Srivijaya", control: "sphere",
     period: { start: 700, end: 1025, approximate: true, note: "A thalassocracy of allied ports rather than a bounded state." },
     polygon: [[98, 6.5], [101, 6], [104, 2], [106.5, -3], [105, -6], [102, -4], [99.5, 0], [97.5, 3]],
-    evidence_status: "scholarly_interpretation", sources: ["src_wolters_1970", "src_wheatley_1961"], scenario_ids: SIRAF,
+    evidence_status: "scholarly_interpretation", sources: ["src_wolters_1970", "src_wheatley_1961"], scenario_ids: [...SIRAF, ...SRIVIJAYA],
   },
   {
     id: "ext_tang", polity_id: "civ_tang", label: "Tang China", control: "direct",
@@ -482,7 +483,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_champa_vijaya", polity_id: "civ_champa", label: "Champa (Vijaya)", control: "direct",
     period: { start: 1000, end: 1471, approximate: true, note: "The central coast from the Hải Vân pass to Phan Rang; the northern provinces were lost to Đại Việt by stages and Vijaya fell in 1471." },
     polygon: [[107.8, 16.3], [108.3, 16.1], [109.4, 13.6], [109.1, 11.6], [108.4, 11.2], [107.9, 12.5], [108.0, 14.5], [107.6, 15.8]],
-    evidence_status: "scholarly_interpretation", sources: ["src_ma_huan"], scenario_ids: MING,
+    evidence_status: "scholarly_interpretation", sources: ["src_ma_huan"], scenario_ids: [...MING, ...SRIVIJAYA],
   },
   {
     id: "ext_kotte", polity_id: "civ_kotte", label: "Kotte and Raigama (south-western Sri Lanka)", control: "direct",
@@ -618,6 +619,67 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     polygon: [[77.0, 14.5], [79.5, 14.3], [80.4, 13.4], [80.2, 11.5], [79.0, 10.5], [77.5, 11.5]],
     evidence_status: "scholarly_interpretation", sources: ["src_das_bruijn"], scenario_ids: DUTCH,
   },
+  // ---- Late tenth and eleventh centuries: Srivijaya, the Cholas and the Song ---------
+  {
+    id: "ext_srivijaya_core", polity_id: "civ_srivijaya", label: "Srivijaya (Musi and Batang Hari lowlands)", control: "direct",
+    period: { start: 850, end: 1080, approximate: true, note: "The river-mouth core at Palembang and Jambi; the court moved to Jambi during the eleventh century." },
+    polygon: [[103.2, -1], [105.4, -1.2], [106, -3.2], [104.6, -4.2], [103, -3]],
+    evidence_status: "scholarly_interpretation", sources: ["src_wolters_1967", "src_bronson_1977"], scenario_ids: SRIVIJAYA,
+  },
+  {
+    id: "ext_srivijaya_after_1025", polity_id: "civ_srivijaya", label: "Srivijaya after the Chola raid", control: "sphere",
+    period: { start: 1026, end: 1100, approximate: true, note: "The sphere drawn smaller after 1025; how much the raid changed Srivijaya's reach is not known." },
+    polygon: [[100, 2], [104.5, 0.5], [106.5, -3], [105, -6], [102.5, -4], [101, -0.5]],
+    evidence_status: "uncertain", sources: ["src_wolters_1970", "src_kulke_2009"], scenario_ids: SRIVIJAYA,
+  },
+  {
+    id: "ext_chola_direct", polity_id: "civ_chola", label: "Chola Empire (Tamil country)", control: "direct",
+    period: { start: 985, end: 1279, approximate: true },
+    polygon: [[76.5, 13.5], [80.3, 13.5], [80.3, 10], [79.5, 8.8], [78, 8.2], [77.3, 9.5], [76.8, 11]],
+    evidence_status: "established", sources: ["src_nilakanta_sastri_1955"], scenario_ids: SRIVIJAYA,
+  },
+  {
+    id: "ext_chola_lanka", polity_id: "civ_chola", label: "Chola Sri Lanka (Rajarata)", control: "direct",
+    period: { start: 993, end: 1070, approximate: true, note: "Northern Sri Lanka from the conquest of Anuradhapura; the south stayed Sinhalese." },
+    polygon: [[79.7, 9.8], [81.5, 9.5], [81.2, 7.8], [80, 7.5], [79.8, 8.5]],
+    evidence_status: "established", sources: ["src_nilakanta_sastri_1955", "src_spencer_1983"], scenario_ids: SRIVIJAYA,
+  },
+  {
+    id: "ext_chola_kadaram", polity_id: "civ_chola", label: "Chola claim over Kadaram", control: "suzerainty",
+    period: { start: 1025, end: 1070, approximate: true, note: "The inscriptions claim Kadaram; whether any Chola administration followed is unknown." },
+    polygon: [[99.8, 6.5], [100.9, 6.5], [100.9, 5.2], [100, 5.2]],
+    evidence_status: "uncertain", sources: ["src_kulke_2009", "src_spencer_1983"], scenario_ids: SRIVIJAYA,
+  },
+  {
+    id: "ext_song", polity_id: "civ_song", label: "Song dynasty", control: "direct",
+    period: { start: 960, end: 1127, note: "Southern and eastern provinces only." },
+    polygon: [[98, 22], [110, 21.5], [118, 23], [122, 30], [121, 34], [117, 35], [105, 35], [99, 30], [98, 28]],
+    evidence_status: "established", sources: ["src_heng_2009"], scenario_ids: SRIVIJAYA,
+  },
+  {
+    id: "ext_medang_east_java", polity_id: "civ_medang", label: "Medang (East Java)", control: "direct",
+    period: { start: 929, end: 1016, approximate: true },
+    polygon: [[110.5, -6.9], [114.4, -7.1], [114.4, -8.4], [111, -8.3]],
+    evidence_status: "scholarly_interpretation", sources: ["src_coedes_1968", "src_hall_1985"], scenario_ids: SRIVIJAYA,
+  },
+  {
+    id: "ext_kahuripan", polity_id: "civ_medang", label: "Kahuripan (Airlangga)", control: "direct",
+    period: { start: 1019, end: 1042, approximate: true, note: "Reunited by stages after 1019; divided in 1042." },
+    polygon: [[111, -7], [114, -7.1], [114.2, -8.3], [111.3, -8.3]],
+    evidence_status: "scholarly_interpretation", sources: ["src_coedes_1968"], scenario_ids: SRIVIJAYA,
+  },
+  {
+    id: "ext_tambralinga", polity_id: "civ_tambralinga", label: "Tambralinga", control: "direct",
+    period: { start: 900, end: 1250, approximate: true },
+    polygon: [[99.3, 9.3], [100.3, 9.3], [100.3, 7.9], [99.5, 7.9]],
+    evidence_status: "uncertain", sources: ["src_jacq_hergoualch_2002"], scenario_ids: SRIVIJAYA,
+  },
+  {
+    id: "ext_puni", polity_id: "civ_puni", label: "Puni", control: "direct",
+    period: { start: 977, end: 1300, approximate: true },
+    polygon: [[113.8, 5.3], [115.4, 5.3], [115.4, 4.4], [113.8, 4.4]],
+    evidence_status: "uncertain", sources: ["src_hirth_rockhill_1911"], scenario_ids: SRIVIJAYA,
+  },
 ];
 
 export const SETTLEMENTS: SettlementRecord[] = [
@@ -668,4 +730,13 @@ export const SETTLEMENTS: SettlementRecord[] = [
   { id: "stl_vijaya", name: "Vijaya (Đồ Bàn)", kind: "capital", latitude: 13.9, longitude: 109.07, location_certainty: "precise", period: { start: 1000, end: 1471, approximate: true }, polity_id: "civ_champa", description: "The Cham capital behind Xinzhou, taken by Đại Việt in 1471.", evidence_status: "established", sources: ["src_ma_huan"], scenario_ids: MING },
   { id: "stl_kotte", name: "Kotte (Jayawardenapura)", kind: "capital", latitude: 6.9, longitude: 79.91, location_certainty: "precise", period: { start: 1412, end: 1597 }, polity_id: "civ_kotte", description: "Parakramabahu VI's capital from 1412.", evidence_status: "established", sources: ["src_levathes_1994"], scenario_ids: MING },
   { id: "stl_pandua", name: "Pandua", kind: "capital", latitude: 25.13, longitude: 88.16, location_certainty: "precise", period: { start: 1352, end: 1450, approximate: true }, polity_id: "civ_bengal_sultanate", description: "Capital of the Bengal sultans until the return to Gaur around 1450.", evidence_status: "scholarly_interpretation", sources: ["src_sen_2006"], scenario_ids: MING },
+  // Late tenth and eleventh centuries: Srivijaya, the Cholas and the Song
+  { id: "stl_thanjavur", name: "Tanjavur (Thanjavur)", kind: "capital", latitude: 10.79, longitude: 79.14, location_certainty: "precise", period: { start: 985, end: 1025, approximate: true }, polity_id: "civ_chola", description: "Rajaraja's capital and the site of his great temple (1010); the inscriptions recording the expedition of 1025 are carved on its walls.", evidence_status: "established", sources: ["src_nilakanta_sastri_1955"], scenario_ids: SRIVIJAYA },
+  { id: "stl_gangaikonda", name: "Gangaikonda Cholapuram", kind: "capital", latitude: 11.21, longitude: 79.45, location_certainty: "precise", period: { start: 1025, end: 1279, approximate: true }, polity_id: "civ_chola", description: "Rajendra's new capital, built to mark the Ganges expedition.", evidence_status: "established", sources: ["src_nilakanta_sastri_1955"], scenario_ids: SRIVIJAYA },
+  { id: "stl_kaifeng", name: "Kaifeng", kind: "capital", latitude: 34.8, longitude: 114.3, location_certainty: "precise", period: { start: 960, end: 1127 }, polity_id: "civ_song", description: "The Northern Song capital, where the envoys of Srivijaya, the Cholas and Tambralinga were received.", evidence_status: "established", sources: ["src_heng_2009"], scenario_ids: SRIVIJAYA },
+  { id: "stl_watugaluh", name: "Watugaluh (Medang court)", kind: "capital", latitude: -7.55, longitude: 112.22, location_certainty: "disputed", period: { start: 929, end: 1016, approximate: true }, polity_id: "civ_medang", description: "The East Javanese court of the Isyana kings, destroyed in the pralaya; its site near the Brantas is not securely identified.", evidence_status: "uncertain", sources: ["src_coedes_1968"], scenario_ids: SRIVIJAYA },
+  { id: "stl_kahuripan", name: "Kahuripan", kind: "capital", latitude: -7.4, longitude: 112.5, location_certainty: "disputed", period: { start: 1019, end: 1042, approximate: true }, polity_id: "civ_medang", description: "Airlangga's capital, placed somewhere in the lower Brantas valley; the site is unidentified.", evidence_status: "uncertain", sources: ["src_coedes_1968"], scenario_ids: SRIVIJAYA },
+  { id: "stl_muara_jambi", name: "Muara Jambi", kind: "religious_centre", latitude: -1.48, longitude: 103.67, location_certainty: "precise", period: { start: 1000, end: 1300, approximate: true }, polity_id: "civ_srivijaya", description: "The brick temple complex on the Batang Hari, the largest Buddhist site in Sumatra, dated to the eleventh to thirteenth centuries.", evidence_status: "scholarly_interpretation", sources: ["src_wolters_1970"], scenario_ids: SRIVIJAYA },
+  { id: "stl_bujang_valley", name: "Bujang valley shrines", kind: "religious_centre", latitude: 5.73, longitude: 100.44, location_certainty: "approximate", period: { start: 500, end: 1300, approximate: true }, polity_id: null, description: "The Hindu-Buddhist shrines and settlement sites of Kedah's hinterland, the archaeological trace of Kataha.", evidence_status: "scholarly_interpretation", sources: ["src_jacq_hergoualch_2002"], scenario_ids: SRIVIJAYA },
+  { id: "stl_mahodayapuram", name: "Mahodayapuram (Kodungallur)", kind: "capital", latitude: 10.23, longitude: 76.2, location_certainty: "approximate", period: { start: 800, end: 1124, approximate: true }, polity_id: "civ_chera_venad", description: "Seat of the Chera Perumals, at war with the Cholas through this period.", evidence_status: "scholarly_interpretation", sources: ["src_narayanan_perumals"], scenario_ids: SRIVIJAYA },
 ];

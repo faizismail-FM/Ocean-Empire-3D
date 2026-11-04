@@ -193,4 +193,53 @@ export const HISTORICAL_FIGURES: HistoricalFigure[] = [
     summary: "Took Malacca (1641) and the Portuguese forts of Ceylon, sent Tasman south in 1642, and presided over the Company's most profitable decade.",
     evidence_status: "established", sources: ["src_gaastra_2003", "src_boxer_1965"],
   },
+  // Late tenth and eleventh centuries: Srivijaya, the Cholas and Java
+  {
+    id: "fig_cudamani_varmadeva", name: "Sri Cudamani Varmadeva", alternate_names: ["Chulamanivarman", "Shi-li-zhu-luo-wu-ni-fo-ma-tiao-hua (Song records)"], role: "Maharaja of Srivijaya (attested 1003–c. 1005)",
+    period: { start: 990, end: 1006, approximate: true }, polity_id: "civ_srivijaya",
+    summary: "Named as the sender of the embassy of 1003 that told the Song court of a temple built to pray for the emperor's long life, and in the Tamil portion of the Leiden plates as the king who had the vihara at Nagapattinam built; his reign dates are known only from these two records.",
+    evidence_status: "scholarly_interpretation", sources: ["src_coedes_1968", "src_leiden_plates_ei22"],
+  },
+  {
+    id: "fig_maravijayottungavarman", name: "Sri Maravijayottungavarman", alternate_names: ["Si-li-ma-la-pi (Song records)"], role: "Maharaja of Srivijaya and lord of Kataha (attested c. 1006–1008)",
+    period: { start: 1000, end: 1017, approximate: true }, polity_id: "civ_srivijaya",
+    summary: "Son of Cudamani Varmadeva; the Sanskrit portion of the Leiden plates credits him with completing the Nagapattinam vihara in his father's name, and the Song records an embassy from him in 1008.",
+    evidence_status: "scholarly_interpretation", sources: ["src_coedes_1968", "src_leiden_plates_ei22"],
+  },
+  {
+    id: "fig_sangrama_vijayottungavarman", name: "Sangrama Vijayottungavarman", alternate_names: ["Sangrāma Vijayottuṅgavarman"], role: "King of Kadaram and Srivijaya, captured by the Cholas (1025)",
+    period: { start: 1017, end: 1030, approximate: true }, polity_id: "civ_srivijaya",
+    summary: "The Tanjavur inscription names him as the king taken with his elephants and treasure when Rajendra's fleet sacked Kadaram; his fate after capture is unrecorded, and whether he is the 'Haji Sumatrabhumi' of the 1017 embassy is unknown.",
+    evidence_status: "scholarly_interpretation", sources: ["src_nilakanta_sastri_1955", "src_kulke_2009"],
+  },
+  {
+    id: "fig_rajaraja_i", name: "Rajaraja I", alternate_names: ["Arulmozhivarman", "Rajaraja Chola"], role: "Chola emperor (985–1014)",
+    period: { start: 947, end: 1014, approximate: true }, polity_id: "civ_chola",
+    summary: "Conquered Kerala, the Pandya country and northern Sri Lanka (993), built the great temple at Tanjavur (1010) and granted the village of Anaimangalam to the Srivijayan kings' vihara at Nagapattinam.",
+    evidence_status: "established", sources: ["src_nilakanta_sastri_1955", "src_leiden_plates_ei22"],
+  },
+  {
+    id: "fig_rajendra_i", name: "Rajendra I", alternate_names: ["Gangaikonda Chola", "Rajendra Chola"], role: "Chola emperor (co-regent 1012, sole ruler 1014–1044)",
+    period: { start: 971, end: 1044, approximate: true }, polity_id: "civ_chola",
+    summary: "Sent an army to the Ganges, founded Gangaikonda Cholapuram, dispatched the embassies of 1015 and 1033 to the Song and in 1025 the fleet that sacked Kadaram and the ports of Srivijaya; his motives are not recorded.",
+    evidence_status: "established", sources: ["src_nilakanta_sastri_1955", "src_spencer_1983", "src_kulke_2009"],
+  },
+  {
+    id: "fig_dharmawangsa", name: "Dharmawangsa Teguh", alternate_names: ["Dharmavaṃśa Tĕguh Anantavikrama"], role: "King of Medang in East Java (c. 990–1016)",
+    period: { start: 960, end: 1016, approximate: true }, polity_id: "civ_medang",
+    summary: "Attacked Srivijaya about 990–992 and sent envoys to the Song; died when his court was destroyed in the 'pralaya' that the Pucangan inscription places in 1016 (1006 in other readings).",
+    evidence_status: "scholarly_interpretation", sources: ["src_coedes_1968", "src_hall_1985"],
+  },
+  {
+    id: "fig_airlangga", name: "Airlangga", alternate_names: ["Erlangga"], role: "King of Kahuripan (1019–1042)",
+    period: { start: 991, end: 1049, approximate: true }, polity_id: "civ_medang",
+    summary: "Escaped the destruction of Dharmawangsa's court as a youth, was consecrated king in 1019, reunited East Java, dammed the Brantas at Wringin Sapta (1037) to protect the river trade to Hujung Galuh, and divided the kingdom in 1042; the Pucangan inscription of 1041 is the chief source.",
+    evidence_status: "established", sources: ["src_coedes_1968", "src_hall_1985"],
+  },
+  {
+    id: "fig_atisha", name: "Atiśa Dīpaṃkara Śrījñāna", alternate_names: ["Atisha", "Jowo Je"], role: "Buddhist master who studied in Suvarnadvipa (c. 1012–1024)",
+    period: { start: 982, end: 1054 }, polity_id: null,
+    summary: "A Bengali monk who sailed to Suvarnadvipa to study under Dharmakīrti for twelve years (conventionally 1012–1024, inferred from the Tibetan biographies) and went on to Tibet in 1042; the Tibetan sources are the chief evidence for Srivijaya as a centre of Buddhist learning in this period.",
+    evidence_status: "scholarly_interpretation", sources: ["src_chattopadhyaya_1967", "src_coedes_1968"],
+  },
 ];

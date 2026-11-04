@@ -494,6 +494,91 @@ export const SOURCES: HistoricalSource[] = [
     author_or_institution: "Port of Rotterdam Authority", publication_year: null,
     source_type: "institution", url_or_reference: "https://www.portofrotterdam.com", related_records: ["rotterdam"],
   },
+  // Srivijaya, the Cholas and the Song, tenth to eleventh centuries
+  {
+    id: "src_coedes_1968", title: "The Indianized States of Southeast Asia",
+    author_or_institution: "George Coedès; edited by Walter F. Vella, translated by Susan Brown Cowing", publication_year: 1968,
+    source_type: "book", url_or_reference: "East-West Center Press, Honolulu, xxi + 403 pp.; translated from the third French edition of 1964", related_records: ["civ_srivijaya", "civ_medang", "fig_cudamani_varmadeva", "fig_maravijayottungavarman", "fig_dharmawangsa", "fig_airlangga", "evt_java_war_992", "evt_sanfoqi_embassy_1003"],
+    notes: "Confirmed against catalogue records and the Journal of Southeast Asian History review (November 2026). Coedès's readings of the Song histories supply the dates of the Srivijayan embassies of 1003, 1008, 1017 and 1028, which were not re-checked against the Chinese text.",
+  },
+  {
+    id: "src_wolters_1967", title: "Early Indonesian Commerce: A Study of the Origins of Śrīvijaya",
+    author_or_institution: "O. W. Wolters", publication_year: 1967,
+    source_type: "book", url_or_reference: "Cornell University Press, Ithaca, 404 pp., 5 maps", related_records: ["civ_srivijaya", "tech_orang_laut", "tech_monsoon_timing", "good_gharuwood"],
+    notes: "Confirmed against catalogue records and the JRAS and BSOAS reviews (November 2026).",
+  },
+  {
+    id: "src_nilakanta_sastri_1955", title: "The Cōḷas",
+    author_or_institution: "K. A. Nilakanta Sastri", publication_year: 1955,
+    source_type: "book", url_or_reference: "University of Madras, second edition, xvi + 769 pp. + index (later printings 812 pp.)", related_records: ["civ_chola", "fig_rajaraja_i", "fig_rajendra_i", "evt_chola_raid_1025", "ship_chola_merchantman"],
+    notes: "Confirmed against catalogue records and the JRAS review (November 2026). The standard narrative of the dynasty; its dating of the Kadaram expedition to about 1025 rests on the Tanjavur inscriptions of Rajendra's fourteenth year.",
+  },
+  {
+    id: "src_kulke_2009", title: "Nagapattinam to Suvarnadwipa: Reflections on the Chola Naval Expeditions to Southeast Asia",
+    author_or_institution: "Hermann Kulke, K. Kesavapany and Vijay Sakhuja (eds.)", publication_year: 2009,
+    source_type: "book", url_or_reference: "Institute of Southeast Asian Studies, Singapore, 362 pp.; ISBN 978-981-230-937-2 (hardcover)", related_records: ["evt_chola_raid_1025", "fig_sangrama_vijayottungavarman", "route_kedah_nagapattinam_11c", "tech_vihara_patronage"],
+    notes: "Confirmed against the publisher's listing and library records (November 2026). Includes Kulke's essay on the expeditions and Sen's on the Chola–Srivijaya–China triangle.",
+  },
+  {
+    id: "src_heng_2009", title: "Sino-Malay Trade and Diplomacy from the Tenth through the Fourteenth Century",
+    author_or_institution: "Derek Heng", publication_year: 2009,
+    source_type: "book", url_or_reference: "Ohio University Press, Athens OH (Ohio RIS Southeast Asia Series 121), ISBN 978-0-89680-271-1", related_records: ["civ_song", "port_guangzhou_992", "port_quanzhou_992", "tech_song_tribute", "good_song_ceramics", "good_lakawood"],
+    notes: "Confirmed against the publisher's listing and the Journal of Southeast Asian Studies review (November 2026). The basis for the Song trade-office and tribute-mission mechanics.",
+  },
+  {
+    id: "src_hall_1985", title: "Maritime Trade and State Development in Early Southeast Asia",
+    author_or_institution: "Kenneth R. Hall", publication_year: 1985,
+    source_type: "book", url_or_reference: "University of Hawaii Press, Honolulu, xvi + 368 pp.", related_records: ["civ_medang", "port_hujung_galuh", "tech_upstream_network", "route_java_straits_11c"],
+    notes: "Confirmed against catalogue records and the JSEAS and JAS reviews (November 2026).",
+  },
+  {
+    id: "src_bronson_1977", title: "Exchange at the Upstream and Downstream Ends: Notes toward a Functional Model of the Coastal State in Southeast Asia",
+    author_or_institution: "Bennet Bronson", publication_year: 1977,
+    source_type: "book", url_or_reference: "In Karl L. Hutterer (ed.), Economic Exchange and Social Interaction in Southeast Asia, Michigan Papers on South and Southeast Asia 13, Ann Arbor, pp. 39–52", related_records: ["tech_upstream_network", "port_palembang_992", "port_jambi_992"],
+    notes: "Confirmed against the open-access edition and bibliographic records (November 2026); some records date the volume 1978.",
+  },
+  {
+    id: "src_jacq_hergoualch_2002", title: "The Malay Peninsula: Crossroads of the Maritime Silk Road (100 BC–1300 AD)",
+    author_or_institution: "Michel Jacq-Hergoualc'h; translated by Victoria Hobson", publication_year: 2002,
+    source_type: "book", url_or_reference: "Brill, Leiden and Boston (Handbuch der Orientalistik III.13), xxxv + 607 pp.; ISBN 90-04-11973-6", related_records: ["port_kedah_992", "port_takuapa_992", "port_ligor_992", "civ_tambralinga"],
+    notes: "Confirmed against catalogue records (November 2026). The reference for the Bujang valley, Takuapa and Ligor sites.",
+  },
+  {
+    id: "src_flecker_2002", title: "The Archaeological Excavation of the 10th Century Intan Shipwreck",
+    author_or_institution: "Michael Flecker", publication_year: 2002,
+    source_type: "archaeological_report", url_or_reference: "BAR International Series 1047, Archaeopress, Oxford, iv + 163 pp.", related_records: ["ship_lashed_lug_coaster", "ship_kunlun_bo", "good_song_ceramics", "tech_lashed_lug"],
+    notes: "Confirmed against the publisher's listing and library records (November 2026). A lashed-lug Southeast Asian hull of the early to mid tenth century, probably sailing from Palembang, with Chinese ceramics, tin, bronze and glass.",
+  },
+  {
+    id: "src_christie_1998", title: "The Medieval Tamil-language Inscriptions in Southeast Asia and China",
+    author_or_institution: "Jan Wisseman Christie", publication_year: 1998,
+    source_type: "journal_article", url_or_reference: "Journal of Southeast Asian Studies 29(2), pp. 239–268", related_records: ["tech_guild_partnership", "port_barus_992", "port_takuapa_992"],
+    notes: "Confirmed against the journal's contents listing (November 2026).",
+  },
+  {
+    id: "src_spencer_1983", title: "The Politics of Expansion: The Chola Conquest of Sri Lanka and Sri Vijaya",
+    author_or_institution: "George W. Spencer", publication_year: 1983,
+    source_type: "book", url_or_reference: "New Era Publications, Madras, viii + 199 pp.", related_records: ["civ_chola", "evt_chola_raid_1025", "fig_rajendra_i"],
+    notes: "Confirmed against catalogue records (November 2026). Reads the expedition as the high point of a politics of plunder.",
+  },
+  {
+    id: "src_hirth_rockhill_1911", title: "Chau Ju-kua: His Work on the Chinese and Arab Trade in the Twelfth and Thirteenth Centuries, entitled Chu-fan-chï",
+    author_or_institution: "Friedrich Hirth and W. W. Rockhill (trans.)", publication_year: 1911,
+    source_type: "primary_source", url_or_reference: "Imperial Academy of Sciences, St Petersburg", related_records: ["civ_song", "civ_puni", "good_gharuwood", "good_lakawood", "good_chola_cotton"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026. Zhao Rukuo wrote in 1225, two centuries after the campaign; his product lists are used for goods whose trade is also attested earlier.",
+  },
+  {
+    id: "src_chattopadhyaya_1967", title: "Atīśa and Tibet: Life and Works of Dīpaṃkara Śrījñāna in relation to the History and Religion of Tibet",
+    author_or_institution: "Alaka Chattopadhyaya", publication_year: 1967,
+    source_type: "book", url_or_reference: "Calcutta; reprinted Motilal Banarsidass, Delhi, 1981", related_records: ["fig_atisha", "evt_atisha_1012"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026. The twelve-year stay in Suvarnadvipa is confirmed in published summaries; the 1012–1024 dates are an inference from Atiśa's chronology.",
+  },
+  {
+    id: "src_leiden_plates_ei22", title: "The Larger Leiden Plates (of Rajaraja I)",
+    author_or_institution: "K. V. Subrahmanya Aiyer (ed.), Epigraphia Indica", publication_year: 1933,
+    source_type: "primary_source", url_or_reference: "Epigraphia Indica 22 (1933–34), pp. 213–266; the plates themselves are in Leiden University Library (Or. 1687)", related_records: ["evt_chudamani_vihara_1006", "fig_cudamani_varmadeva", "fig_maravijayottungavarman", "fig_rajaraja_i", "tech_vihara_patronage"],
+    notes: "The plates and their content (Rajaraja's grant of Anaimangalam in his twenty-first year to the vihara built by the Srivijayan kings) are confirmed against the Leiden digital collection and published summaries (November 2026); the Epigraphia Indica article number and page range are recorded from the implementer's knowledge.",
+  },
 ];
 
 export function getSource(id: string): HistoricalSource | undefined {
