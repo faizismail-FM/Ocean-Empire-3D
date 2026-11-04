@@ -36,8 +36,9 @@ export function NewGameWizard() {
   const router = useRouter();
   const newGame = useGameStore((s) => s.newGame);
   const initialMode = params.get("mode") as GameMode | null;
-  const [mode, setMode] = useState<GameMode | null>(initialMode === "historical" || initialMode === "modern" ? initialMode : null);
-  const [scenarioId, setScenarioId] = useState<string | null>(null);
+  const preselected = ALL_SCENARIOS.find((s) => s.id === params.get("scenario")) ?? null;
+  const [mode, setMode] = useState<GameMode | null>(preselected ? preselected.mode : initialMode === "historical" || initialMode === "modern" ? initialMode : null);
+  const [scenarioId, setScenarioId] = useState<string | null>(preselected?.id ?? null);
   const [step, setStep] = useState<"mode" | "scenario" | "empire">(mode ? "scenario" : "mode");
 
   const scenarios = useMemo(() => ALL_SCENARIOS.filter((s) => !mode || s.mode === mode), [mode]);

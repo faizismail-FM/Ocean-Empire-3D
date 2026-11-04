@@ -189,7 +189,8 @@ class AudioEngine {
     const sailing = s.mode === "sailing";
     const atSea = sailing && !s.docked;
     // Ambience.
-    const ocean = sailing ? (s.docked ? 0.14 : 0.3 + 0.1 * Math.min(1, s.windKnots / 25)) : 0;
+    // The landing page shows a live sea, so a little water plays under the menu music.
+    const ocean = sailing ? (s.docked ? 0.14 : 0.3 + 0.1 * Math.min(1, s.windKnots / 25)) : s.mode === "menu" ? 0.1 : 0;
     const wind = atSea ? 0.4 * Math.min(1, s.windKnots / 30) : sailing ? 0.06 : 0;
     const engine = atSea && s.propulsion === "engine" ? 0.05 + 0.18 * s.throttle : 0;
     this.ramp(this.oceanGain.gain, ocean, 1.5);
