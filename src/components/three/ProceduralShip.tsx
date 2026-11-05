@@ -44,6 +44,8 @@ export function ProceduralShip({ model, length, sailYaw = 0, sailSet = 1, accent
       return <Carrack length={length} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />;
     case "caravel":
       return <Caravel length={length} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />;
+    case "ship_rigged":
+      return <ShipRigged length={length} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />;
   }
 }
 
@@ -744,3 +746,118 @@ function Caravel({ length, sailYaw, sailSet, accent }: { length: number; sailYaw
     </group>
   );
 }
+
+// ---------------------------------------------------------------------------
+// Eighteenth-century ship-rigged merchantman (East Indiaman, country ship, snow): a long
+// low hull with a raised quarterdeck, a painted gun-port band, a bowsprit and two or three
+// masts each carrying a course and a topsail.
+
+function ShipRigged({ length, sailYaw, sailSet, accent }: { length: number; sailYaw: number; sailSet: number; accent: string }) {
+  const beam = length / 4;
+  const height = length / 7;
+  const draft = height * 0.5;
+  const hull = useMemo(() => hullGeometry(length, beam, height, 0.28, 0.14, true), [length, beam, height]);
+  const bandMaterial = useMemo(() => new THREE.MeshStandardMaterial({ color: "#d9b24a", roughness: 0.8 }), []);
+  const portMaterial = useMemo(() => new THREE.MeshStandardMaterial({ color: "#161210", roughness: 0.9 }), []);
+  const threeMasts = length >= 24;
+  const masts = threeMasts ? [length * 0.3, length * 0.02, -length * 0.3] : [length * 0.18, -length * 0.22];
+  const ports = Math.max(3, Math.round(length / 5));
+  return (
+    <group>
+      <mesh geometry={hull} material={materials.hullDark} position={[0, -draft, 0]} castShadow receiveShadow />
+      {/* painted band with gun ports along each side */}
+      {[1, -1].map((side) => (
+        <group key={side}>
+          <mesh position={[side * beam * 0.5, height * 0.32, 0]}>
+            <boxGeometry args={[0.12, height * 0.22, length * 0.76]} />
+            <primitive object={bandMaterial} attach="material" />
+          </mesh>
+          {Array.from({ length: ports }, (_, i) => (
+            <mesh key={i} position={[side * beam * 0.5, height * 0.32, -length * 0.34 + (i + 0.5) * (length * 0.68) / ports]}>
+              <boxGeometry args={[0.16, height * 0.12, length * 0.025]} />
+              <primitive object={portMaterial} attach="material" />
+            </mesh>
+          ))}
+        </group>
+      ))}
+      <mesh position={[0, height * 0.54, -length * 0.06]} receiveShadow>
+        <boxGeometry args={[beam * 0.9, 0.3, length * 0.62]} />
+        <primitive object={materials.woodLight} attach="material" />
+      </mesh>
+      {/* quarterdeck and stern cabin with gallery windows */}
+      <mesh position={[0, height * 0.8, length * 0.3]} castShadow>
+        <boxGeometry args={[beam * 0.92, height * 0.5, length * 0.3]} />
+        <primitive object={materials.wood} attach="material" />
+      </mesh>
+      <mesh position={[0, height * 0.8, length * 0.455]}>
+        <boxGeometry args={[beam * 0.8, height * 0.28, 0.12]} />
+        <primitive object={materials.glass} attach="material" />
+      </mesh>
+      {/* low forecastle and bowsprit */}
+      <mesh position={[0, height * 0.68, -length * 0.36]} castShadow>
+        <boxGeometry args={[beam * 0.7, height * 0.26, length * 0.14]} />
+        <primitive object={materials.wood} attach="material" />
+      </mesh>
+      <mesh position={[0, height * 0.9, -length * 0.58]} rotation={[Math.PI / 2 - 0.32, 0, 0]}>
+        <cylinderGeometry args={[0.1, 0.18, length * 0.3, 6]} />
+        <primitive object={materials.mast} attach="material" />
+      </mesh>
+      <mesh position={[0, -draft * 0.3, length * 0.5]}>
+        <boxGeometry args={[0.35, height * 1.5, 1.2]} />
+        <primitive object={materials.woodDark} attach="material" />
+      </mesh>
+      {masts.map((z, i) => {
+        const main = threeMasts ? i === 1 : i === 0;
+        const mastHeight = length * (main ? 0.9 : threeMasts && i === 2 ? 0.62 : 0.78);
+        return <DoubleSquareRig key={i} z={z} mastHeight={mastHeight} width={beam * (main ? 2.3 : 1.9)} sailYaw={sailYaw} sailSet={sailSet} accent={accent} flag={i === masts.length - 1} />;
+      })}
+    </group>
+  );
+}
+
+/** A mast carrying a course and a topsail on two yards, both braced round by sailYaw. */
+function DoubleSquareRig({ z, mastHeight, width, sailYaw, sailSet, accent, flag }: { z: number; mastHeight: number; width: number; sailYaw: number; sailSet: number; accent: string; flag: boolean }) {
+  const course = useMemo(() => {
+    const top = mastHeight * 0.52;
+    const bottom = mastHeight * 0.16;
+    return sailGeometry(new THREE.Vector3(-width / 2, top, 0.3), new THREE.Vector3(width / 2, top, 0.3), new THREE.Vector3(-width * 0.46, bottom, 0.3), new THREE.Vector3(width * 0.46, bottom, 0.3), 1.6 * sailSet, 10);
+  }, [mastHeight, width, sailSet]);
+  const topsail = useMemo(() => {
+    const top = mastHeight * 0.9;
+    const bottom = mastHeight * 0.58;
+    const w = width * 0.72;
+    return sailGeometry(new THREE.Vector3(-w / 2, top, 0.3), new THREE.Vector3(w / 2, top, 0.3), new THREE.Vector3(-width * 0.46, bottom, 0.3), new THREE.Vector3(width * 0.46, bottom, 0.3), 1.2 * sailSet, 8);
+  }, [mastHeight, width, sailSet]);
+  const visible = sailSet > 0.05 ? 1 : 0.02;
+  return (
+    <group position={[0, 0, z]}>
+      <mesh position={[0, mastHeight / 2, 0]} castShadow>
+        <cylinderGeometry args={[0.16, 0.3, mastHeight, 8]} />
+        <primitive object={materials.mast} attach="material" />
+      </mesh>
+      <mesh position={[0, mastHeight * 0.55, 0]}>
+        <cylinderGeometry args={[0.6, 0.5, 0.5, 8]} />
+        <primitive object={materials.woodDark} attach="material" />
+      </mesh>
+      <group rotation={[0, (sailYaw * Math.PI) / 180, 0]}>
+        <mesh position={[0, mastHeight * 0.52, 0.3]} rotation={[0, 0, Math.PI / 2]} castShadow>
+          <cylinderGeometry args={[0.1, 0.1, width, 6]} />
+          <primitive object={materials.mast} attach="material" />
+        </mesh>
+        <mesh position={[0, mastHeight * 0.9, 0.3]} rotation={[0, 0, Math.PI / 2]} castShadow>
+          <cylinderGeometry args={[0.08, 0.08, width * 0.72, 6]} />
+          <primitive object={materials.mast} attach="material" />
+        </mesh>
+        <mesh geometry={course} material={materials.sail} scale={[1, visible, 1]} castShadow />
+        <mesh geometry={topsail} material={materials.sail} scale={[1, visible, 1]} castShadow />
+        {flag && (
+          <mesh position={[0, mastHeight * 1.03, 0]}>
+            <boxGeometry args={[0.05, 0.5, 2]} />
+            <meshStandardMaterial color={accent} side={THREE.DoubleSide} />
+          </mesh>
+        )}
+      </group>
+    </group>
+  );
+}
+

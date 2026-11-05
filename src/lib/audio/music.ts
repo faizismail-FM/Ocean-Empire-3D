@@ -31,6 +31,7 @@ const PALETTES: Record<string, Palette> = {
   "Venetian maritime commerce": { scale: [0, 2, 3, 5, 7, 9, 10], root: 50, range: [12, 24], tempo_bpm: 58, timbre: "bowed", fifth: true, description: "Dorian mode on a slow bowed tone." },
   "Malacca Sultanate": { scale: [0, 2.3, 4.8, 7.1, 9.6], root: 57, range: [0, 19], tempo_bpm: 70, timbre: "metal", fifth: false, description: "A five-note slendro-like tuning on a metallic tone." },
   "Portuguese maritime expansion": { scale: [0, 2, 4, 5, 7, 9, 10], root: 55, range: [7, 24], tempo_bpm: 76, timbre: "pluck", fifth: true, description: "Mixolydian mode on a guitar-like pluck." },
+  "British maritime and commercial expansion": { scale: [0, 2, 4, 5, 7, 9, 11], root: 55, range: [7, 24], tempo_bpm: 92, timbre: "pluck", fifth: true, description: "Major mode on a plucked tone at a hornpipe's pace." },
   "Dutch maritime commerce": { scale: [0, 2, 3, 5, 7, 8, 10], root: 57, range: [12, 26], tempo_bpm: 82, timbre: "harpsichord", fifth: true, description: "Aeolian mode on a harpsichord-like tone." },
   "Modern shipping company": { scale: [0, 2, 4, 6, 7, 9, 11], root: 48, range: [12, 28], tempo_bpm: 54, timbre: "pad", fifth: true, description: "Lydian mode on slow synthesiser pads." },
 };

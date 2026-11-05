@@ -242,4 +242,53 @@ export const HISTORICAL_FIGURES: HistoricalFigure[] = [
     summary: "A Bengali monk who sailed to Suvarnadvipa to study under Dharmakīrti for twelve years (conventionally 1012–1024, inferred from the Tibetan biographies) and went on to Tibet in 1042; the Tibetan sources are the chief evidence for Srivijaya as a centre of Buddhist learning in this period.",
     evidence_status: "scholarly_interpretation", sources: ["src_chattopadhyaya_1967", "src_coedes_1968"],
   },
+  // Eighteenth century: the East India Company and the China trade
+  {
+    id: "fig_clive", name: "Robert Clive", alternate_names: ["Clive of India", "Baron Clive of Plassey"], role: "Company commander and governor of Bengal (1757–60, 1765–67)",
+    period: { start: 1725, end: 1774 }, polity_id: "civ_british_eic",
+    summary: "Won Plassey in June 1757, set up Mir Jafar as nawab, and in 1765 took the diwani of Bengal for the Company; his fortune and its defence before Parliament in 1773 ended in his death the next year.",
+    evidence_status: "established", sources: ["src_marshall_1976", "src_lawson_1993"],
+  },
+  {
+    id: "fig_hastings", name: "Warren Hastings", alternate_names: [], role: "Governor of Bengal (1772) and first governor-general (1774–1785)",
+    period: { start: 1732, end: 1818 }, polity_id: "civ_british_eic",
+    summary: "Reorganised the Company's revenue and courts in Bengal, held India through the wars of 1778–84, and was impeached on his return; his acquittal came in 1795.",
+    evidence_status: "established", sources: ["src_marshall_1976", "src_bowen_2006"],
+  },
+  {
+    id: "fig_puankhequa", name: "Puankhequa (Pan Zhencheng)", alternate_names: ["Pan Wenyan", "Poankeequa"], role: "Hong merchant of Canton and head of the Cohong",
+    period: { start: 1714, end: 1788 }, polity_id: "civ_qing",
+    summary: "A Fujianese who built the Tongwen hong into the leading Canton house, stood security for Company and Swedish ships, and led the Hong merchants through the regulations of 1760 and the crises of the 1780s.",
+    evidence_status: "established", sources: ["src_van_dyke_2005"],
+  },
+  {
+    id: "fig_qianlong", name: "The Qianlong emperor", alternate_names: ["Hongli", "Qianlong"], role: "Qing emperor (1735–1796)",
+    period: { start: 1711, end: 1799 }, polity_id: "civ_qing",
+    summary: "Confined the European trade to Canton in 1757, punished Flint's petition in 1759, received Macartney at Jehol in September 1793 and in his letter to George III declined every request.",
+    evidence_status: "established", sources: ["src_pritchard_1936", "src_cranmer_byng_1962"],
+  },
+  {
+    id: "fig_francis_light", name: "Francis Light", alternate_names: [], role: "Country trader and first superintendent of Penang (1786–1794)",
+    period: { start: 1740, end: 1794 }, polity_id: "civ_british_eic",
+    summary: "A country captain in the Kedah trade who negotiated the cession of Penang from Sultan Abdullah and took possession for the Company on 11 August 1786, naming it Prince of Wales Island.",
+    evidence_status: "established", sources: ["src_bonney_1971"],
+  },
+  {
+    id: "fig_tipu", name: "Tipu Sultan", alternate_names: ["Tipu Sahib", "Fateh Ali Tipu"], role: "Ruler of Mysore (1782–1799)",
+    period: { start: 1750, end: 1799 }, polity_id: "civ_mysore",
+    summary: "Succeeded Hyder Ali during the war of 1780–84, made peace at Mangalore (1784), lost half his kingdom at Seringapatam (1792) and died defending the city in 1799.",
+    evidence_status: "established", sources: ["src_lawson_1993", "src_marshall_1976"],
+  },
+  {
+    id: "fig_macartney", name: "George Macartney, Earl Macartney", alternate_names: ["Lord Macartney"], role: "Ambassador to China (1792–1794)",
+    period: { start: 1737, end: 1806 }, polity_id: "civ_british_eic",
+    summary: "Led the embassy that sailed in September 1792, was received by Qianlong at Jehol on 14 September 1793, and returned with nothing conceded; his journal is the embassy's chief record.",
+    evidence_status: "established", sources: ["src_cranmer_byng_1962", "src_pritchard_1936"],
+  },
+  {
+    id: "fig_flint", name: "James Flint", alternate_names: [], role: "Company supercargo and interpreter at Canton",
+    period: { start: 1720, end: 1780, approximate: true }, polity_id: "civ_british_eic",
+    summary: "The Company's first Chinese-speaking servant; in 1759 he sailed to Tianjin to petition the emperor against the Canton officials and was imprisoned at Macao from December 1759 to November 1762, then banished.",
+    evidence_status: "established", sources: ["src_pritchard_1936", "src_morse_chronicles"],
+  },
 ];

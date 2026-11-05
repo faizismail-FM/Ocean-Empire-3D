@@ -17,6 +17,7 @@ const PORTUGAL = ["portugal_1505"];
 const DUTCH = ["dutch_1602"];
 const MING = ["ming_1405"];
 const SRIVIJAYA = ["srivijaya_992"];
+const BRITAIN = ["britain_1757"];
 
 export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
   // ---- Ninth century ------------------------------------------------------------------
@@ -378,7 +379,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_madeira", polity_id: "civ_portugal", label: "Madeira", control: "direct",
     period: { start: 1420, end: 1910, approximate: true },
     polygon: [[-17.3, 32.9], [-16.6, 32.9], [-16.6, 32.6], [-17.3, 32.6]],
-    evidence_status: "established", sources: ["src_diffie_winius_1977"], scenario_ids: PORTUGAL,
+    evidence_status: "established", sources: ["src_diffie_winius_1977"], scenario_ids: [...PORTUGAL, ...BRITAIN],
   },
   {
     id: "ext_mina", polity_id: "civ_portugal", label: "São Jorge da Mina", control: "direct",
@@ -545,7 +546,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_voc_batavia", polity_id: "civ_dutch_republic", label: "Batavia and its Ommelanden", control: "direct",
     period: { start: 1619, end: 1795, note: "The town and its surrounding lands; the boundary with Banten and Mataram remained contested for decades." },
     polygon: [[106.5, -5.9], [107.2, -5.9], [107.3, -6.5], [106.5, -6.5]],
-    evidence_status: "established", sources: ["src_blusse_1986", "src_gaastra_2003"], scenario_ids: DUTCH,
+    evidence_status: "established", sources: ["src_blusse_1986", "src_gaastra_2003"], scenario_ids: [...DUTCH, ...BRITAIN],
   },
   {
     id: "ext_voc_banda", polity_id: "civ_dutch_republic", label: "Company Banda", control: "direct",
@@ -563,13 +564,13 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_voc_malacca", polity_id: "civ_dutch_republic", label: "Company Malacca", control: "direct",
     period: { start: 1641, end: 1795 },
     polygon: [[102, 2.5], [102.5, 2.5], [102.5, 2], [102, 2]],
-    evidence_status: "established", sources: ["src_boxer_1965"], scenario_ids: DUTCH,
+    evidence_status: "established", sources: ["src_boxer_1965"], scenario_ids: [...DUTCH, ...BRITAIN],
   },
   {
     id: "ext_voc_cape", polity_id: "civ_dutch_republic", label: "Cape station", control: "direct",
     period: { start: 1652, end: 1795, note: "Van Riebeeck's fort and gardens at Table Bay; the settlement grew far beyond this outline later in the century." },
     polygon: [[18.3, -33.8], [18.7, -33.8], [18.7, -34.1], [18.3, -34.1]],
-    evidence_status: "established", sources: ["src_gaastra_2003"], scenario_ids: DUTCH,
+    evidence_status: "established", sources: ["src_gaastra_2003"], scenario_ids: [...DUTCH, ...BRITAIN],
   },
   {
     id: "ext_banten", polity_id: "civ_banten", label: "Sultanate of Banten", control: "direct",
@@ -611,7 +612,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_ottoman_yemen", polity_id: "civ_yemen_17c", label: "Yemen (Ottoman province, then the Qasimi imamate)", control: "direct",
     period: { start: 1538, end: 1872, approximate: true, note: "Ottoman from 1538; the Qasimi imams expelled the Ottomans by 1635 and ruled the Tihama and highlands." },
     polygon: [[42.6, 16.6], [44.5, 17.4], [46.5, 16.0], [45.5, 13.5], [43.9, 12.7], [43.1, 13.6]],
-    evidence_status: "scholarly_interpretation", sources: ["src_glamann_1958"], scenario_ids: DUTCH,
+    evidence_status: "scholarly_interpretation", sources: ["src_glamann_1958"], scenario_ids: [...DUTCH, ...BRITAIN],
   },
   {
     id: "ext_vijayanagara_late", polity_id: "civ_vijayanagara", label: "Vijayanagara (the Aravidu kings and their nayakas)", control: "suzerainty",
@@ -680,6 +681,133 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     polygon: [[113.8, 5.3], [115.4, 5.3], [115.4, 4.4], [113.8, 4.4]],
     evidence_status: "uncertain", sources: ["src_hirth_rockhill_1911"], scenario_ids: SRIVIJAYA,
   },
+  // ---- Eighteenth century: the East India Company, India and the China trade ----------
+  {
+    id: "ext_british_isles", polity_id: "civ_british_eic", label: "Great Britain", control: "direct",
+    period: { start: 1707, end: null },
+    polygon: [[-5.7, 50], [1.8, 51.2], [1.7, 52.9], [-1.5, 55.8], [-3.5, 58.6], [-6.3, 58.3], [-5.9, 56], [-5.3, 51.6]],
+    evidence_status: "established", sources: ["src_bowen_2006"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_british_st_helena", polity_id: "civ_british_eic", label: "St Helena (Company island)", control: "direct",
+    period: { start: 1659, end: 1834 },
+    polygon: [[-5.85, -15.85], [-5.6, -15.85], [-5.6, -16.05], [-5.85, -16.05]],
+    evidence_status: "established", sources: ["src_sutton_1981"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_british_bengal", polity_id: "civ_british_eic", label: "Company Bengal, Bihar and Orissa (diwani)", control: "direct",
+    period: { start: 1765, end: 1858, note: "Nominally under the nawab and the Mughal emperor until 1772; direct Company administration thereafter." },
+    polygon: [[84, 26.5], [88.5, 26.8], [89.5, 25.5], [89.2, 22.2], [87.5, 21.5], [86.3, 20.2], [85, 21.5], [84.5, 24.5]],
+    evidence_status: "established", sources: ["src_marshall_1976"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_british_calcutta_1757", polity_id: "civ_british_eic", label: "Calcutta and the Twenty-four Parganas", control: "direct",
+    period: { start: 1757, end: 1765 },
+    polygon: [[88.1, 22.9], [88.6, 22.9], [88.6, 22.1], [88.1, 22.1]],
+    evidence_status: "established", sources: ["src_marshall_1976"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_british_madras", polity_id: "civ_british_eic", label: "Madras and the Northern Circars", control: "direct",
+    period: { start: 1765, end: 1858, note: "Fort St George and its jagir; the Northern Circars from 1765; the Carnatic itself was the Nawab of Arcot's until 1801." },
+    polygon: [[80, 13.4], [80.4, 13.4], [80.4, 12.6], [80, 12.6]],
+    evidence_status: "established", sources: ["src_marshall_1976"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_british_circars", polity_id: "civ_british_eic", label: "The Northern Circars", control: "direct",
+    period: { start: 1766, end: 1858, approximate: true },
+    polygon: [[80.2, 16.5], [84.5, 19], [85, 18.2], [82.5, 16.3], [80.6, 15.5]],
+    evidence_status: "established", sources: ["src_lawson_1993"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_british_bombay", polity_id: "civ_british_eic", label: "Bombay and Salsette", control: "direct",
+    period: { start: 1668, end: 1858, note: "Bombay island from 1668; Salsette and the harbour islands from 1774." },
+    polygon: [[72.75, 19.3], [73.05, 19.3], [73.05, 18.85], [72.75, 18.85]],
+    evidence_status: "established", sources: ["src_furber_1948"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_british_bencoolen", polity_id: "civ_british_eic", label: "Fort Marlborough and the west Sumatra pepper coast", control: "direct",
+    period: { start: 1685, end: 1825, approximate: true },
+    polygon: [[101.5, -2.8], [102.6, -3.6], [103.4, -4.8], [102.9, -5.2], [101.3, -3.3]],
+    evidence_status: "established", sources: ["src_bastin_1965"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_british_penang", polity_id: "civ_british_eic", label: "Prince of Wales Island (Penang)", control: "direct",
+    period: { start: 1786, end: 1957 },
+    polygon: [[100.15, 5.5], [100.4, 5.5], [100.4, 5.25], [100.15, 5.25]],
+    evidence_status: "established", sources: ["src_bonney_1971"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_kedah_18c", polity_id: "civ_kedah", label: "Sultanate of Kedah", control: "direct",
+    period: { start: 1700, end: 1821, approximate: true, note: "Under Siamese suzerainty for much of the period; Siam occupied Kedah in 1821." },
+    polygon: [[100, 6.8], [100.9, 6.8], [101.1, 5.8], [100.5, 5.2], [100.1, 5.6]],
+    evidence_status: "scholarly_interpretation", sources: ["src_bonney_1971"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_qing", polity_id: "civ_qing", label: "Qing China", control: "direct",
+    period: { start: 1644, end: 1912, note: "China proper only; the dynasty's full extent lies beyond the map." },
+    polygon: [[98, 22], [110, 21.5], [118, 23], [122, 30], [121, 34], [117, 35], [105, 35], [99, 30], [98, 28]],
+    evidence_status: "established", sources: ["src_van_dyke_2005"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_macao", polity_id: "civ_portugal", label: "Macao (Portuguese settlement under Chinese sovereignty)", control: "suzerainty",
+    period: { start: 1557, end: 1887, note: "The Portuguese paid ground rent and answered to the Chinese magistrate until 1887." },
+    polygon: [[113.52, 22.22], [113.58, 22.22], [113.58, 22.17], [113.52, 22.17]],
+    evidence_status: "established", sources: ["src_van_dyke_2005"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_mysore", polity_id: "civ_mysore", label: "Mysore under Hyder Ali and Tipu", control: "direct",
+    period: { start: 1761, end: 1792, approximate: true, note: "At its greatest extent about 1780, including the Malabar coast; halved by the treaty of 1792." },
+    polygon: [[74.5, 15], [77.5, 15], [78.3, 13], [77.5, 11.5], [76.5, 10.8], [75.2, 11.5], [74.6, 13]],
+    evidence_status: "scholarly_interpretation", sources: ["src_lawson_1993"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_mysore_1792", polity_id: "civ_mysore", label: "Mysore after Seringapatam", control: "direct",
+    period: { start: 1792, end: 1799 },
+    polygon: [[75.5, 14.2], [77.2, 14.2], [77.6, 12.8], [76.8, 11.8], [75.8, 12.2]],
+    evidence_status: "scholarly_interpretation", sources: ["src_lawson_1993"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_maratha", polity_id: "civ_maratha", label: "Maratha Confederacy", control: "sphere",
+    period: { start: 1720, end: 1818, approximate: true, note: "The Peshwa and the great chiefs; the confederacy's reach fluctuated with every war." },
+    polygon: [[72.8, 22], [76, 24.5], [80, 24], [82, 21], [78, 18], [75.5, 15.5], [73.5, 16.5], [72.9, 19]],
+    evidence_status: "scholarly_interpretation", sources: ["src_lawson_1993"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_mughal_18c", polity_id: "civ_mughal", label: "Mughal Empire (nominal)", control: "suzerainty",
+    period: { start: 1707, end: 1857, approximate: true, note: "After Aurangzeb the emperor's writ ran little beyond Delhi; his grants (the diwani of 1765) still conferred legitimacy." },
+    polygon: [[76, 29.5], [78.5, 29.5], [78.8, 27.5], [77, 27], [76, 28]],
+    evidence_status: "scholarly_interpretation", sources: ["src_marshall_1976"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_french_pondicherry_1765", polity_id: "civ_french_india", label: "French Pondicherry (restored)", control: "direct",
+    period: { start: 1765, end: 1778, note: "Unfortified under the Treaty of Paris." },
+    polygon: [[79.75, 12.0], [79.9, 12.0], [79.9, 11.85], [79.75, 11.85]],
+    evidence_status: "established", sources: ["src_furber_1948"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_french_pondicherry_1785", polity_id: "civ_french_india", label: "French Pondicherry (restored again)", control: "direct",
+    period: { start: 1785, end: 1793 },
+    polygon: [[79.75, 12.0], [79.9, 12.0], [79.9, 11.85], [79.75, 11.85]],
+    evidence_status: "established", sources: ["src_furber_1948"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_danish_tranquebar", polity_id: "civ_danish_tranquebar", label: "Danish Tranquebar", control: "direct",
+    period: { start: 1620, end: 1845 },
+    polygon: [[79.78, 11.08], [79.88, 11.08], [79.88, 10.98], [79.78, 10.98]],
+    evidence_status: "established", sources: ["src_furber_1948"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_spanish_philippines", polity_id: "civ_spanish_philippines", label: "Spanish Philippines (Luzon and the Visayas)", control: "direct",
+    period: { start: 1571, end: 1898, note: "Spanish rule was effective in the lowlands of Luzon and the Visayas; the Muslim south was not held." },
+    polygon: [[119.8, 18.5], [122.2, 18.5], [124, 13.5], [125.5, 10], [123.5, 9], [121.5, 11], [120, 13.5], [119.6, 16]],
+    evidence_status: "scholarly_interpretation", sources: ["src_tracy_1995"], scenario_ids: BRITAIN,
+  },
+  {
+    id: "ext_british_manila", polity_id: "civ_british_eic", label: "British-occupied Manila", control: "direct",
+    period: { start: 1762, end: 1764 },
+    polygon: [[120.9, 14.75], [121.1, 14.75], [121.1, 14.45], [120.9, 14.45]],
+    evidence_status: "established", sources: ["src_tracy_1995"], scenario_ids: BRITAIN,
+  },
 ];
 
 export const SETTLEMENTS: SettlementRecord[] = [
@@ -739,4 +867,12 @@ export const SETTLEMENTS: SettlementRecord[] = [
   { id: "stl_muara_jambi", name: "Muara Jambi", kind: "religious_centre", latitude: -1.48, longitude: 103.67, location_certainty: "precise", period: { start: 1000, end: 1300, approximate: true }, polity_id: "civ_srivijaya", description: "The brick temple complex on the Batang Hari, the largest Buddhist site in Sumatra, dated to the eleventh to thirteenth centuries.", evidence_status: "scholarly_interpretation", sources: ["src_wolters_1970"], scenario_ids: SRIVIJAYA },
   { id: "stl_bujang_valley", name: "Bujang valley shrines", kind: "religious_centre", latitude: 5.73, longitude: 100.44, location_certainty: "approximate", period: { start: 500, end: 1300, approximate: true }, polity_id: null, description: "The Hindu-Buddhist shrines and settlement sites of Kedah's hinterland, the archaeological trace of Kataha.", evidence_status: "scholarly_interpretation", sources: ["src_jacq_hergoualch_2002"], scenario_ids: SRIVIJAYA },
   { id: "stl_mahodayapuram", name: "Mahodayapuram (Kodungallur)", kind: "capital", latitude: 10.23, longitude: 76.2, location_certainty: "approximate", period: { start: 800, end: 1124, approximate: true }, polity_id: "civ_chera_venad", description: "Seat of the Chera Perumals, at war with the Cholas through this period.", evidence_status: "scholarly_interpretation", sources: ["src_narayanan_perumals"], scenario_ids: SRIVIJAYA },
+  // Eighteenth century: the East India Company, India and the China trade
+  { id: "stl_leadenhall", name: "East India House, Leadenhall Street", kind: "capital", latitude: 51.513, longitude: -0.083, location_certainty: "precise", period: { start: 1729, end: 1858 }, polity_id: "civ_british_eic", description: "The Company's headquarters in the City, where the Court of Directors met and the tea and cloth sales were held.", evidence_status: "established", sources: ["src_bowen_2006"], scenario_ids: BRITAIN },
+  { id: "stl_beijing_qing", name: "Beijing", kind: "capital", latitude: 39.9, longitude: 116.4, location_certainty: "precise", period: { start: 1644, end: 1912 }, polity_id: "civ_qing", description: "The Qing capital; Macartney's embassy was lodged here in 1793 before going on to Jehol.", evidence_status: "established", sources: ["src_pritchard_1936"], scenario_ids: BRITAIN },
+  { id: "stl_jehol", name: "Jehol (Chengde)", kind: "city", latitude: 40.97, longitude: 117.94, location_certainty: "precise", period: { start: 1703, end: 1820 }, polity_id: "civ_qing", description: "The emperors' summer residence, where Qianlong received Macartney on 14 September 1793.", evidence_status: "established", sources: ["src_cranmer_byng_1962"], scenario_ids: BRITAIN },
+  { id: "stl_seringapatam", name: "Seringapatam", kind: "capital", latitude: 12.42, longitude: 76.69, location_certainty: "precise", period: { start: 1761, end: 1799, approximate: true }, polity_id: "civ_mysore", description: "Hyder Ali's and Tipu's island capital on the Kaveri, besieged in 1792 and stormed in 1799.", evidence_status: "established", sources: ["src_lawson_1993"], scenario_ids: BRITAIN },
+  { id: "stl_poona", name: "Poona", kind: "capital", latitude: 18.52, longitude: 73.86, location_certainty: "precise", period: { start: 1720, end: 1818, approximate: true }, polity_id: "civ_maratha", description: "Seat of the Peshwas, the Marathas' chief ministers and effective rulers.", evidence_status: "established", sources: ["src_lawson_1993"], scenario_ids: BRITAIN },
+  { id: "stl_delhi_18c", name: "Delhi (Shahjahanabad)", kind: "capital", latitude: 28.65, longitude: 77.23, location_certainty: "precise", period: { start: 1648, end: 1857 }, polity_id: "civ_mughal", description: "The Mughal capital, sacked by Nadir Shah in 1739 and the Afghans in 1757; the emperor's grants still carried authority in India's politics.", evidence_status: "established", sources: ["src_marshall_1976"], scenario_ids: BRITAIN },
+  { id: "stl_murshidabad", name: "Murshidabad", kind: "capital", latitude: 24.18, longitude: 88.27, location_certainty: "precise", period: { start: 1717, end: 1772 }, polity_id: null, description: "The nawabs' capital of Bengal until the Company moved the treasury and courts to Calcutta in 1772.", evidence_status: "established", sources: ["src_marshall_1976"], scenario_ids: BRITAIN },
 ];

@@ -13,6 +13,7 @@ const VENICE_PERIOD = { start: 1400, end: 1470, note: "Scenario window; the port
 const PORTUGAL_PERIOD = { start: 1500, end: 1550, note: "Scenario window; the port's history extends beyond it." };
 const MING_PERIOD = { start: 1400, end: 1440, note: "Scenario window; the port's history extends beyond it." };
 const SRIVIJAYA_PERIOD = { start: 980, end: 1040, note: "Scenario window; the port's history extends beyond it." };
+const BRITAIN_PERIOD = { start: 1750, end: 1800, note: "Scenario window; the port's history extends beyond it." };
 const DUTCH_PERIOD = { start: 1595, end: 1660, note: "Scenario window; the port's history extends beyond it." };
 
 export const SIRAF_PORTS: PortRecord[] = [
@@ -900,6 +901,162 @@ export const SRIVIJAYA_PORTS: PortRecord[] = [
   },
 ];
 
+export const BRITAIN_PORTS: PortRecord[] = [
+  {
+    id: "port_london_1757", name: "London (Blackwall and the Thames)", modern_reference_name: "London, United Kingdom",
+    historical_names: ["Blackwall", "the Downs (anchorage)", "Gravesend"], latitude: 51.51, longitude: -0.01, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "Kingdom of Great Britain; the East India Company at Leadenhall Street", polity_id: "civ_british_eic", country: "United Kingdom",
+    historical_significance: "The Indiamen were built and fitted at Blackwall, Deptford and Rotherhithe, loaded in the river and sailed from the Downs; their cargoes came back to the Company's warehouses and its sales in Leadenhall Street.",
+    supplies: ["good_broadcloth", "good_lead", "good_silver_reales"], demands: ["good_tea_canton", "good_nankeen", "good_porcelain", "good_silk", "good_saltpetre", "good_bengal_cotton", "good_raw_silk_bengal", "good_pepper", "good_coffee_mocha", "good_indigo", "good_madeira_wine", "good_coromandel_cloth"],
+    infrastructure: { docks: 3, warehouse: 3, shipyard: 2, administration: 3, commercial_district: 2 }, default_access: "home", fee_modifier: 1, lane_nodes: ["thames_mouth"],
+    evidence_status: "established", sources: ["src_bowen_2006", "src_sutton_1981"], size: "hub",
+  },
+  {
+    id: "port_madeira_1757", name: "Funchal (Madeira)", modern_reference_name: "Funchal, Madeira, Portugal",
+    historical_names: ["Madeira"], latitude: 32.65, longitude: -16.91, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "Kingdom of Portugal", polity_id: "civ_portugal", country: "Portugal",
+    historical_significance: "The Indiamen's first call outward, for wine and fresh provisions; English merchant houses at Funchal shipped the wine.",
+    supplies: ["good_madeira_wine"], demands: ["good_broadcloth", "good_lead"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["madeira"],
+    evidence_status: "established", sources: ["src_sutton_1981"], size: "regional",
+  },
+  {
+    id: "port_st_helena", name: "Jamestown (St Helena)", modern_reference_name: "Jamestown, St Helena",
+    historical_names: ["St Helena"], latitude: -15.92, longitude: -5.72, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "East India Company (held since 1659)", polity_id: "civ_british_eic", country: "United Kingdom (overseas territory)",
+    historical_significance: "The Company's island in the South Atlantic, where homeward Indiamen watered, refreshed and waited for convoy.",
+    supplies: [], demands: ["good_broadcloth", "good_rice", "good_madeira_wine"],
+    infrastructure: { docks: 1, warehouse: 1, repair: 1 }, default_access: "agreement", fee_modifier: 0.8, lane_nodes: ["st_helena"],
+    evidence_status: "established", sources: ["src_sutton_1981"], size: "minor",
+  },
+  {
+    id: "port_cape_1757", name: "Cape Town (Table Bay)", modern_reference_name: "Cape Town, South Africa",
+    historical_names: ["the Cape", "Kaap de Goede Hoop"], latitude: -33.92, longitude: 18.42, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "Dutch East India Company", polity_id: "civ_dutch_republic", country: "South Africa",
+    historical_significance: "The Dutch Company's refreshment station, where foreign ships could water and buy provisions at a price; the British took it in 1795, after the campaign.",
+    supplies: ["good_wine_cape"], demands: ["good_broadcloth", "good_tea_canton", "good_rice"],
+    infrastructure: { docks: 1, warehouse: 1, repair: 1 }, default_access: "restricted", fee_modifier: 1.3, lane_nodes: ["cape_good_hope"],
+    evidence_status: "established", sources: ["src_sutton_1981", "src_furber_1948"], size: "regional",
+  },
+  {
+    id: "port_mocha_1757", name: "Mocha", modern_reference_name: "Al-Mukha, Yemen",
+    historical_names: ["al-Mukhā"], latitude: 13.32, longitude: 43.25, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "Qasimi imamate of Yemen", polity_id: "civ_yemen_17c", country: "Yemen",
+    historical_significance: "The coffee port of the Red Sea, visited yearly from Bombay by the Company's and the country traders' ships.",
+    supplies: ["good_coffee_mocha"], demands: ["good_broadcloth", "good_bengal_cotton", "good_silver_reales", "good_rice"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 1.1, lane_nodes: ["bab_el_mandeb"],
+    evidence_status: "established", sources: ["src_furber_1948"], size: "regional",
+  },
+  {
+    id: "port_bombay_1757", name: "Bombay", modern_reference_name: "Mumbai, India",
+    historical_names: ["Bombay", "Mumbai"], latitude: 18.93, longitude: 72.83, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "East India Company (Bombay Presidency)", polity_id: "civ_british_eic", country: "India",
+    historical_significance: "The Company's western presidency and the base of the country trade: Gujarat cotton for Canton, the Mocha and Gulf voyages, and the dry dock where Parsi builders launched teak ships.",
+    supplies: ["good_raw_cotton"], demands: ["good_broadcloth", "good_lead", "good_tea_canton", "good_silk", "good_porcelain", "good_coffee_mocha"],
+    infrastructure: { docks: 2, warehouse: 2, shipyard: 2, repair: 2, administration: 2 }, default_access: "agreement", fee_modifier: 1, lane_nodes: ["konkan"],
+    evidence_status: "established", sources: ["src_furber_1948", "src_sutton_1981"], size: "major",
+  },
+  {
+    id: "port_tellicherry", name: "Tellicherry", modern_reference_name: "Thalassery, Kerala, India",
+    historical_names: ["Tellicherry", "Thalassery"], latitude: 11.75, longitude: 75.49, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "East India Company factory on the Kolathiri coast, under pressure from Mysore", polity_id: "civ_british_eic", country: "India",
+    historical_significance: "The Company's pepper and sandalwood factory on the Malabar coast, besieged by Mysore's forces in 1780–82.",
+    supplies: ["good_pepper", "good_sandalwood"], demands: ["good_broadcloth", "good_rice", "good_silver_reales"],
+    infrastructure: { docks: 1, warehouse: 2 }, default_access: "agreement", fee_modifier: 1, lane_nodes: ["laccadive_sea"],
+    evidence_status: "established", sources: ["src_furber_1948"], size: "minor",
+  },
+  {
+    id: "port_madras_1757", name: "Madras (Fort St George)", modern_reference_name: "Chennai, India",
+    historical_names: ["Fort St George", "Madraspatnam"], latitude: 13.08, longitude: 80.29, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "East India Company (Madras Presidency), with the Nawab of Arcot as nominal sovereign of the Carnatic", polity_id: "civ_british_eic", country: "India",
+    historical_significance: "The Company's Coromandel presidency, an open roadstead where cargo came off through the surf; its cloth investment and its wars with Mysore shaped the trade.",
+    supplies: ["good_coromandel_cloth"], demands: ["good_broadcloth", "good_lead", "good_silver_reales", "good_tea_canton", "good_porcelain"],
+    infrastructure: { docks: 1, warehouse: 2, administration: 2 }, default_access: "agreement", fee_modifier: 1, lane_nodes: ["coromandel"],
+    evidence_status: "established", sources: ["src_marshall_1976", "src_furber_1948"], size: "major",
+  },
+  {
+    id: "port_pondicherry_1757", name: "Pondicherry", modern_reference_name: "Puducherry, India",
+    historical_names: ["Pondichéry"], latitude: 11.93, longitude: 79.83, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "France and the Compagnie des Indes (occupied by the British 1761–65 and 1778–85)", polity_id: "civ_french_india", country: "India",
+    historical_significance: "The French capital in India, taken and razed in 1761, restored in 1765, taken again in 1778 and restored in 1785.",
+    supplies: ["good_coromandel_cloth", "good_indigo"], demands: ["good_silver_reales", "good_broadcloth"],
+    infrastructure: { docks: 1, warehouse: 1, administration: 1 }, default_access: "restricted", fee_modifier: 1.2, lane_nodes: ["nagapattinam_roads"],
+    evidence_status: "established", sources: ["src_furber_1948"], size: "regional",
+  },
+  {
+    id: "port_tranquebar", name: "Tranquebar", modern_reference_name: "Tharangambadi, Tamil Nadu, India",
+    historical_names: ["Trankebar", "Dansborg"], latitude: 11.03, longitude: 79.85, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "Danish Asiatic Company", polity_id: "civ_danish_tranquebar", country: "India",
+    historical_significance: "The Danish fort and town on the Coromandel coast, whose neutral flag covered much private trade during Britain's wars.",
+    supplies: ["good_coromandel_cloth"], demands: ["good_silver_reales", "good_broadcloth"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["nagapattinam_roads"],
+    evidence_status: "established", sources: ["src_furber_1948"], size: "minor",
+  },
+  {
+    id: "port_calcutta_1757", name: "Calcutta (Fort William)", modern_reference_name: "Kolkata, India",
+    historical_names: ["Fort William", "Kalikata"], latitude: 22.57, longitude: 88.36, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "East India Company (Bengal Presidency; diwani from 1765)", polity_id: "civ_british_eic", country: "India",
+    historical_significance: "The Company's Bengal capital on the Hooghly, seat of the governor-general from 1774: saltpetre, cottons, raw silk and indigo for Europe, and the revenues that financed the investment.",
+    supplies: ["good_saltpetre", "good_bengal_cotton", "good_raw_silk_bengal", "good_indigo", "good_rice"], demands: ["good_broadcloth", "good_lead", "good_silver_reales", "good_tea_canton", "good_porcelain", "good_madeira_wine"],
+    infrastructure: { docks: 2, warehouse: 3, shipyard: 1, administration: 3, commercial_district: 1 }, default_access: "agreement", fee_modifier: 1, lane_nodes: ["ganges_mouth"],
+    evidence_status: "established", sources: ["src_marshall_1976", "src_bowen_2006"], size: "hub",
+  },
+  {
+    id: "port_bencoolen", name: "Bencoolen (Fort Marlborough)", modern_reference_name: "Bengkulu, Sumatra, Indonesia",
+    historical_names: ["Fort Marlborough", "Bengkulu"], latitude: -3.8, longitude: 102.27, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "East India Company (west Sumatra pepper settlement)", polity_id: "civ_british_eic", country: "Indonesia",
+    historical_significance: "The Company's unhealthy pepper station on the west coast of Sumatra, held from 1685 to 1825 and a call for China ships using the Sunda Strait.",
+    supplies: ["good_pepper"], demands: ["good_rice", "good_broadcloth", "good_silver_reales"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "agreement", fee_modifier: 1, lane_nodes: ["sumatra_w_s"],
+    evidence_status: "established", sources: ["src_bastin_1965"], size: "minor",
+  },
+  {
+    id: "port_penang_1757", name: "Penang (Prince of Wales Island)", modern_reference_name: "George Town, Penang, Malaysia",
+    historical_names: ["Pulau Pinang", "Prince of Wales Island", "George Town"], latitude: 5.42, longitude: 100.34, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "Sultanate of Kedah until the cession of 1786, then the East India Company", polity_id: "civ_british_eic", country: "Malaysia",
+    historical_significance: "An island of the sultan of Kedah, taken over by Francis Light for the Company in August 1786 as a port for the China ships and the country trade; closed to the game's shipping until then.",
+    supplies: ["good_tin", "good_pepper"], demands: ["good_silver_reales", "good_broadcloth", "good_raw_cotton", "good_porcelain"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "closed", fee_modifier: 1, lane_nodes: ["kedah_roads"],
+    evidence_status: "established", sources: ["src_bonney_1971"], size: "regional",
+  },
+  {
+    id: "port_batavia_1757", name: "Batavia", modern_reference_name: "Jakarta, Indonesia",
+    historical_names: ["Batavia", "Jayakarta"], latitude: -6.13, longitude: 106.82, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "Dutch East India Company", polity_id: "civ_dutch_republic", country: "Indonesia",
+    historical_significance: "The Dutch Company's Asian capital, which admitted foreign ships to refresh and trade under restrictions; Java coffee and sugar were its exports.",
+    supplies: ["good_coffee_java", "good_pepper"], demands: ["good_silver_reales", "good_broadcloth", "good_bengal_cotton"],
+    infrastructure: { docks: 2, warehouse: 2, repair: 1, administration: 2 }, default_access: "restricted", fee_modifier: 1.3, lane_nodes: ["sunda_java_sea_w"],
+    evidence_status: "established", sources: ["src_furber_1948"], size: "major",
+  },
+  {
+    id: "port_manila_1757", name: "Manila", modern_reference_name: "Manila, Philippines",
+    historical_names: ["Manila", "Maynila"], latitude: 14.6, longitude: 120.97, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "Spanish Philippines (British occupation 1762–64)", polity_id: "civ_spanish_philippines", country: "Philippines",
+    historical_significance: "The port of the Acapulco galleon and of Spanish silver, closed to most foreign shipping; British ships traded there under Asian flags, and openly during the occupation of 1762–64.",
+    supplies: ["good_silver_reales"], demands: ["good_bengal_cotton", "good_coromandel_cloth", "good_broadcloth", "good_tea_canton"],
+    infrastructure: { docks: 1, warehouse: 2, administration: 2 }, default_access: "closed", fee_modifier: 1.2, lane_nodes: ["manila_bay"],
+    evidence_status: "established", sources: ["src_tracy_1995", "src_furber_1948"], size: "major",
+  },
+  {
+    id: "port_macao_1757", name: "Macao", modern_reference_name: "Macau, China",
+    historical_names: ["Macau", "Aomen"], latitude: 22.19, longitude: 113.54, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "Portuguese settlement under Chinese sovereignty", polity_id: "civ_portugal", country: "China",
+    historical_significance: "Where the Company's supercargoes and the country traders lived between trading seasons, and where ships waited for a pilot and a chop to go up to Whampoa.",
+    supplies: [], demands: ["good_silver_reales", "good_raw_cotton", "good_madeira_wine"],
+    infrastructure: { docks: 1, warehouse: 1, administration: 1 }, default_access: "open", fee_modifier: 1.1, lane_nodes: ["pearl_river"],
+    evidence_status: "established", sources: ["src_van_dyke_2005"], size: "regional",
+  },
+  {
+    id: "port_canton_1757", name: "Canton (Whampoa anchorage)", modern_reference_name: "Guangzhou (Huangpu), China",
+    historical_names: ["Guangzhou", "Whampoa", "the Thirteen Factories"], latitude: 23.09, longitude: 113.42, location_certainty: "precise",
+    active_period: BRITAIN_PERIOD, historical_polity: "Qing dynasty: the Hoppo and the Cohong", polity_id: "civ_qing", country: "China",
+    historical_significance: "The one port open to the European trade from 1757: ships anchored at Whampoa, their cargoes went up to the factories by chop boat, and the Hong merchants sold tea, silk and nankeens for silver and Indian cotton.",
+    supplies: ["good_tea_canton", "good_nankeen", "good_porcelain", "good_silk"], demands: ["good_raw_cotton", "good_silver_reales", "good_lead", "good_broadcloth", "good_pepper", "good_tin", "good_sandalwood"],
+    infrastructure: { docks: 2, warehouse: 3, administration: 3, commercial_district: 2 }, default_access: "agreement", fee_modifier: 1.3, lane_nodes: ["pearl_river"],
+    evidence_status: "established", sources: ["src_van_dyke_2005", "src_morse_chronicles"], size: "hub",
+  },
+];
+
 export const DUTCH_PORTS: PortRecord[] = [
   {
     id: "port_amsterdam", name: "Amsterdam", modern_reference_name: "Amsterdam, Netherlands",
@@ -1048,4 +1205,4 @@ export const DUTCH_PORTS: PortRecord[] = [
   },
 ];
 
-export const HISTORICAL_PORTS: PortRecord[] = [...SIRAF_PORTS, ...SRIVIJAYA_PORTS, ...MELAKA_PORTS, ...KILWA_PORTS, ...VENICE_PORTS, ...PORTUGAL_PORTS, ...DUTCH_PORTS, ...MING_PORTS];
+export const HISTORICAL_PORTS: PortRecord[] = [...SIRAF_PORTS, ...SRIVIJAYA_PORTS, ...MELAKA_PORTS, ...KILWA_PORTS, ...VENICE_PORTS, ...PORTUGAL_PORTS, ...DUTCH_PORTS, ...MING_PORTS, ...BRITAIN_PORTS];
