@@ -18,6 +18,7 @@ const DUTCH = ["dutch_1602"];
 const MING = ["ming_1405"];
 const SRIVIJAYA = ["srivijaya_992"];
 const BRITAIN = ["britain_1757"];
+const SONG = ["song_1087"];
 
 export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
   // ---- Ninth century ------------------------------------------------------------------
@@ -484,7 +485,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_champa_vijaya", polity_id: "civ_champa", label: "Champa (Vijaya)", control: "direct",
     period: { start: 1000, end: 1471, approximate: true, note: "The central coast from the Hải Vân pass to Phan Rang; the northern provinces were lost to Đại Việt by stages and Vijaya fell in 1471." },
     polygon: [[107.8, 16.3], [108.3, 16.1], [109.4, 13.6], [109.1, 11.6], [108.4, 11.2], [107.9, 12.5], [108.0, 14.5], [107.6, 15.8]],
-    evidence_status: "scholarly_interpretation", sources: ["src_ma_huan"], scenario_ids: [...MING, ...SRIVIJAYA],
+    evidence_status: "scholarly_interpretation", sources: ["src_ma_huan"], scenario_ids: [...MING, ...SRIVIJAYA, ...SONG],
   },
   {
     id: "ext_kotte", polity_id: "civ_kotte", label: "Kotte and Raigama (south-western Sri Lanka)", control: "direct",
@@ -631,13 +632,13 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_srivijaya_after_1025", polity_id: "civ_srivijaya", label: "Srivijaya after the Chola raid", control: "sphere",
     period: { start: 1026, end: 1100, approximate: true, note: "The sphere drawn smaller after 1025; how much the raid changed Srivijaya's reach is not known." },
     polygon: [[100, 2], [104.5, 0.5], [106.5, -3], [105, -6], [102.5, -4], [101, -0.5]],
-    evidence_status: "uncertain", sources: ["src_wolters_1970", "src_kulke_2009"], scenario_ids: SRIVIJAYA,
+    evidence_status: "uncertain", sources: ["src_wolters_1970", "src_kulke_2009"], scenario_ids: [...SRIVIJAYA, ...SONG],
   },
   {
     id: "ext_chola_direct", polity_id: "civ_chola", label: "Chola Empire (Tamil country)", control: "direct",
     period: { start: 985, end: 1279, approximate: true },
     polygon: [[76.5, 13.5], [80.3, 13.5], [80.3, 10], [79.5, 8.8], [78, 8.2], [77.3, 9.5], [76.8, 11]],
-    evidence_status: "established", sources: ["src_nilakanta_sastri_1955"], scenario_ids: SRIVIJAYA,
+    evidence_status: "established", sources: ["src_nilakanta_sastri_1955"], scenario_ids: [...SRIVIJAYA, ...SONG],
   },
   {
     id: "ext_chola_lanka", polity_id: "civ_chola", label: "Chola Sri Lanka (Rajarata)", control: "direct",
@@ -655,7 +656,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_song", polity_id: "civ_song", label: "Song dynasty", control: "direct",
     period: { start: 960, end: 1127, note: "Southern and eastern provinces only." },
     polygon: [[98, 22], [110, 21.5], [118, 23], [122, 30], [121, 34], [117, 35], [105, 35], [99, 30], [98, 28]],
-    evidence_status: "established", sources: ["src_heng_2009"], scenario_ids: SRIVIJAYA,
+    evidence_status: "established", sources: ["src_heng_2009"], scenario_ids: [...SRIVIJAYA, ...SONG],
   },
   {
     id: "ext_medang_east_java", polity_id: "civ_medang", label: "Medang (East Java)", control: "direct",
@@ -679,7 +680,7 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     id: "ext_puni", polity_id: "civ_puni", label: "Puni", control: "direct",
     period: { start: 977, end: 1300, approximate: true },
     polygon: [[113.8, 5.3], [115.4, 5.3], [115.4, 4.4], [113.8, 4.4]],
-    evidence_status: "uncertain", sources: ["src_hirth_rockhill_1911"], scenario_ids: SRIVIJAYA,
+    evidence_status: "uncertain", sources: ["src_hirth_rockhill_1911"], scenario_ids: [...SRIVIJAYA, ...SONG],
   },
   // ---- Eighteenth century: the East India Company, India and the China trade ----------
   {
@@ -808,6 +809,55 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     polygon: [[120.9, 14.75], [121.1, 14.75], [121.1, 14.45], [120.9, 14.45]],
     evidence_status: "established", sources: ["src_tracy_1995"], scenario_ids: BRITAIN,
   },
+  // ---- Late Northern Song: the eastern seas ----------------------------------------
+  {
+    id: "ext_srivijaya_jambi", polity_id: "civ_srivijaya", label: "Srivijaya (court at Jambi)", control: "direct",
+    period: { start: 1080, end: 1200, approximate: true, note: "Chinese sources place the Srivijayan court at Jambi from the later eleventh century; the extent is a reconstruction." },
+    polygon: [[102.5, 0], [104.8, -0.6], [105.6, -2.6], [104.2, -3.4], [102.8, -2]],
+    evidence_status: "uncertain", sources: ["src_wolters_1970", "src_heng_2009"], scenario_ids: SONG,
+  },
+  {
+    id: "ext_goryeo", polity_id: "civ_goryeo", label: "Goryeo", control: "direct",
+    period: { start: 918, end: 1392, note: "The peninsula south of the Yalu–Tumen line as settled by stages; the north-east was frontier." },
+    polygon: [[124.5, 40], [126.5, 41.5], [129.5, 42], [129.7, 39], [128.5, 37.5], [129.4, 35.5], [127.5, 34.3], [126, 34.5], [125.8, 37.5], [124.7, 39.3]],
+    evidence_status: "established", sources: ["src_breuker_2010"], scenario_ids: SONG,
+  },
+  {
+    id: "ext_heian_japan", polity_id: "civ_heian_japan", label: "Heian Japan (Kyushu and western Honshu)", control: "direct",
+    period: { start: 794, end: 1185, note: "Western Japan only; the court's realm reached to northern Honshu." },
+    polygon: [[129.6, 33.8], [130.4, 33.9], [131.8, 34.2], [134, 34.8], [136.5, 35.5], [137, 34.6], [134, 33.5], [131.5, 31.2], [130.2, 31.3], [129.7, 32.8]],
+    evidence_status: "established", sources: ["src_batten_2006"], scenario_ids: SONG,
+  },
+  {
+    id: "ext_kediri", polity_id: "civ_kediri", label: "Kediri", control: "direct",
+    period: { start: 1045, end: 1222, approximate: true },
+    polygon: [[110.8, -6.9], [114.4, -7.1], [114.4, -8.4], [111.2, -8.3]],
+    evidence_status: "scholarly_interpretation", sources: ["src_hall_1985"], scenario_ids: SONG,
+  },
+  {
+    id: "ext_ly_dai_viet", polity_id: "civ_ly_dai_viet", label: "Đại Việt (Lý dynasty)", control: "direct",
+    period: { start: 1009, end: 1225, approximate: true, note: "The Red River delta and the coast south to the Cham frontier at the Hải Vân pass after 1069." },
+    polygon: [[103.5, 22.5], [106.8, 22.5], [107.3, 21], [106.2, 20], [106.5, 18], [107.8, 16.5], [106.5, 16.3], [105.5, 18], [105, 20], [103.8, 21]],
+    evidence_status: "scholarly_interpretation", sources: ["src_coedes_1968"], scenario_ids: SONG,
+  },
+  {
+    id: "ext_mait", polity_id: "civ_mait", label: "Ma-i (Mindoro)", control: "direct",
+    period: { start: 970, end: 1350, approximate: true },
+    polygon: [[120.3, 13.6], [121.5, 13.5], [121.5, 12.3], [120.5, 12.5]],
+    evidence_status: "uncertain", sources: ["src_scott_1984"], scenario_ids: SONG,
+  },
+  {
+    id: "ext_butuan", polity_id: "civ_butuan", label: "Butuan", control: "direct",
+    period: { start: 1000, end: 1300, approximate: true },
+    polygon: [[125.2, 9.2], [125.9, 9.2], [125.9, 8.6], [125.2, 8.6]],
+    evidence_status: "uncertain", sources: ["src_scott_1984"], scenario_ids: SONG,
+  },
+  {
+    id: "ext_jin", polity_id: "civ_jin", label: "Jin (Jurchen)", control: "direct",
+    period: { start: 1115, end: 1234, note: "Manchuria from 1115, the former Liao lands by 1125 and northern China from 1127; only the southern part lies on the map." },
+    polygon: [[116, 42], [124, 42], [126, 41.5], [124.5, 40], [121, 39.5], [117.5, 38.5], [116, 40]],
+    evidence_status: "established", sources: ["src_shiba_1970"], scenario_ids: SONG,
+  },
 ];
 
 export const SETTLEMENTS: SettlementRecord[] = [
@@ -860,8 +910,8 @@ export const SETTLEMENTS: SettlementRecord[] = [
   { id: "stl_pandua", name: "Pandua", kind: "capital", latitude: 25.13, longitude: 88.16, location_certainty: "precise", period: { start: 1352, end: 1450, approximate: true }, polity_id: "civ_bengal_sultanate", description: "Capital of the Bengal sultans until the return to Gaur around 1450.", evidence_status: "scholarly_interpretation", sources: ["src_sen_2006"], scenario_ids: MING },
   // Late tenth and eleventh centuries: Srivijaya, the Cholas and the Song
   { id: "stl_thanjavur", name: "Tanjavur (Thanjavur)", kind: "capital", latitude: 10.79, longitude: 79.14, location_certainty: "precise", period: { start: 985, end: 1025, approximate: true }, polity_id: "civ_chola", description: "Rajaraja's capital and the site of his great temple (1010); the inscriptions recording the expedition of 1025 are carved on its walls.", evidence_status: "established", sources: ["src_nilakanta_sastri_1955"], scenario_ids: SRIVIJAYA },
-  { id: "stl_gangaikonda", name: "Gangaikonda Cholapuram", kind: "capital", latitude: 11.21, longitude: 79.45, location_certainty: "precise", period: { start: 1025, end: 1279, approximate: true }, polity_id: "civ_chola", description: "Rajendra's new capital, built to mark the Ganges expedition.", evidence_status: "established", sources: ["src_nilakanta_sastri_1955"], scenario_ids: SRIVIJAYA },
-  { id: "stl_kaifeng", name: "Kaifeng", kind: "capital", latitude: 34.8, longitude: 114.3, location_certainty: "precise", period: { start: 960, end: 1127 }, polity_id: "civ_song", description: "The Northern Song capital, where the envoys of Srivijaya, the Cholas and Tambralinga were received.", evidence_status: "established", sources: ["src_heng_2009"], scenario_ids: SRIVIJAYA },
+  { id: "stl_gangaikonda", name: "Gangaikonda Cholapuram", kind: "capital", latitude: 11.21, longitude: 79.45, location_certainty: "precise", period: { start: 1025, end: 1279, approximate: true }, polity_id: "civ_chola", description: "Rajendra's new capital, built to mark the Ganges expedition.", evidence_status: "established", sources: ["src_nilakanta_sastri_1955"], scenario_ids: [...SRIVIJAYA, ...SONG] },
+  { id: "stl_kaifeng", name: "Kaifeng", kind: "capital", latitude: 34.8, longitude: 114.3, location_certainty: "precise", period: { start: 960, end: 1127 }, polity_id: "civ_song", description: "The Northern Song capital, where the envoys of Srivijaya, the Cholas and Tambralinga were received.", evidence_status: "established", sources: ["src_heng_2009"], scenario_ids: [...SRIVIJAYA, ...SONG] },
   { id: "stl_watugaluh", name: "Watugaluh (Medang court)", kind: "capital", latitude: -7.55, longitude: 112.22, location_certainty: "disputed", period: { start: 929, end: 1016, approximate: true }, polity_id: "civ_medang", description: "The East Javanese court of the Isyana kings, destroyed in the pralaya; its site near the Brantas is not securely identified.", evidence_status: "uncertain", sources: ["src_coedes_1968"], scenario_ids: SRIVIJAYA },
   { id: "stl_kahuripan", name: "Kahuripan", kind: "capital", latitude: -7.4, longitude: 112.5, location_certainty: "disputed", period: { start: 1019, end: 1042, approximate: true }, polity_id: "civ_medang", description: "Airlangga's capital, placed somewhere in the lower Brantas valley; the site is unidentified.", evidence_status: "uncertain", sources: ["src_coedes_1968"], scenario_ids: SRIVIJAYA },
   { id: "stl_muara_jambi", name: "Muara Jambi", kind: "religious_centre", latitude: -1.48, longitude: 103.67, location_certainty: "precise", period: { start: 1000, end: 1300, approximate: true }, polity_id: "civ_srivijaya", description: "The brick temple complex on the Batang Hari, the largest Buddhist site in Sumatra, dated to the eleventh to thirteenth centuries.", evidence_status: "scholarly_interpretation", sources: ["src_wolters_1970"], scenario_ids: SRIVIJAYA },
@@ -875,4 +925,11 @@ export const SETTLEMENTS: SettlementRecord[] = [
   { id: "stl_poona", name: "Poona", kind: "capital", latitude: 18.52, longitude: 73.86, location_certainty: "precise", period: { start: 1720, end: 1818, approximate: true }, polity_id: "civ_maratha", description: "Seat of the Peshwas, the Marathas' chief ministers and effective rulers.", evidence_status: "established", sources: ["src_lawson_1993"], scenario_ids: BRITAIN },
   { id: "stl_delhi_18c", name: "Delhi (Shahjahanabad)", kind: "capital", latitude: 28.65, longitude: 77.23, location_certainty: "precise", period: { start: 1648, end: 1857 }, polity_id: "civ_mughal", description: "The Mughal capital, sacked by Nadir Shah in 1739 and the Afghans in 1757; the emperor's grants still carried authority in India's politics.", evidence_status: "established", sources: ["src_marshall_1976"], scenario_ids: BRITAIN },
   { id: "stl_murshidabad", name: "Murshidabad", kind: "capital", latitude: 24.18, longitude: 88.27, location_certainty: "precise", period: { start: 1717, end: 1772 }, polity_id: null, description: "The nawabs' capital of Bengal until the Company moved the treasury and courts to Calcutta in 1772.", evidence_status: "established", sources: ["src_marshall_1976"], scenario_ids: BRITAIN },
+  // Late Northern Song
+  { id: "stl_kaegyong", name: "Kaegyong (Kaesong)", kind: "capital", latitude: 37.97, longitude: 126.55, location_certainty: "precise", period: { start: 919, end: 1392 }, polity_id: "civ_goryeo", description: "The Goryeo capital, reached from the Yesong river port; the Song embassy of 1123 was received here.", evidence_status: "established", sources: ["src_breuker_2010"], scenario_ids: SONG },
+  { id: "stl_heian_kyo", name: "Heian-kyō (Kyoto)", kind: "capital", latitude: 35.01, longitude: 135.77, location_certainty: "precise", period: { start: 794, end: 1185 }, polity_id: "civ_heian_japan", description: "The imperial capital, which kept no official relations with the Song but bought its goods through Hakata.", evidence_status: "established", sources: ["src_batten_2006"], scenario_ids: SONG },
+  { id: "stl_dazaifu", name: "Dazaifu", kind: "city", latitude: 33.51, longitude: 130.52, location_certainty: "precise", period: { start: 663, end: 1300, approximate: true }, polity_id: "civ_heian_japan", description: "The government office for Kyushu that supervised the foreign merchants at Hakata.", evidence_status: "established", sources: ["src_batten_2006"], scenario_ids: SONG },
+  { id: "stl_daha", name: "Daha (Kediri)", kind: "capital", latitude: -7.82, longitude: 112.0, location_certainty: "approximate", period: { start: 1045, end: 1222, approximate: true }, polity_id: "civ_kediri", description: "The inland capital of the Kediri kings on the upper Brantas.", evidence_status: "scholarly_interpretation", sources: ["src_hall_1985"], scenario_ids: SONG },
+  { id: "stl_thang_long", name: "Thăng Long (Hanoi)", kind: "capital", latitude: 21.03, longitude: 105.85, location_certainty: "precise", period: { start: 1010, end: 1400 }, polity_id: "civ_ly_dai_viet", description: "The Lý capital on the Red River.", evidence_status: "established", sources: ["src_coedes_1968"], scenario_ids: SONG },
+  { id: "stl_meizhou", name: "Meizhou island (Mazu's shrine)", kind: "religious_centre", latitude: 25.07, longitude: 119.12, location_certainty: "precise", period: { start: 1000, end: null, approximate: true }, polity_id: "civ_song", description: "The island off the Fujian coast where the sea goddess Mazu was first worshipped; the court gave her shrine its first title after the embassy of 1123.", evidence_status: "established", sources: ["src_so_2000"], scenario_ids: SONG },
 ];
