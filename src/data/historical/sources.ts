@@ -579,6 +579,103 @@ export const SOURCES: HistoricalSource[] = [
     source_type: "primary_source", url_or_reference: "Epigraphia Indica 22 (1933–34), pp. 213–266; the plates themselves are in Leiden University Library (Or. 1687)", related_records: ["evt_chudamani_vihara_1006", "fig_cudamani_varmadeva", "fig_maravijayottungavarman", "fig_rajaraja_i", "tech_vihara_patronage"],
     notes: "The plates and their content (Rajaraja's grant of Anaimangalam in his twenty-first year to the vihara built by the Srivijayan kings) are confirmed against the Leiden digital collection and published summaries (November 2026); the Epigraphia Indica article number and page range are recorded from the implementer's knowledge.",
   },
+  // The East India Company and the China trade, eighteenth century
+  {
+    id: "src_bowen_2006", title: "The Business of Empire: The East India Company and Imperial Britain, 1756–1833",
+    author_or_institution: "H. V. Bowen", publication_year: 2006,
+    source_type: "book", url_or_reference: "Cambridge University Press, xvi + 304 pp.; ISBN 978-0-521-84477-2", related_records: ["civ_british_eic", "port_london_1757", "tech_ships_husband", "good_saltpetre", "good_broadcloth"],
+    notes: "Confirmed against the publisher's front matter and the Journal of Economic History review (November 2026).",
+  },
+  {
+    id: "src_van_dyke_2005", title: "The Canton Trade: Life and Enterprise on the China Coast, 1700–1845",
+    author_or_institution: "Paul A. Van Dyke", publication_year: 2005,
+    source_type: "book", url_or_reference: "Hong Kong University Press, xviii + 280 pp.; ISBN 962-209-749-9", related_records: ["civ_qing", "port_canton_1757", "port_macao_1757", "tech_hong_security", "fig_puankhequa", "good_tea_canton", "good_nankeen"],
+    notes: "Confirmed against library records and the Journal of Asian Studies review (November 2026).",
+  },
+  {
+    id: "src_morse_chronicles", title: "The Chronicles of the East India Company Trading to China, 1635–1834",
+    author_or_institution: "Hosea Ballou Morse", publication_year: 1926,
+    source_type: "primary_source", url_or_reference: "Clarendon Press, Oxford, 1926–1929, 5 vols (vols 1–4 in 1926, vol. 5 in 1929)", related_records: ["civ_qing", "evt_canton_edict_1757", "evt_flint_1759", "evt_lady_hughes_1784", "fig_flint"],
+    notes: "Confirmed against catalogue records and the 1926 JRAS review (November 2026). Transcribes the Canton factory's records year by year.",
+  },
+  {
+    id: "src_pritchard_1936", title: "The Crucial Years of Early Anglo-Chinese Relations, 1750–1800",
+    author_or_institution: "Earl H. Pritchard", publication_year: 1936,
+    source_type: "book", url_or_reference: "Research Studies of the State College of Washington 4(3–4), Pullman, 442 pp.; reprinted Octagon Books, New York, 1970", related_records: ["evt_flint_1759", "evt_cathcart_1788", "evt_macartney_1793", "fig_qianlong", "fig_macartney"],
+    notes: "Confirmed against catalogue records and the JRAS review (November 2026).",
+  },
+  {
+    id: "src_sutton_1981", title: "Lords of the East: The East India Company and Its Ships",
+    author_or_institution: "Jean Sutton", publication_year: 1981,
+    source_type: "book", url_or_reference: "Conway Maritime Press, London, 176 pp.; ISBN 0-85177-169-6; revised edition 2000", related_records: ["ship_indiaman_499", "ship_indiaman_800", "ship_snow", "tech_blackwall_yard", "tech_bombay_dock", "route_indiaman_canton", "good_madeira_wine"],
+    notes: "Confirmed against catalogue records (November 2026). The reference for the hired-ship system, the ships' sizes and the outward and homeward passages.",
+  },
+  {
+    id: "src_furber_1948", title: "John Company at Work: A Study of European Expansion in India in the Late Eighteenth Century",
+    author_or_institution: "Holden Furber", publication_year: 1948,
+    source_type: "book", url_or_reference: "Harvard University Press, Cambridge MA, xi + 407 pp.; reprinted Octagon Books, 1970", related_records: ["tech_country_licence", "ship_country_ship", "route_country_cotton", "route_mocha_coffee_18c", "good_raw_cotton", "civ_danish_tranquebar"],
+    notes: "Confirmed against catalogue records (November 2026). The study of the country trade and the private houses of the 1780s and 1790s.",
+  },
+  {
+    id: "src_marshall_1976", title: "East Indian Fortunes: The British in Bengal in the Eighteenth Century",
+    author_or_institution: "P. J. Marshall", publication_year: 1976,
+    source_type: "book", url_or_reference: "Clarendon Press, Oxford, ix + 284 pp.", related_records: ["port_calcutta_1757", "fig_clive", "fig_hastings", "evt_plassey_1757", "evt_diwani_1765", "evt_bengal_famine_1770", "good_raw_silk_bengal"],
+    notes: "Confirmed against catalogue records and the BSOAS review (November 2026).",
+  },
+  {
+    id: "src_mui_1984", title: "The Management of Monopoly: A Study of the English East India Company's Conduct of Its Tea Trade, 1784–1833",
+    author_or_institution: "Hoh-cheung Mui and Lorna H. Mui", publication_year: 1984,
+    source_type: "book", url_or_reference: "University of British Columbia Press, Vancouver, xiv + 192 pp.; ISBN 0-7748-0198-0", related_records: ["evt_commutation_1784", "good_tea_canton"],
+    notes: "Confirmed against catalogue records and the Business History Review and Albion reviews (November 2026).",
+  },
+  {
+    id: "src_cranmer_byng_1962", title: "An Embassy to China: Being the Journal Kept by Lord Macartney during His Embassy to the Emperor Ch'ien-lung, 1793–1794",
+    author_or_institution: "J. L. Cranmer-Byng (ed.)", publication_year: 1962,
+    source_type: "primary_source", url_or_reference: "Longmans, London", related_records: ["evt_macartney_1793", "fig_macartney", "fig_qianlong"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026; the audience date of 14 September 1793 was checked against published summaries.",
+  },
+  {
+    id: "src_tracy_1995", title: "Manila Ransomed: The British Assault on Manila in the Seven Years War",
+    author_or_institution: "Nicholas Tracy", publication_year: 1995,
+    source_type: "book", url_or_reference: "University of Exeter Press (Exeter Maritime Studies 10), 158 pp.; ISBN 0-85989-426-6", related_records: ["evt_manila_1762", "evt_manila_restored_1764", "port_manila_1757", "civ_spanish_philippines"],
+    notes: "Confirmed against catalogue records (November 2026).",
+  },
+  {
+    id: "src_bastin_1965", title: "The British in West Sumatra (1685–1825): A Selection of Documents",
+    author_or_institution: "John Bastin (ed.)", publication_year: 1965,
+    source_type: "primary_source", url_or_reference: "University of Malaya Press, Kuala Lumpur, xlii + 209 pp.", related_records: ["port_bencoolen"],
+    notes: "Confirmed against the JAS and BSOAS reviews (November 2026).",
+  },
+  {
+    id: "src_bonney_1971", title: "Kedah 1771–1821: The Search for Security and Independence",
+    author_or_institution: "R. Bonney", publication_year: 1971,
+    source_type: "book", url_or_reference: "Oxford University Press, Kuala Lumpur, xvi + 215 pp.", related_records: ["civ_kedah", "port_penang_1757", "evt_penang_1786", "fig_francis_light"],
+    notes: "Confirmed against the JAS review (November 2026).",
+  },
+  {
+    id: "src_knight_1973", title: "The Introduction of Copper Sheathing into the Royal Navy, 1779–1786",
+    author_or_institution: "R. J. B. Knight", publication_year: 1973,
+    source_type: "journal_article", url_or_reference: "The Mariner's Mirror 59(3), pp. 299–309", related_records: ["tech_copper_sheathing"],
+    notes: "Confirmed against bibliographic records (November 2026).",
+  },
+  {
+    id: "src_howse_1980", title: "Greenwich Time and the Discovery of the Longitude",
+    author_or_institution: "Derek Howse", publication_year: 1980,
+    source_type: "book", url_or_reference: "Oxford University Press, xviii + 254 pp.; ISBN 0-19-215948-8", related_records: ["tech_lunar_distance", "tech_chronometer"],
+    notes: "Confirmed against catalogue records and the Journal of Navigation review (November 2026).",
+  },
+  {
+    id: "src_fichter_2010", title: "So Great a Proffit: How the East Indies Trade Transformed Anglo-American Capitalism",
+    author_or_institution: "James R. Fichter", publication_year: 2010,
+    source_type: "book", url_or_reference: "Harvard University Press, Cambridge MA, xii + 384 pp.; ISBN 978-0-674-05057-0", related_records: ["evt_empress_of_china_1784"],
+    notes: "Confirmed against the Business History Review and Itinerario reviews (November 2026).",
+  },
+  {
+    id: "src_lawson_1993", title: "The East India Company: A History",
+    author_or_institution: "Philip Lawson", publication_year: 1993,
+    source_type: "book", url_or_reference: "Longman, London and New York (Studies in Modern History)", related_records: ["civ_mysore", "civ_maratha", "fig_tipu", "evt_hyder_1780", "evt_seringapatam_1792"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026.",
+  },
 ];
 
 export function getSource(id: string): HistoricalSource | undefined {

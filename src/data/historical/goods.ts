@@ -473,4 +473,65 @@ export const HISTORICAL_GOODS: TradeGood[] = [
     historical_availability: { start: 800, end: 1300 }, base_price: 95, cargo_space: 0.7,
     evidence_status: "scholarly_interpretation", sources: ["src_hirth_rockhill_1911", "src_nilakanta_sastri_1955"],
   },
+  // Eighteenth century: the East India Company and the China trade
+  {
+    id: "good_tea_canton", name: "Tea (Bohea, Congou and Hyson)", category: "food",
+    description: "Black and green teas bought from the Hong merchants at Canton: the Company's staple from the 1760s, and after the Commutation Act of 1784 the bulk of every homeward cargo.",
+    historical_availability: { start: 1650, end: null }, base_price: 160, cargo_space: 0.8,
+    evidence_status: "established", sources: ["src_mui_1984", "src_van_dyke_2005"],
+  },
+  {
+    id: "good_nankeen", name: "Nankeen cloth", category: "textile",
+    description: "Buff cotton cloth from the Yangtze delta, sold at Canton by the piece for Europe and America.",
+    historical_availability: { start: 1700, end: 1850 }, base_price: 90, cargo_space: 0.6,
+    evidence_status: "established", sources: ["src_van_dyke_2005"],
+  },
+  {
+    id: "good_raw_cotton", name: "Raw cotton (Bombay and Surat)", category: "bulk",
+    description: "Gujarat cotton shipped from Bombay to Canton by the country traders, the largest British import into China before opium overtook it.",
+    historical_availability: { start: 1700, end: 1900 }, base_price: 60, cargo_space: 1.4,
+    evidence_status: "established", sources: ["src_furber_1948", "src_van_dyke_2005"],
+  },
+  {
+    id: "good_saltpetre", name: "Saltpetre", category: "bulk",
+    description: "Bengal saltpetre for Britain's gunpowder, carried home as ballast under the Indiamen's finer goods.",
+    historical_availability: { start: 1600, end: 1850 }, base_price: 45, cargo_space: 1,
+    evidence_status: "established", sources: ["src_marshall_1976", "src_bowen_2006"],
+  },
+  {
+    id: "good_broadcloth", name: "English woollens (broadcloth and long ells)", category: "textile",
+    description: "West Country and Yorkshire woollens that the Company was obliged to export, sold at a loss at Canton and in India.",
+    historical_availability: { start: 1600, end: 1850 }, base_price: 110, cargo_space: 0.8,
+    evidence_status: "established", sources: ["src_bowen_2006", "src_morse_chronicles"],
+  },
+  {
+    id: "good_lead", name: "Lead", category: "metal",
+    description: "Pig lead from Derbyshire and Wales, a ballast export that Canton and the Indian presidencies took for shot and roofing.",
+    historical_availability: { start: 1600, end: 1900 }, base_price: 40, cargo_space: 1,
+    evidence_status: "established", sources: ["src_bowen_2006"],
+  },
+  {
+    id: "good_madeira_wine", name: "Madeira wine", category: "luxury",
+    description: "Pipes of Madeira loaded at Funchal on the outward passage; a voyage round the Cape was held to improve it.",
+    historical_availability: { start: 1650, end: 1900 }, base_price: 140, cargo_space: 1.1, storage: "liquid",
+    evidence_status: "established", sources: ["src_sutton_1981"],
+  },
+  {
+    id: "good_wine_cape", name: "Cape wine", category: "luxury",
+    description: "Wine from the Company's Cape settlement, including the sweet Constantia, sold to ships refreshing at Table Bay.",
+    historical_availability: { start: 1680, end: 1900 }, base_price: 90, cargo_space: 1.1, storage: "liquid",
+    evidence_status: "established", sources: ["src_sutton_1981"],
+  },
+  {
+    id: "good_raw_silk_bengal", name: "Bengal raw silk", category: "textile",
+    description: "Filature silk from Kasimbazar and the Company's Bengal factories, wound for the London weavers.",
+    historical_availability: { start: 1650, end: 1850 }, base_price: 320, cargo_space: 0.4,
+    evidence_status: "established", sources: ["src_marshall_1976", "src_bowen_2006"],
+  },
+  {
+    id: "good_coffee_java", name: "Java coffee", category: "food",
+    description: "Coffee grown for the Dutch Company in the Priangan highlands and shipped from Batavia.",
+    historical_availability: { start: 1710, end: null }, base_price: 110, cargo_space: 0.9,
+    evidence_status: "established", sources: ["src_furber_1948"],
+  },
 ];
