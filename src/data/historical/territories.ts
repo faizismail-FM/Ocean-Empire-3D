@@ -19,6 +19,7 @@ const MING = ["ming_1405"];
 const SRIVIJAYA = ["srivijaya_992"];
 const BRITAIN = ["britain_1757"];
 const SONG = ["song_1087"];
+const ROME = ["rome_112"];
 
 export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
   // ---- Ninth century ------------------------------------------------------------------
@@ -858,6 +859,55 @@ export const TERRITORIAL_EXTENTS: TerritorialExtent[] = [
     polygon: [[116, 42], [124, 42], [126, 41.5], [124.5, 40], [121, 39.5], [117.5, 38.5], [116, 40]],
     evidence_status: "established", sources: ["src_shiba_1970"], scenario_ids: SONG,
   },
+  // ---- The Roman Mediterranean and the Erythraean Sea, second century CE --------------
+  {
+    id: "ext_roman_west", polity_id: "civ_roman_empire", label: "Roman Empire: Spain, Gaul and Italy", control: "direct",
+    period: { start: -27, end: 476, note: "Drawn coarsely; the empire's northern provinces lie beyond the map." },
+    polygon: [[-9, 43], [-2, 43.5], [2, 47], [8, 47], [13, 46], [18, 40], [16, 38], [12, 37], [8, 39], [3, 39], [-1, 36.5], [-6, 36], [-9, 38]],
+    evidence_status: "established", sources: ["src_young_2001"], scenario_ids: ROME,
+  },
+  {
+    id: "ext_roman_africa", polity_id: "civ_roman_empire", label: "Roman Africa and Cyrenaica", control: "direct",
+    period: { start: -146, end: 439, note: "The settled coastal provinces; the desert frontier lay further south." },
+    polygon: [[-6, 35.2], [0, 36.5], [10, 37.3], [12, 33.5], [20, 32.8], [25, 31.5], [22, 30.5], [14, 31.5], [8, 33.5], [0, 33.5]],
+    evidence_status: "established", sources: ["src_young_2001"], scenario_ids: ROME,
+  },
+  {
+    id: "ext_roman_east", polity_id: "civ_roman_empire", label: "Roman Empire: Greece, Asia, Syria and Egypt", control: "direct",
+    period: { start: -27, end: 395, note: "Egypt and the eastern provinces; Armenia and Mesopotamia were held only in 114–117." },
+    polygon: [[20, 42], [27, 42], [36, 41.5], [42, 38], [36, 33], [34.5, 31], [33, 27], [31, 24], [29, 26], [25, 31.5], [27, 36], [20, 36.5], [18, 39.5]],
+    evidence_status: "established", sources: ["src_young_2001"], scenario_ids: ROME,
+  },
+  {
+    id: "ext_arabia_petraea", polity_id: "civ_roman_empire", label: "Arabia Petraea (annexed 106)", control: "direct",
+    period: { start: 106, end: 395 },
+    polygon: [[34.5, 31], [36.5, 31.5], [38, 29], [36, 27.5], [34.8, 29.3]],
+    evidence_status: "established", sources: ["src_bowersock_1983"], scenario_ids: ROME,
+  },
+  {
+    id: "ext_aksum", polity_id: "civ_aksum", label: "Aksum", control: "direct",
+    period: { start: 100, end: 700, approximate: true },
+    polygon: [[37.5, 16], [40.5, 16], [41, 14], [39.5, 12.5], [37, 13]],
+    evidence_status: "scholarly_interpretation", sources: ["src_munro_hay_1991"], scenario_ids: ROME,
+  },
+  {
+    id: "ext_himyar", polity_id: "civ_himyar", label: "Himyar", control: "direct",
+    period: { start: -110, end: 525, approximate: true, note: "The Himyarite kings contended with Saba for the highlands through the second century." },
+    polygon: [[42.5, 16.5], [45.5, 16.5], [47, 14], [45, 12.8], [43.2, 13]],
+    evidence_status: "scholarly_interpretation", sources: ["src_casson_1989"], scenario_ids: ROME,
+  },
+  {
+    id: "ext_chera_sangam", polity_id: "civ_chera_sangam", label: "Chera kingdom (Sangam age)", control: "direct",
+    period: { start: -100, end: 300, approximate: true },
+    polygon: [[75.5, 12.5], [77, 12], [77.3, 9.5], [76.5, 8.5], [75.8, 10.5]],
+    evidence_status: "uncertain", sources: ["src_tomber_2008"], scenario_ids: ROME,
+  },
+  {
+    id: "ext_western_kshatrapas", polity_id: "civ_western_kshatrapas", label: "Western Kshatrapas", control: "direct",
+    period: { start: 35, end: 405, approximate: true },
+    polygon: [[70, 24], [76, 24], [76.5, 20.5], [73, 19.5], [70.5, 21.5]],
+    evidence_status: "scholarly_interpretation", sources: ["src_tomber_2008"], scenario_ids: ROME,
+  },
 ];
 
 export const SETTLEMENTS: SettlementRecord[] = [
@@ -932,4 +982,13 @@ export const SETTLEMENTS: SettlementRecord[] = [
   { id: "stl_daha", name: "Daha (Kediri)", kind: "capital", latitude: -7.82, longitude: 112.0, location_certainty: "approximate", period: { start: 1045, end: 1222, approximate: true }, polity_id: "civ_kediri", description: "The inland capital of the Kediri kings on the upper Brantas.", evidence_status: "scholarly_interpretation", sources: ["src_hall_1985"], scenario_ids: SONG },
   { id: "stl_thang_long", name: "Thăng Long (Hanoi)", kind: "capital", latitude: 21.03, longitude: 105.85, location_certainty: "precise", period: { start: 1010, end: 1400 }, polity_id: "civ_ly_dai_viet", description: "The Lý capital on the Red River.", evidence_status: "established", sources: ["src_coedes_1968"], scenario_ids: SONG },
   { id: "stl_meizhou", name: "Meizhou island (Mazu's shrine)", kind: "religious_centre", latitude: 25.07, longitude: 119.12, location_certainty: "precise", period: { start: 1000, end: null, approximate: true }, polity_id: "civ_song", description: "The island off the Fujian coast where the sea goddess Mazu was first worshipped; the court gave her shrine its first title after the embassy of 1123.", evidence_status: "established", sources: ["src_so_2000"], scenario_ids: SONG },
+  // The Roman Mediterranean and the Erythraean Sea
+  { id: "stl_rome", name: "Rome", kind: "capital", latitude: 41.9, longitude: 12.5, location_certainty: "precise", period: { start: -27, end: 476 }, polity_id: "civ_roman_empire", description: "The imperial capital, fed by the grain of Egypt and Africa landed at Portus and Puteoli.", evidence_status: "established", sources: ["src_rickman_1980"], scenario_ids: ROME },
+  { id: "stl_coptos", name: "Coptos", kind: "inland_centre", latitude: 25.98, longitude: 32.82, location_certainty: "precise", period: { start: -300, end: 600 }, polity_id: "civ_roman_empire", description: "The Nile town where the desert roads to Myos Hormos and Berenike began, and where the Koptos tariff of 90 CE was posted.", evidence_status: "established", sources: ["src_sidebotham_2011"], scenario_ids: ROME },
+  { id: "stl_petra", name: "Petra", kind: "city", latitude: 30.33, longitude: 35.44, location_certainty: "precise", period: { start: -300, end: 400, approximate: true }, polity_id: "civ_roman_empire", description: "The Nabataean capital, a city of the Roman province of Arabia from 106.", evidence_status: "established", sources: ["src_bowersock_1983"], scenario_ids: ROME },
+  { id: "stl_antinoopolis", name: "Antinoopolis", kind: "city", latitude: 27.8, longitude: 30.88, location_certainty: "precise", period: { start: 130, end: 700, approximate: true }, polity_id: "civ_roman_empire", description: "Hadrian's foundation of 130 on the Nile, with a new road to the Red Sea coast.", evidence_status: "established", sources: ["src_sidebotham_2011"], scenario_ids: ROME },
+  { id: "stl_aksum", name: "Aksum", kind: "capital", latitude: 14.13, longitude: 38.72, location_certainty: "precise", period: { start: 100, end: 700, approximate: true }, polity_id: "civ_aksum", description: "The Aksumite capital in the highlands behind Adulis.", evidence_status: "established", sources: ["src_munro_hay_1991"], scenario_ids: ROME },
+  { id: "stl_zafar", name: "Zafar", kind: "capital", latitude: 14.21, longitude: 44.4, location_certainty: "precise", period: { start: -110, end: 525, approximate: true }, polity_id: "civ_himyar", description: "The Himyarite capital in the Yemeni highlands.", evidence_status: "established", sources: ["src_casson_1989"], scenario_ids: ROME },
+  { id: "stl_karur", name: "Karur (Vanji)", kind: "capital", latitude: 10.96, longitude: 78.08, location_certainty: "disputed", period: { start: -100, end: 300, approximate: true }, polity_id: "civ_chera_sangam", description: "The Chera capital of the Tamil poems, usually placed at Karur; Roman coins have been found there.", evidence_status: "uncertain", sources: ["src_tomber_2008"], scenario_ids: ROME },
+  { id: "stl_ujjain", name: "Ujjain (Ozene)", kind: "city", latitude: 23.18, longitude: 75.78, location_certainty: "precise", period: { start: -300, end: 400, approximate: true }, polity_id: "civ_western_kshatrapas", description: "The inland city the Periplus names as the former royal seat behind Barygaza, source of its cottons and agate.", evidence_status: "established", sources: ["src_casson_1989"], scenario_ids: ROME },
 ];

@@ -42,7 +42,7 @@ export function getLaneNode(id: string): LaneNode | undefined {
 }
 
 export function laneNodeUsable(node: LaneNode, year: number): boolean {
-  return node.available_from_year === undefined || year >= node.available_from_year;
+  return (node.available_from_year === undefined || year >= node.available_from_year) && (node.available_until_year === undefined || year <= node.available_until_year);
 }
 
 export interface PlannedRoute {

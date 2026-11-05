@@ -24,6 +24,7 @@ export interface Palette {
 }
 
 const PALETTES: Record<string, Palette> = {
+  "Ancient Mediterranean maritime civilizations": { scale: [0, 1, 3, 5, 7, 8, 10], root: 52, range: [12, 26], tempo_bpm: 66, timbre: "pluck", fifth: true, description: "Phrygian mode on a lyre-like pluck over a drone." },
   "Abbasid-era maritime commerce": { scale: [0, 1, 4, 5, 7, 8, 10], root: 50, range: [12, 26], tempo_bpm: 72, timbre: "pluck", fifth: true, description: "A hijaz-flavoured scale on a plucked tone over a drone." },
   "Srivijaya and Southeast Asian maritime trade": { scale: [0, 1, 3, 7, 8], root: 52, range: [0, 20], tempo_bpm: 62, timbre: "metal", fifth: false, description: "A five-note pelog-like selection on a soft metallic tone." },
   "Swahili coastal trading city-states": { scale: [0, 2, 4, 7, 9], root: 55, range: [7, 24], tempo_bpm: 88, timbre: "marimba", fifth: true, description: "Major pentatonic on a wooden-keyed tone." },

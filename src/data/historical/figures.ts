@@ -334,4 +334,41 @@ export const HISTORICAL_FIGURES: HistoricalFigure[] = [
     summary: "Patron of Song learning and recipient of Huizong's envoys; the embassy of 1123 came to condole on his death and invest his son Injong.",
     evidence_status: "established", sources: ["src_breuker_2010", "src_vermeersch_2016"],
   },
+  // The Roman Mediterranean and the Erythraean Sea
+  {
+    id: "fig_trajan", name: "Trajan", alternate_names: ["Marcus Ulpius Traianus"], role: "Roman emperor (98–117)",
+    period: { start: 53, end: 117 }, polity_id: "civ_roman_empire",
+    summary: "Annexed Nabataea (106), built the hexagonal harbour at Portus and re-cut the canal from the Nile to the Red Sea (by 112), and in his last campaign reached the Persian Gulf (116) before dying in Cilicia in August 117.",
+    evidence_status: "established", sources: ["src_keay_2005", "src_young_2001"],
+  },
+  {
+    id: "fig_hadrian", name: "Hadrian", alternate_names: ["Publius Aelius Hadrianus"], role: "Roman emperor (117–138)",
+    period: { start: 76, end: 138 }, polity_id: "civ_roman_empire",
+    summary: "Gave up Trajan's eastern conquests, toured the provinces, founded Antinoopolis in Egypt in 130 and faced the Bar Kokhba revolt in Judaea (132–135).",
+    evidence_status: "established", sources: ["src_young_2001"],
+  },
+  {
+    id: "fig_ptolemy", name: "Claudius Ptolemy", alternate_names: ["Ptolemaeus"], role: "Geographer and astronomer at Alexandria",
+    period: { start: 100, end: 170, approximate: true }, polity_id: "civ_roman_empire",
+    summary: "Compiled the Geography about 150 CE, with coordinates for the ports of the Erythraean Sea drawn from merchants' reports; his Muziris and Barygaza were the furthest points of the Roman trade he knew.",
+    evidence_status: "established", sources: ["src_casson_1989", "src_tomber_2008"],
+  },
+  {
+    id: "fig_apollodorus", name: "Apollodorus of Damascus", alternate_names: [], role: "Architect to Trajan",
+    period: { start: 60, end: 130, approximate: true }, polity_id: "civ_roman_empire",
+    summary: "Built Trajan's Forum and the Danube bridge; the harbour works at Portus are often attributed to his office, though no source names him there.",
+    evidence_status: "scholarly_interpretation", sources: ["src_keay_2005"],
+  },
+  {
+    id: "fig_marcius_turbo", name: "Quintus Marcius Turbo", alternate_names: [], role: "Commander against the Diaspora revolt (116–117)",
+    period: { start: 70, end: 140, approximate: true }, polity_id: "civ_roman_empire",
+    summary: "Sent by Trajan with land and sea forces to put down the Jewish revolt in Egypt and Cyrenaica in 116–117; later Hadrian's praetorian prefect.",
+    evidence_status: "established", sources: ["src_pucci_ben_zeev_2005"],
+  },
+  {
+    id: "fig_nahapana", name: "Nahapana", alternate_names: ["Nambanus (Periplus)"], role: "Western Kshatrapa ruler of Barygaza",
+    period: { start: 60, end: 130, approximate: true }, polity_id: "civ_western_kshatrapas",
+    summary: "The satrap whose capital Minnagara lay inland from Barygaza; the Periplus names him, his coins were overstruck by the Satavahanas who overthrew him, and his dates are disputed between the first and second centuries.",
+    evidence_status: "uncertain", sources: ["src_casson_1989", "src_tomber_2008"],
+  },
 ];

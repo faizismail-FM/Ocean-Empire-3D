@@ -15,6 +15,7 @@ const MING_PERIOD = { start: 1400, end: 1440, note: "Scenario window; the port's
 const SRIVIJAYA_PERIOD = { start: 980, end: 1040, note: "Scenario window; the port's history extends beyond it." };
 const BRITAIN_PERIOD = { start: 1750, end: 1800, note: "Scenario window; the port's history extends beyond it." };
 const SONG_PERIOD = { start: 1080, end: 1130, note: "Scenario window; the port's history extends beyond it." };
+const ROME_PERIOD = { start: 100, end: 170, note: "Scenario window; the port's history extends beyond it." };
 const DUTCH_PERIOD = { start: 1595, end: 1660, note: "Scenario window; the port's history extends beyond it." };
 
 export const SIRAF_PORTS: PortRecord[] = [
@@ -1205,6 +1206,171 @@ export const SONG_PORTS: PortRecord[] = [
   },
 ];
 
+export const ROME_PORTS: PortRecord[] = [
+  {
+    id: "port_alexandria_112", name: "Alexandria", modern_reference_name: "Alexandria, Egypt",
+    historical_names: ["Alexandria ad Aegyptum"], latitude: 31.2, longitude: 29.9, location_certainty: "precise",
+    active_period: ROME_PERIOD, historical_polity: "Roman Egypt (an imperial province under a prefect)", polity_id: "civ_roman_empire", country: "Egypt",
+    historical_significance: "The greatest port of the empire: the Pharos, the twin harbours, the granaries of the annona, the warehouses where the India cargoes paid their quarter tax, and the canal to the Nile.",
+    supplies: ["good_wheat_egypt", "good_papyrus", "good_glassware"], demands: ["good_wine_italian", "good_olive_oil", "good_purple_cloth", "good_pepper", "good_myrrh", "good_frankincense", "good_ivory", "good_silk", "good_gems", "good_muslin_india"],
+    infrastructure: { docks: 3, warehouse: 3, shipyard: 2, administration: 3, commercial_district: 2 }, default_access: "home", fee_modifier: 1, lane_nodes: ["levant", "nile_babylon"],
+    evidence_status: "established", sources: ["src_rickman_1980", "src_casson_1971"], size: "hub",
+  },
+  {
+    id: "port_puteoli", name: "Puteoli", modern_reference_name: "Pozzuoli, Italy",
+    historical_names: ["Dicaearchia", "Pozzuoli"], latitude: 40.82, longitude: 14.12, location_certainty: "precise",
+    active_period: ROME_PERIOD, historical_polity: "Roman Italy", polity_id: "civ_roman_empire", country: "Italy",
+    historical_significance: "Rome's old deep-water port on the Bay of Naples, where the Alexandrian fleet landed until Portus took its trade; its merchants and its Egyptian community are known from inscriptions.",
+    supplies: ["good_wine_italian"], demands: ["good_wheat_egypt", "good_papyrus", "good_glassware", "good_pepper", "good_olive_oil"],
+    infrastructure: { docks: 2, warehouse: 2, repair: 1, administration: 1 }, default_access: "agreement", fee_modifier: 1, lane_nodes: ["tyrrhenian"],
+    evidence_status: "established", sources: ["src_rickman_1980", "src_meiggs_1973"], size: "major",
+  },
+  {
+    id: "port_portus", name: "Portus (the harbour of Rome)", modern_reference_name: "Fiumicino, Italy",
+    historical_names: ["Portus Augusti", "Portus Traiani"], latitude: 41.78, longitude: 12.25, location_certainty: "precise",
+    active_period: ROME_PERIOD, historical_polity: "Roman Italy", polity_id: "civ_roman_empire", country: "Italy",
+    historical_significance: "Claudius's outer harbour and Trajan's hexagonal basin at the Tiber mouth, with canals to Ostia and the river; from 112 the destination of the grain fleet.",
+    supplies: ["good_wine_italian"], demands: ["good_wheat_egypt", "good_olive_oil", "good_papyrus", "good_glassware", "good_pepper", "good_purple_cloth", "good_garum"],
+    infrastructure: { docks: 3, warehouse: 3, repair: 1, administration: 2 }, default_access: "agreement", fee_modifier: 1, lane_nodes: ["tyrrhenian"],
+    evidence_status: "established", sources: ["src_keay_2005", "src_meiggs_1973"], size: "hub",
+  },
+  {
+    id: "port_carthage_112", name: "Carthage", modern_reference_name: "Carthage, Tunisia",
+    historical_names: ["Colonia Iulia Carthago"], latitude: 36.85, longitude: 10.33, location_certainty: "precise",
+    active_period: ROME_PERIOD, historical_polity: "Roman Africa Proconsularis", polity_id: "civ_roman_empire", country: "Tunisia",
+    historical_significance: "The capital of Roman Africa and the second source of Rome's grain, with its circular harbour rebuilt under the empire.",
+    supplies: ["good_olive_oil", "good_wheat_egypt"], demands: ["good_wine_italian", "good_glassware", "good_papyrus"],
+    infrastructure: { docks: 2, warehouse: 2, administration: 2 }, default_access: "open", fee_modifier: 1, lane_nodes: ["cape_bon"],
+    evidence_status: "established", sources: ["src_rickman_1980"], size: "major",
+  },
+  {
+    id: "port_apollonia_cyrene", name: "Apollonia (port of Cyrene)", modern_reference_name: "Susah, Libya",
+    historical_names: ["Apollonia", "Sozusa"], latitude: 32.9, longitude: 21.97, location_certainty: "precise",
+    active_period: ROME_PERIOD, historical_polity: "Roman Cyrenaica", polity_id: "civ_roman_empire", country: "Libya",
+    historical_significance: "The harbour of Cyrene, devastated in the revolt of 116–117 and rebuilt under Hadrian.",
+    supplies: ["good_olive_oil"], demands: ["good_wine_italian", "good_glassware", "good_papyrus"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["cyrenaica"],
+    evidence_status: "established", sources: ["src_pucci_ben_zeev_2005"], size: "minor",
+  },
+  {
+    id: "port_caesarea", name: "Caesarea Maritima", modern_reference_name: "Caesarea, Israel",
+    historical_names: ["Caesarea Maritima", "Sebastos (the harbour)"], latitude: 32.5, longitude: 34.9, location_certainty: "precise",
+    active_period: ROME_PERIOD, historical_polity: "Roman Judaea (Syria Palaestina from 135)", polity_id: "civ_roman_empire", country: "Israel",
+    historical_significance: "Herod's artificial harbour and the governor's seat, the base of the Roman armies in the wars of 66–70 and 132–135.",
+    supplies: [], demands: ["good_wheat_egypt", "good_wine_italian", "good_glassware", "good_papyrus"],
+    infrastructure: { docks: 2, warehouse: 1, administration: 2 }, default_access: "open", fee_modifier: 1, lane_nodes: ["levant"],
+    evidence_status: "established", sources: ["src_holum_1988"], size: "regional",
+  },
+  {
+    id: "port_tyre_112", name: "Tyre", modern_reference_name: "Tyre (Sour), Lebanon",
+    historical_names: ["Tyrus", "Sur"], latitude: 33.27, longitude: 35.2, location_certainty: "precise",
+    active_period: ROME_PERIOD, historical_polity: "Roman Syria", polity_id: "civ_roman_empire", country: "Lebanon",
+    historical_significance: "The Phoenician city of the purple dye and the glassworks of the Syrian coast.",
+    supplies: ["good_purple_cloth", "good_glassware"], demands: ["good_wheat_egypt", "good_wine_italian", "good_papyrus"],
+    infrastructure: { docks: 2, warehouse: 2, commercial_district: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["levant"],
+    evidence_status: "established", sources: ["src_casson_1971"], size: "major",
+  },
+  {
+    id: "port_ephesus", name: "Ephesus", modern_reference_name: "Selçuk, Turkey",
+    historical_names: ["Ephesos"], latitude: 37.95, longitude: 27.3, location_certainty: "precise",
+    active_period: ROME_PERIOD, historical_polity: "Roman Asia", polity_id: "civ_roman_empire", country: "Turkey",
+    historical_significance: "The capital of the province of Asia and the Aegean's busiest port, its harbour kept open against the silting Cayster by repeated dredging.",
+    supplies: [], demands: ["good_wheat_egypt", "good_wine_italian", "good_papyrus", "good_glassware", "good_purple_cloth"],
+    infrastructure: { docks: 2, warehouse: 2, administration: 2, commercial_district: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["aegean_s"],
+    evidence_status: "established", sources: ["src_casson_1971"], size: "major",
+  },
+  {
+    id: "port_rhodes_112", name: "Rhodes", modern_reference_name: "Rhodes, Greece",
+    historical_names: ["Rhodos"], latitude: 36.44, longitude: 28.22, location_certainty: "precise",
+    active_period: ROME_PERIOD, historical_polity: "Roman province of Asia (a free city)", polity_id: "civ_roman_empire", country: "Greece",
+    historical_significance: "The island whose sea law the Roman jurists cited and whose harbour was the grain fleet's usual call between Alexandria and Italy.",
+    supplies: ["good_wine_italian"], demands: ["good_wheat_egypt", "good_papyrus", "good_glassware"],
+    infrastructure: { docks: 2, warehouse: 1, repair: 1 }, default_access: "open", fee_modifier: 0.9, lane_nodes: ["aegean_s"],
+    evidence_status: "established", sources: ["src_casson_1971", "src_rickman_1980"], size: "regional",
+  },
+  {
+    id: "port_massilia", name: "Massilia", modern_reference_name: "Marseille, France",
+    historical_names: ["Massalia", "Marseille"], latitude: 43.3, longitude: 5.37, location_certainty: "precise",
+    active_period: ROME_PERIOD, historical_polity: "Roman Gallia Narbonensis", polity_id: "civ_roman_empire", country: "France",
+    historical_significance: "The old Greek port of the Gaulish coast, outlet of the Rhône trade.",
+    supplies: ["good_wine_italian", "good_coral"], demands: ["good_wheat_egypt", "good_olive_oil", "good_glassware", "good_papyrus"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["gulf_of_lion"],
+    evidence_status: "established", sources: ["src_casson_1971"], size: "regional",
+  },
+  {
+    id: "port_gades", name: "Gades", modern_reference_name: "Cádiz, Spain",
+    historical_names: ["Gadir", "Gades"], latitude: 36.53, longitude: -6.29, location_certainty: "precise",
+    active_period: ROME_PERIOD, historical_polity: "Roman Baetica", polity_id: "civ_roman_empire", country: "Spain",
+    historical_significance: "The Phoenician city beyond the Pillars, port of Baetica's oil and of the fish-sauce works of the Spanish coast.",
+    supplies: ["good_olive_oil", "good_garum"], demands: ["good_wine_italian", "good_glassware", "good_papyrus"],
+    infrastructure: { docks: 1, warehouse: 2 }, default_access: "open", fee_modifier: 1, lane_nodes: ["cape_st_vincent", "gibraltar"],
+    evidence_status: "established", sources: ["src_casson_1971"], size: "regional",
+  },
+  {
+    id: "port_aila", name: "Aila", modern_reference_name: "Aqaba, Jordan",
+    historical_names: ["Aelana", "Ayla"], latitude: 29.53, longitude: 35.0, location_certainty: "precise",
+    active_period: ROME_PERIOD, historical_polity: "Roman Arabia Petraea (Nabataean until 106)", polity_id: "civ_roman_empire", country: "Jordan",
+    historical_significance: "The port at the head of the Gulf of Aqaba, Nabataean until Trajan's annexation of 106 and the terminus of the new road from Bostra.",
+    supplies: ["good_myrrh"], demands: ["good_wheat_egypt", "good_wine_italian", "good_glassware"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "agreement", fee_modifier: 1, lane_nodes: ["gulf_of_aqaba"],
+    evidence_status: "established", sources: ["src_bowersock_1983", "src_young_2001"], size: "minor",
+  },
+  {
+    id: "port_myos_hormos", name: "Myos Hormos", modern_reference_name: "Quseir al-Qadim, Egypt",
+    historical_names: ["Myos Hormos", "Quseir al-Qadim"], latitude: 26.16, longitude: 34.24, location_certainty: "precise",
+    active_period: ROME_PERIOD, historical_polity: "Roman Egypt", polity_id: "civ_roman_empire", country: "Egypt",
+    historical_significance: "The nearer of Egypt's two Red Sea ports, eight days by road from Coptos; excavations since 1999 have fixed its site and recovered Indian pottery and sailcloth.",
+    supplies: [], demands: ["good_wine_italian", "good_glassware", "good_denarii", "good_coral"],
+    infrastructure: { docks: 1, warehouse: 2, administration: 1 }, default_access: "agreement", fee_modifier: 1.1, lane_nodes: ["red_sea_n"],
+    evidence_status: "established", sources: ["src_peacock_blue_2006"], size: "regional",
+  },
+  {
+    id: "port_berenike", name: "Berenike", modern_reference_name: "Berenice Troglodytica, Egypt",
+    historical_names: ["Berenice", "Berenike Trogodytika"], latitude: 23.91, longitude: 35.47, location_certainty: "precise",
+    active_period: ROME_PERIOD, historical_polity: "Roman Egypt", polity_id: "civ_roman_empire", country: "Egypt",
+    historical_significance: "The southern Red Sea port of Egypt, twelve days from Coptos, from which the India ships sailed with the July monsoon; its excavations have yielded pepper, teak, Tamil graffiti and Indian cloth.",
+    supplies: [], demands: ["good_wine_italian", "good_glassware", "good_denarii", "good_coral", "good_wheat_egypt"],
+    infrastructure: { docks: 1, warehouse: 2, administration: 1 }, default_access: "agreement", fee_modifier: 1.1, lane_nodes: ["red_sea_mid"],
+    evidence_status: "established", sources: ["src_sidebotham_2011"], size: "regional",
+  },
+  {
+    id: "port_adulis", name: "Adulis", modern_reference_name: "Zula, Eritrea",
+    historical_names: ["Adoulis"], latitude: 15.26, longitude: 39.66, location_certainty: "approximate",
+    active_period: ROME_PERIOD, historical_polity: "Kingdom of Aksum", polity_id: "civ_aksum", country: "Eritrea",
+    historical_significance: "The African emporium of the Red Sea, three days from the Aksumite capital, exporting ivory, rhinoceros horn and tortoiseshell.",
+    supplies: ["good_ivory", "good_myrrh"], demands: ["good_wine_italian", "good_glassware", "good_wheat_egypt", "good_muslin_india"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["red_sea_s"],
+    evidence_status: "established", sources: ["src_munro_hay_1991", "src_casson_1989"], size: "regional",
+  },
+  {
+    id: "port_muza", name: "Muza", modern_reference_name: "Near Mocha (al-Mukha), Yemen",
+    historical_names: ["Mouza"], latitude: 13.32, longitude: 43.25, location_certainty: "approximate",
+    active_period: ROME_PERIOD, historical_polity: "Himyar", polity_id: "civ_himyar", country: "Yemen",
+    historical_significance: "The Arabian port near the Red Sea's mouth, full of Arab shipowners and sailors in the Periplus's words, trading myrrh and incense to Egypt and cloth and grain to Africa and India.",
+    supplies: ["good_myrrh", "good_frankincense"], demands: ["good_wine_italian", "good_wheat_egypt", "good_glassware", "good_purple_cloth", "good_denarii"],
+    infrastructure: { docks: 1, warehouse: 2, commercial_district: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["bab_el_mandeb"],
+    evidence_status: "established", sources: ["src_casson_1989"], size: "major",
+  },
+  {
+    id: "port_muziris", name: "Muziris", modern_reference_name: "Pattanam, Kerala, India (probable)",
+    historical_names: ["Mouziris", "Muciri (Tamil)"], latitude: 10.15, longitude: 76.2, location_certainty: "disputed",
+    active_period: ROME_PERIOD, historical_polity: "Chera kingdom", polity_id: "civ_chera_sangam", country: "India",
+    historical_significance: "The pepper port of the Malabar coast, where the Yavanas' great ships came with gold, named in the Periplus, the Tamil poems and the Muziris papyrus; the site at Pattanam has yielded Roman amphorae and Mediterranean glass.",
+    supplies: ["good_pepper", "good_gems", "good_silk", "good_tortoiseshell"], demands: ["good_denarii", "good_wine_italian", "good_coral", "good_glassware"],
+    infrastructure: { docks: 1, warehouse: 2, commercial_district: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["laccadive_sea"],
+    evidence_status: "scholarly_interpretation", sources: ["src_casson_1989", "src_tomber_2008", "src_de_romanis_2020"], size: "major",
+  },
+  {
+    id: "port_barygaza", name: "Barygaza", modern_reference_name: "Bharuch, Gujarat, India",
+    historical_names: ["Bharukaccha", "Broach"], latitude: 21.7, longitude: 72.98, location_certainty: "precise",
+    active_period: ROME_PERIOD, historical_polity: "Western Kshatrapas", polity_id: "civ_western_kshatrapas", country: "India",
+    historical_significance: "The great port of the Gulf of Cambay, reached up the Narmada with the king's pilots against a dangerous tide; the Periplus's fullest description of any Indian port.",
+    supplies: ["good_muslin_india", "good_ivory", "good_gems"], demands: ["good_wine_italian", "good_denarii", "good_glassware", "good_coral", "good_olive_oil"],
+    infrastructure: { docks: 1, warehouse: 2, administration: 2 }, default_access: "open", fee_modifier: 1.2, lane_nodes: ["gujarat_offshore"],
+    evidence_status: "established", sources: ["src_casson_1989", "src_tomber_2008"], size: "major",
+  },
+];
+
 export const DUTCH_PORTS: PortRecord[] = [
   {
     id: "port_amsterdam", name: "Amsterdam", modern_reference_name: "Amsterdam, Netherlands",
@@ -1353,4 +1519,4 @@ export const DUTCH_PORTS: PortRecord[] = [
   },
 ];
 
-export const HISTORICAL_PORTS: PortRecord[] = [...SIRAF_PORTS, ...SRIVIJAYA_PORTS, ...MELAKA_PORTS, ...KILWA_PORTS, ...VENICE_PORTS, ...PORTUGAL_PORTS, ...DUTCH_PORTS, ...MING_PORTS, ...BRITAIN_PORTS, ...SONG_PORTS];
+export const HISTORICAL_PORTS: PortRecord[] = [...SIRAF_PORTS, ...SRIVIJAYA_PORTS, ...MELAKA_PORTS, ...KILWA_PORTS, ...VENICE_PORTS, ...PORTUGAL_PORTS, ...DUTCH_PORTS, ...MING_PORTS, ...BRITAIN_PORTS, ...SONG_PORTS, ...ROME_PORTS];

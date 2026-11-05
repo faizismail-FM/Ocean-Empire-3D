@@ -743,6 +743,91 @@ export const SOURCES: HistoricalSource[] = [
     source_type: "book", url_or_reference: "Cambridge University Press (Cambridge Studies in Chinese History, Literature and Institutions)", related_records: ["port_quanzhou_1087", "port_fuzhou_1087"],
     notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026.",
   },
+  // The Roman Mediterranean and the Erythraean Sea
+  {
+    id: "src_casson_1971", title: "Ships and Seamanship in the Ancient World",
+    author_or_institution: "Lionel Casson", publication_year: 1971,
+    source_type: "book", url_or_reference: "Princeton University Press, xxviii + 441 pp.; reprinted Johns Hopkins University Press, 1995", related_records: ["ship_corbita", "ship_actuaria", "ship_grain_ship", "tech_lead_sheathing", "good_garum", "route_annona_alexandria"],
+    notes: "Confirmed against catalogue records (November 2026).",
+  },
+  {
+    id: "src_casson_1989", title: "The Periplus Maris Erythraei: Text with Introduction, Translation, and Commentary",
+    author_or_institution: "Lionel Casson", publication_year: 1989,
+    source_type: "primary_source", url_or_reference: "Princeton University Press", related_records: ["tech_hippalus", "tech_periplus", "port_muza", "port_adulis", "port_muziris", "port_barygaza", "ship_arab_sewn_ancient", "ship_indian_trader_ancient", "civ_himyar", "civ_chera_sangam", "civ_western_kshatrapas", "fig_nahapana"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026 (Casson's commentary is confirmed to exist; the edition details are from memory). The Periplus is the first-century merchant's handbook on which the Erythraean ports, goods and routes rest.",
+  },
+  {
+    id: "src_rickman_1980", title: "The Corn Supply of Ancient Rome",
+    author_or_institution: "Geoffrey Rickman", publication_year: 1980,
+    source_type: "book", url_or_reference: "Clarendon Press, Oxford", related_records: ["good_wheat_egypt", "tech_navicularii", "port_puteoli", "port_portus", "port_alexandria_112"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026.",
+  },
+  {
+    id: "src_sidebotham_2011", title: "Berenike and the Ancient Maritime Spice Route",
+    author_or_institution: "Steven E. Sidebotham", publication_year: 2011,
+    source_type: "book", url_or_reference: "University of California Press, Berkeley (California World History Library 18)", related_records: ["port_berenike", "tech_coptos_road", "route_hippalus_muziris", "evt_farasan_144"],
+    notes: "Confirmed against the publisher's listing and library records (November 2026).",
+  },
+  {
+    id: "src_tomber_2008", title: "Indo-Roman Trade: From Pots to Pepper",
+    author_or_institution: "Roberta Tomber", publication_year: 2008,
+    source_type: "book", url_or_reference: "Duckworth, London (Duckworth Debates in Archaeology)", related_records: ["port_muziris", "good_denarii", "good_coral", "civ_chera_sangam"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026.",
+  },
+  {
+    id: "src_young_2001", title: "Rome's Eastern Trade: International Commerce and Imperial Policy, 31 BC–AD 305",
+    author_or_institution: "Gary K. Young", publication_year: 2001,
+    source_type: "book", url_or_reference: "Routledge, London and New York", related_records: ["civ_roman_empire", "tech_coptos_road", "port_aila", "fig_trajan"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026.",
+  },
+  {
+    id: "src_de_romanis_2020", title: "The Indo-Roman Pepper Trade and the Muziris Papyrus",
+    author_or_institution: "Federico De Romanis", publication_year: 2020,
+    source_type: "book", url_or_reference: "Oxford University Press (Oxford Studies on the Roman Economy), xxvi + 381 pp.; ISBN 978-0-19-884234-7", related_records: ["evt_muziris_papyrus_150", "tech_maritime_loan", "ship_erythraean_merchantman"],
+    notes: "Confirmed against catalogue records and the Classical Review notice (November 2026).",
+  },
+  {
+    id: "src_keay_2005", title: "Portus: An Archaeological Survey of the Port of Imperial Rome",
+    author_or_institution: "Simon Keay, Martin Millett, Lidia Paroli and Kristian Strutt", publication_year: 2005,
+    source_type: "archaeological_report", url_or_reference: "British School at Rome (Archaeological Monographs 15), xviii + 360 pp.; ISBN 0-904152-47-2", related_records: ["port_portus", "evt_portus_hexagon_112", "tech_harbour_lights", "fig_apollodorus", "good_olive_oil"],
+    notes: "Confirmed against the Antiquity review listing (November 2026).",
+  },
+  {
+    id: "src_meiggs_1973", title: "Roman Ostia",
+    author_or_institution: "Russell Meiggs", publication_year: 1973,
+    source_type: "book", url_or_reference: "Clarendon Press, Oxford, second edition", related_records: ["port_portus", "port_puteoli"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026.",
+  },
+  {
+    id: "src_peacock_blue_2006", title: "Myos Hormos – Quseir al-Qadim: Roman and Islamic Ports on the Red Sea, vol. 1: Survey and Excavations 1999–2003",
+    author_or_institution: "David Peacock and Lucy Blue (eds.)", publication_year: 2006,
+    source_type: "archaeological_report", url_or_reference: "Oxbow Books, Oxford, vii + 180 pp.; ISBN 1-84217-203-4", related_records: ["port_myos_hormos", "route_myos_hormos_muza"],
+    notes: "Confirmed against catalogue records and the Antiquity review (November 2026). Settled the identification of Myos Hormos with Quseir al-Qadim.",
+  },
+  {
+    id: "src_pucci_ben_zeev_2005", title: "Diaspora Judaism in Turmoil, 116/117 CE: Ancient Sources and Modern Insights",
+    author_or_institution: "Miriam Pucci Ben Zeev", publication_year: 2005,
+    source_type: "book", url_or_reference: "Peeters, Leuven (Interdisciplinary Studies in Ancient Culture and Religion 6)", related_records: ["evt_diaspora_revolt_116", "evt_revolt_ended_117", "fig_marcius_turbo", "port_apollonia_cyrene"],
+    notes: "Confirmed against catalogue records and the BMCR review (November 2026). Argues for a one-year revolt in 116–117 rather than the traditional 115–117; the game follows her dating.",
+  },
+  {
+    id: "src_bowersock_1983", title: "Roman Arabia",
+    author_or_institution: "G. W. Bowersock", publication_year: 1983,
+    source_type: "book", url_or_reference: "Harvard University Press, Cambridge MA", related_records: ["port_aila", "stl_petra"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026.",
+  },
+  {
+    id: "src_munro_hay_1991", title: "Aksum: An African Civilisation of Late Antiquity",
+    author_or_institution: "Stuart Munro-Hay", publication_year: 1991,
+    source_type: "book", url_or_reference: "Edinburgh University Press", related_records: ["civ_aksum", "port_adulis", "stl_aksum"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026.",
+  },
+  {
+    id: "src_holum_1988", title: "King Herod's Dream: Caesarea on the Sea",
+    author_or_institution: "Kenneth G. Holum, Robert L. Hohlfelder, Robert J. Bull and Avner Raban", publication_year: 1988,
+    source_type: "book", url_or_reference: "W. W. Norton, New York", related_records: ["port_caesarea"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026.",
+  },
 ];
 
 export function getSource(id: string): HistoricalSource | undefined {
