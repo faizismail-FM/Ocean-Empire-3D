@@ -1,6 +1,6 @@
 "use client";
 
-import { geoEquirectangular, geoGraticule10, geoPath, type GeoPermissibleObjects, type GeoProjection } from "d3-geo";
+import { geoArea, geoEquirectangular, geoGraticule10, geoPath, type GeoPermissibleObjects, type GeoProjection } from "d3-geo";
 import { feature, mesh } from "topojson-client";
 import type { Topology, GeometryCollection } from "topojson-specification";
 import { useCallback, useEffect, useMemo, useRef, useState } from "react";
@@ -199,9 +199,9 @@ export function WorldMap({ catalog, state, selectedPortId, onSelectPort, onSelec
             !modern &&
             extents.map((e) => {
               const color = e.polity_id ? polityColor(catalog, e.polity_id) : "#f87171";
-              const geometry = { type: "Polygon" as const, coordinates: [[...e.polygon, e.polygon[0]!]] };
+              const geometry = outlineGeometry(e.polygon);
               const d = path(geometry);
-              const [cx, cy] = path.centroid(geometry);
+              const [cx, cy] = projectedCentroid(e.polygon, projection);
               const fillOpacity = e.control === "direct" ? 0.24 : e.control === "rebel" ? 0.28 : e.control === "suzerainty" ? 0.14 : 0.08;
               const dash = e.control === "direct" ? undefined : e.control === "rebel" ? `${2 * inv} ${2 * inv}` : `${3 * inv} ${3 * inv}`;
               const small = e.polygon.length <= 4;
@@ -224,7 +224,7 @@ export function WorldMap({ catalog, state, selectedPortId, onSelectPort, onSelec
           {layers.regions &&
             !modern &&
             catalog.civilizations.filter((c) => c.approximate_region && !datedPolities.has(c.id)).map((c) => {
-              const d = path({ type: "Polygon", coordinates: [[...(c.approximate_region as [number, number][]), c.approximate_region![0] as [number, number]]] });
+              const d = path(outlineGeometry(c.approximate_region as [number, number][]));
               const anchor = c.map_anchor ? project(c.map_anchor.lon, c.map_anchor.lat) : null;
               return (
                 <g key={c.id}>
@@ -454,3 +454,36 @@ function MapLegend({ modern, year, layers, catalog, extentCount }: { modern: boo
 }
 
 export type { ShipState };
+
+/**
+ * A closed polygon for d3-geo from an outline of [lon, lat] pairs. d3-geo reads rings on the
+ * sphere, so a ring wound the wrong way means "everything except this area" and renders
+ * (and centres) as the rest of the globe; rings that enclose more than a hemisphere are
+ * reversed, which keeps every outline the small region its author drew.
+ */
+function outlineGeometry(outline: [number, number][]): { type: "Polygon"; coordinates: [number, number][][] } {
+  const ring = [...outline, outline[0]!];
+  const geometry = { type: "Polygon" as const, coordinates: [ring] };
+  if (geoArea(geometry) > 2 * Math.PI) geometry.coordinates = [ring.slice().reverse()];
+  return geometry;
+}
+
+/** Label anchor: the area centroid of the projected outline, independent of the ring's winding. */
+function projectedCentroid(outline: [number, number][], projection: GeoProjection): [number, number] {
+  const pts = outline.map((p) => projection(p)).filter((p): p is [number, number] => !!p);
+  if (pts.length === 0) return [0, 0];
+  let area = 0;
+  let cx = 0;
+  let cy = 0;
+  for (let i = 0; i < pts.length; i++) {
+    const [x0, y0] = pts[i]!;
+    const [x1, y1] = pts[(i + 1) % pts.length]!;
+    const cross = x0 * y1 - x1 * y0;
+    area += cross;
+    cx += (x0 + x1) * cross;
+    cy += (y0 + y1) * cross;
+  }
+  if (Math.abs(area) < 1e-6) return [pts.reduce((a, p) => a + p[0], 0) / pts.length, pts.reduce((a, p) => a + p[1], 0) / pts.length];
+  return [cx / (3 * area), cy / (3 * area)];
+}
+
