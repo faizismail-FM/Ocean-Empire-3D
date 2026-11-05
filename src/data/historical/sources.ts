@@ -676,6 +676,73 @@ export const SOURCES: HistoricalSource[] = [
     source_type: "book", url_or_reference: "Longman, London and New York (Studies in Modern History)", related_records: ["civ_mysore", "civ_maratha", "fig_tipu", "evt_hyder_1780", "evt_seringapatam_1792"],
     notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026.",
   },
+  // The Song maritime trade, eleventh and twelfth centuries
+  {
+    id: "src_so_2000", title: "Prosperity, Region, and Institutions in Maritime China: The South Fukien Pattern, 946–1368",
+    author_or_institution: "Billy K. L. So", publication_year: 2000,
+    source_type: "book", url_or_reference: "Harvard University Asia Center (Harvard East Asian Monographs 195), xxi + 469 pp.; ISBN 0-674-00371-3", related_records: ["port_quanzhou_1087", "tech_shibosi_certificate", "tech_tribute_envoys_song", "tech_fujian_pilots", "evt_quanzhou_office_1087"],
+    notes: "Confirmed against catalogue records and the Business History Review and Journal of Economic History reviews (November 2026).",
+  },
+  {
+    id: "src_schottenhammer_2001", title: "The Emporium of the World: Maritime Quanzhou, 1000–1400",
+    author_or_institution: "Angela Schottenhammer (ed.)", publication_year: 2001,
+    source_type: "book", url_or_reference: "Brill, Leiden (Sinica Leidensia 49), xi + 449 pp.; ISBN 90-04-11773-3", related_records: ["port_quanzhou_1087", "port_fuzhou_1087", "civ_song"],
+    notes: "Confirmed against catalogue records (November 2026).",
+  },
+  {
+    id: "src_chaffee_2018", title: "The Muslim Merchants of Premodern China: The History of a Maritime Asian Trade Diaspora, 750–1400",
+    author_or_institution: "John W. Chaffee", publication_year: 2018,
+    source_type: "book", url_or_reference: "Cambridge University Press (New Approaches to Asian History), ISBN 978-1-107-01268-4", related_records: ["ship_dashi_ship", "tech_foreign_quarter", "port_guangzhou_1087", "fig_zhu_yu"],
+    notes: "Confirmed against the publisher's listing and published reviews (November 2026).",
+  },
+  {
+    id: "src_batten_2006", title: "Gateway to Japan: Hakata in War and Peace, 500–1300",
+    author_or_institution: "Bruce L. Batten", publication_year: 2006,
+    source_type: "book", url_or_reference: "University of Hawai'i Press, Honolulu, 183 pp.; ISBN 978-0-8248-3029-8", related_records: ["civ_heian_japan", "port_hakata_1087", "route_quanzhou_hakata", "good_japanese_gold", "evt_hakata_tobo_1100"],
+    notes: "Confirmed against catalogue records and the IJAS, JRAS and Monumenta Nipponica reviews (November 2026).",
+  },
+  {
+    id: "src_breuker_2010", title: "Establishing a Pluralist Society in Medieval Korea, 918–1170: History, Ideology, and Identity in the Koryŏ Dynasty",
+    author_or_institution: "Remco E. Breuker", publication_year: 2010,
+    source_type: "book", url_or_reference: "Brill, Leiden (Brill's Korean Studies Library 1), ISBN 978-90-04-18325-4", related_records: ["civ_goryeo", "port_byeongnando", "fig_su_shi", "evt_su_shi_1093"],
+    notes: "Confirmed against catalogue records (November 2026). Used for Goryeo's standing between the Liao and the Song; the port's description follows Xu Jing.",
+  },
+  {
+    id: "src_vermeersch_2016", title: "A Chinese Traveler in Medieval Korea: Xu Jing's Illustrated Account of the Xuanhe Embassy to Koryŏ",
+    author_or_institution: "Sem Vermeersch (trans. and ed.)", publication_year: 2016,
+    source_type: "primary_source", url_or_reference: "University of Hawai'i Press, Honolulu (Korean Classics Library)", related_records: ["fig_xu_jing", "evt_xu_jing_1123", "route_mingzhou_goryeo", "good_ginseng", "good_ramie", "ship_song_great_junk"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026.",
+  },
+  {
+    id: "src_scott_1984", title: "Prehispanic Source Materials for the Study of Philippine History",
+    author_or_institution: "William Henry Scott", publication_year: 1984,
+    source_type: "book", url_or_reference: "New Day Publishers, Quezon City, revised edition", related_records: ["civ_mait", "civ_butuan", "port_mait", "port_butuan", "good_butuan_gold", "good_beeswax"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026. The Song records of Ma-i (971) and Butuan's embassies (1001–1007) are summarised there.",
+  },
+  {
+    id: "src_keith_buys_1981", title: "New Light on Medieval Chinese Seagoing Ship Construction",
+    author_or_institution: "Donald H. Keith and Christian J. Buys", publication_year: 1981,
+    source_type: "journal_article", url_or_reference: "International Journal of Nautical Archaeology 10(2), pp. 119–132", related_records: ["ship_song_haichuan", "tech_song_bulkheads"],
+    notes: "Confirmed against bibliographic records (November 2026). On the Quanzhou ship of about 1277, the type find for the Fujian seagoing junk.",
+  },
+  {
+    id: "src_wheatley_1959", title: "Geographical Notes on Some Commodities Involved in Sung Maritime Trade",
+    author_or_institution: "Paul Wheatley", publication_year: 1959,
+    source_type: "journal_article", url_or_reference: "Journal of the Malayan Branch of the Royal Asiatic Society 32(2), pp. 1–140", related_records: ["good_rhinoceros_horn", "good_gharuwood", "good_frankincense"],
+    notes: "Confirmed against bibliographic records (November 2026).",
+  },
+  {
+    id: "src_shiba_1970", title: "Commerce and Society in Sung China",
+    author_or_institution: "Shiba Yoshinobu; translated by Mark Elvin", publication_year: 1970,
+    source_type: "book", url_or_reference: "University of Michigan, Center for Chinese Studies (Michigan Abstracts of Chinese and Japanese Works on Chinese History 2), Ann Arbor", related_records: ["tech_pooled_investment", "civ_jin", "fig_huizong", "evt_fang_la_1120", "evt_kaifeng_1127"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026.",
+  },
+  {
+    id: "src_clark_1991", title: "Community, Trade, and Networks: Southern Fujian Province from the Third to the Thirteenth Century",
+    author_or_institution: "Hugh R. Clark", publication_year: 1991,
+    source_type: "book", url_or_reference: "Cambridge University Press (Cambridge Studies in Chinese History, Literature and Institutions)", related_records: ["port_quanzhou_1087", "port_fuzhou_1087"],
+    notes: "Recorded from the implementer's knowledge of the literature and not re-checked against a catalogue in November 2026.",
+  },
 ];
 
 export function getSource(id: string): HistoricalSource | undefined {

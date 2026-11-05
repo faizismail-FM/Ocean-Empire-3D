@@ -291,4 +291,47 @@ export const HISTORICAL_FIGURES: HistoricalFigure[] = [
     summary: "The Company's first Chinese-speaking servant; in 1759 he sailed to Tianjin to petition the emperor against the Canton officials and was imprisoned at Macao from December 1759 to November 1762, then banished.",
     evidence_status: "established", sources: ["src_pritchard_1936", "src_morse_chronicles"],
   },
+  // Late Northern Song
+  {
+    id: "fig_zhu_yu", name: "Zhu Yu", alternate_names: ["Chu Yü"], role: "Author of the Pingzhou ketan (1119)",
+    period: { start: 1075, end: 1119, approximate: true }, polity_id: "civ_song",
+    summary: "Son of a Guangzhou official, whose 'Table talk from Pingzhou' records the foreign quarter, the trade office's inspections, the great seagoing ships and the first known use of the compass at sea.",
+    evidence_status: "established", sources: ["src_needham_1971", "src_chaffee_2018"],
+  },
+  {
+    id: "fig_shen_kuo", name: "Shen Kuo", alternate_names: ["Shen Gua"], role: "Scholar-official and author of the Mengxi bitan (1088)",
+    period: { start: 1031, end: 1095 }, polity_id: "civ_song",
+    summary: "Described the magnetised needle and its declination in his 'Brush talks from Dream Brook' of 1088, the earliest clear account of the mariner's compass principle.",
+    evidence_status: "established", sources: ["src_needham_1971"],
+  },
+  {
+    id: "fig_su_shi", name: "Su Shi (Su Dongpo)", alternate_names: ["Su Dongpo"], role: "Poet and official; prefect of Hangzhou (1089–91)",
+    period: { start: 1037, end: 1101 }, polity_id: "civ_song",
+    summary: "As prefect of Hangzhou and in memorials of the early 1090s argued that the Goryeo embassies and the trade with them cost the Song more than they returned and leaked books and intelligence to the Khitan; the court tightened the rules on Goryeo traffic.",
+    evidence_status: "established", sources: ["src_breuker_2010"],
+  },
+  {
+    id: "fig_xu_jing", name: "Xu Jing", alternate_names: ["Hsü Ching"], role: "Member of the embassy to Goryeo (1123) and author of its illustrated account",
+    period: { start: 1091, end: 1153 }, polity_id: "civ_song",
+    summary: "Sailed to Goryeo in the embassy of 1123 and wrote the Xuanhe fengshi Gaoli tujing, describing the embassy's great ships, the crossing from Mingzhou, the Yesong river port and the kingdom's goods and customs.",
+    evidence_status: "established", sources: ["src_vermeersch_2016"],
+  },
+  {
+    id: "fig_huizong", name: "The Huizong emperor", alternate_names: ["Zhao Ji"], role: "Song emperor (1100–1126)",
+    period: { start: 1082, end: 1135 }, polity_id: "civ_song",
+    summary: "Painter, calligrapher and patron, whose reign saw the Fang La rising, the alliance with the Jin against the Liao and the Jurchen invasion; he abdicated in January 1126 and was carried north with his son after the fall of Kaifeng.",
+    evidence_status: "established", sources: ["src_shiba_1970"],
+  },
+  {
+    id: "fig_kulottunga", name: "Kulottunga I", alternate_names: ["Rajendra Chalukya", "Kulottunga Chola"], role: "Chola emperor (1070–1122)",
+    period: { start: 1025, end: 1122, approximate: true }, polity_id: "civ_chola",
+    summary: "Sent the Chola embassy of 1077 to the Song and about 1090 granted the Smaller Leiden plates confirming the Nagapattinam vihara's villages at the request of the Srivijayan king's envoys.",
+    evidence_status: "established", sources: ["src_nilakanta_sastri_1955", "src_kulke_2009"],
+  },
+  {
+    id: "fig_yejong", name: "Yejong of Goryeo", alternate_names: ["Wang U"], role: "King of Goryeo (1105–1122)",
+    period: { start: 1079, end: 1122 }, polity_id: "civ_goryeo",
+    summary: "Patron of Song learning and recipient of Huizong's envoys; the embassy of 1123 came to condole on his death and invest his son Injong.",
+    evidence_status: "established", sources: ["src_breuker_2010", "src_vermeersch_2016"],
+  },
 ];

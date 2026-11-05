@@ -534,4 +534,47 @@ export const HISTORICAL_GOODS: TradeGood[] = [
     historical_availability: { start: 1710, end: null }, base_price: 110, cargo_space: 0.9,
     evidence_status: "established", sources: ["src_furber_1948"],
   },
+  // Late Northern Song: the eastern seas
+  {
+    id: "good_song_books", name: "Printed books", category: "luxury",
+    description: "Woodblock-printed classics, Buddhist canons and medical texts from the Song presses, sought by Goryeo and Japan; the court restricted the export of some titles.",
+    historical_availability: { start: 1000, end: 1400 }, base_price: 200, cargo_space: 0.4, storage: "dry",
+    evidence_status: "established", sources: ["src_breuker_2010", "src_batten_2006"],
+  },
+  {
+    id: "good_ginseng", name: "Goryeo ginseng", category: "luxury",
+    description: "Wild ginseng root from the Korean mountains, the kingdom's most valued export to the Song.",
+    historical_availability: { start: 900, end: null }, base_price: 320, cargo_space: 0.3,
+    evidence_status: "established", sources: ["src_vermeersch_2016"],
+  },
+  {
+    id: "good_ramie", name: "Ramie and hemp cloth", category: "textile",
+    description: "Fine ramie from Goryeo, praised by Xu Jing, carried to the Song ports with paper and ink.",
+    historical_availability: { start: 900, end: 1500 }, base_price: 80, cargo_space: 0.7,
+    evidence_status: "established", sources: ["src_vermeersch_2016"],
+  },
+  {
+    id: "good_japanese_gold", name: "Japanese gold and sulphur", category: "metal",
+    description: "Gold dust from the north of Japan and sulphur from Kyushu, the goods Hakata's merchants gave for Chinese cargoes.",
+    historical_availability: { start: 1000, end: 1400 }, base_price: 380, cargo_space: 0.3,
+    evidence_status: "established", sources: ["src_batten_2006"],
+  },
+  {
+    id: "good_butuan_gold", name: "Butuan gold", category: "luxury",
+    description: "Worked and unworked gold from the Agusan valley of Mindanao, brought to the Song ports by Butuan's own ships.",
+    historical_availability: { start: 1000, end: 1300 }, base_price: 600, cargo_space: 0.1,
+    evidence_status: "uncertain", sources: ["src_scott_1984"],
+  },
+  {
+    id: "good_rhinoceros_horn", name: "Rhinoceros horn", category: "luxury",
+    description: "Horn from Champa, Sumatra and Java, prized in China for belts and medicine; one of the aromatics-and-treasures goods the trade office taxed most heavily.",
+    historical_availability: { start: 500, end: 1800 }, base_price: 420, cargo_space: 0.2,
+    evidence_status: "established", sources: ["src_wheatley_1959", "src_hirth_rockhill_1911"],
+  },
+  {
+    id: "good_beeswax", name: "Beeswax", category: "bulk",
+    description: "Wax from the forests of the Philippines and Borneo, a staple of the Ma-i and Butuan trade.",
+    historical_availability: { start: 900, end: 1800 }, base_price: 55, cargo_space: 0.9,
+    evidence_status: "established", sources: ["src_scott_1984", "src_hirth_rockhill_1911"],
+  },
 ];

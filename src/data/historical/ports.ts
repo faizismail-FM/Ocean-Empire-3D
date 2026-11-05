@@ -14,6 +14,7 @@ const PORTUGAL_PERIOD = { start: 1500, end: 1550, note: "Scenario window; the po
 const MING_PERIOD = { start: 1400, end: 1440, note: "Scenario window; the port's history extends beyond it." };
 const SRIVIJAYA_PERIOD = { start: 980, end: 1040, note: "Scenario window; the port's history extends beyond it." };
 const BRITAIN_PERIOD = { start: 1750, end: 1800, note: "Scenario window; the port's history extends beyond it." };
+const SONG_PERIOD = { start: 1080, end: 1130, note: "Scenario window; the port's history extends beyond it." };
 const DUTCH_PERIOD = { start: 1595, end: 1660, note: "Scenario window; the port's history extends beyond it." };
 
 export const SIRAF_PORTS: PortRecord[] = [
@@ -1057,6 +1058,153 @@ export const BRITAIN_PORTS: PortRecord[] = [
   },
 ];
 
+export const SONG_PORTS: PortRecord[] = [
+  {
+    id: "port_quanzhou_1087", name: "Quanzhou (Zaitun)", modern_reference_name: "Quanzhou, Fujian, China",
+    historical_names: ["Zaitun", "Citong", "Chinchew"], latitude: 24.9, longitude: 118.6, location_certainty: "precise",
+    active_period: SONG_PERIOD, historical_polity: "Song dynasty (Fujian circuit); maritime trade office from 1087", polity_id: "civ_song", country: "China",
+    historical_significance: "The port whose trade office of 1087 made it the Song's great southern emporium: Fujian junks to Goryeo, Hakata, Champa and the Straits, a foreign quarter of Dashi merchants, and the kilns of Dehua and Jinjiang behind it.",
+    supplies: ["good_song_ceramics", "good_silk", "good_chinese_iron", "good_tea", "good_copper_cash"], demands: ["good_frankincense", "good_gharuwood", "good_pepper", "good_rhinoceros_horn", "good_ivory", "good_cloves", "good_ginseng", "good_japanese_gold"],
+    infrastructure: { docks: 2, warehouse: 2, shipyard: 2, administration: 2, commercial_district: 1 }, default_access: "home", fee_modifier: 1, lane_nodes: ["taiwan_strait"],
+    evidence_status: "established", sources: ["src_so_2000", "src_schottenhammer_2001", "src_clark_1991"], size: "hub",
+  },
+  {
+    id: "port_fuzhou_1087", name: "Fuzhou", modern_reference_name: "Fuzhou, Fujian, China",
+    historical_names: ["Fuzhou", "Min"], latitude: 26.07, longitude: 119.3, location_certainty: "precise",
+    active_period: SONG_PERIOD, historical_polity: "Song dynasty (Fujian circuit)", polity_id: "civ_song", country: "China",
+    historical_significance: "The provincial capital on the Min, a shipbuilding centre and the port of the Fujian tea and lacquer districts.",
+    supplies: ["good_tea", "good_lacquerware", "good_song_ceramics"], demands: ["good_pepper", "good_frankincense", "good_ginseng"],
+    infrastructure: { docks: 1, warehouse: 2, shipyard: 1, repair: 1 }, default_access: "agreement", fee_modifier: 0.9, lane_nodes: ["min_estuary"],
+    evidence_status: "established", sources: ["src_clark_1991", "src_so_2000"], size: "major",
+  },
+  {
+    id: "port_mingzhou", name: "Mingzhou (Ningbo)", modern_reference_name: "Ningbo, Zhejiang, China",
+    historical_names: ["Mingzhou", "Ningbo"], latitude: 29.87, longitude: 121.55, location_certainty: "precise",
+    active_period: SONG_PERIOD, historical_polity: "Song dynasty (Liangzhe circuit); maritime trade office", polity_id: "civ_song", country: "China",
+    historical_significance: "The trade office for the Goryeo and Japan crossings, where the embassy ships of 1123 were built and from which the Hakata merchants sailed.",
+    supplies: ["good_silk", "good_song_ceramics", "good_song_books", "good_tea"], demands: ["good_ginseng", "good_ramie", "good_japanese_gold", "good_pepper"],
+    infrastructure: { docks: 2, warehouse: 2, shipyard: 2, administration: 2 }, default_access: "agreement", fee_modifier: 1, lane_nodes: ["east_china_sea", "yangtze_mouth"],
+    evidence_status: "established", sources: ["src_heng_2009", "src_vermeersch_2016"], size: "major",
+  },
+  {
+    id: "port_hangzhou", name: "Hangzhou", modern_reference_name: "Hangzhou, Zhejiang, China",
+    historical_names: ["Hangzhou", "Lin'an (from 1138)"], latitude: 30.25, longitude: 120.17, location_certainty: "precise",
+    active_period: SONG_PERIOD, historical_polity: "Song dynasty (Liangzhe circuit); maritime trade office", polity_id: "civ_song", country: "China",
+    historical_significance: "The Liangzhe trade office at the head of its bay, gateway to the silk districts; sacked by Fang La's rebels in the winter of 1120 and the Southern Song capital from 1138.",
+    supplies: ["good_silk", "good_song_books", "good_tea"], demands: ["good_frankincense", "good_rhinoceros_horn", "good_ivory", "good_pepper"],
+    infrastructure: { docks: 2, warehouse: 2, administration: 2, commercial_district: 1 }, default_access: "agreement", fee_modifier: 1, lane_nodes: ["yangtze_mouth"],
+    evidence_status: "established", sources: ["src_shiba_1970", "src_heng_2009"], size: "major",
+  },
+  {
+    id: "port_guangzhou_1087", name: "Guangzhou", modern_reference_name: "Guangzhou, China",
+    historical_names: ["Canton", "Khanfu"], latitude: 23.13, longitude: 113.26, location_certainty: "precise",
+    active_period: SONG_PERIOD, historical_polity: "Song dynasty (Guangnan East circuit); the senior maritime trade office", polity_id: "civ_song", country: "China",
+    historical_significance: "The oldest trade office and the home of the largest foreign quarter, whose Dashi merchants paid for the city walls in 1072; Zhu Yu's account describes its ships and customs.",
+    supplies: ["good_song_ceramics", "good_silk", "good_chinese_iron", "good_copper_cash"], demands: ["good_frankincense", "good_gharuwood", "good_pepper", "good_rhinoceros_horn", "good_ivory", "good_beeswax"],
+    infrastructure: { docks: 2, warehouse: 3, administration: 3, commercial_district: 1 }, default_access: "agreement", fee_modifier: 1.1, lane_nodes: ["pearl_river"],
+    evidence_status: "established", sources: ["src_chaffee_2018", "src_heng_2009"], size: "hub",
+  },
+  {
+    id: "port_mizhou", name: "Banqiao (Mizhou)", modern_reference_name: "Jiaozhou, Shandong, China",
+    historical_names: ["Banqiao zhen", "Mizhou"], latitude: 36.05, longitude: 120.0, location_certainty: "approximate",
+    active_period: SONG_PERIOD, historical_polity: "Song dynasty (Jingdong East circuit); trade office from 1088", polity_id: "civ_song", country: "China",
+    historical_significance: "The northern trade office on Jiaozhou Bay, opened in 1088 for the Yellow Sea crossing to Goryeo; lost to the Jin in 1127.",
+    supplies: ["good_silk", "good_song_books"], demands: ["good_ginseng", "good_ramie"],
+    infrastructure: { docks: 1, warehouse: 1, administration: 1 }, default_access: "restricted", fee_modifier: 1.1, lane_nodes: ["jiaozhou_bay"],
+    evidence_status: "scholarly_interpretation", sources: ["src_heng_2009"], size: "minor",
+  },
+  {
+    id: "port_byeongnando", name: "Byeongnando (Yesong river port)", modern_reference_name: "Mouth of the Ryesong river, near Kaesong, North Korea",
+    historical_names: ["Pyŏngnando", "Yesŏnggang"], latitude: 37.8, longitude: 126.4, location_certainty: "approximate",
+    active_period: SONG_PERIOD, historical_polity: "Goryeo", polity_id: "civ_goryeo", country: "North Korea",
+    historical_significance: "The outer port of the Goryeo capital Kaegyong on the Yesong river, where Song merchants and embassies landed; Xu Jing describes the reception of 1123.",
+    supplies: ["good_ginseng", "good_ramie"], demands: ["good_silk", "good_song_ceramics", "good_song_books", "good_tea", "good_frankincense"],
+    infrastructure: { docks: 1, warehouse: 2, administration: 1 }, default_access: "agreement", fee_modifier: 1.1, lane_nodes: ["yellow_sea"],
+    evidence_status: "established", sources: ["src_vermeersch_2016", "src_breuker_2010"], size: "major",
+  },
+  {
+    id: "port_hakata_1087", name: "Hakata", modern_reference_name: "Fukuoka, Japan",
+    historical_names: ["Hakata", "Dazaifu (the government office inland)"], latitude: 33.6, longitude: 130.4, location_certainty: "precise",
+    active_period: SONG_PERIOD, historical_polity: "Heian Japan, under the Dazaifu", polity_id: "civ_heian_japan", country: "Japan",
+    historical_significance: "The one Japanese port open to Song ships, where Chinese merchants settled in their own quarter and Japanese gold and sulphur paid for silk, ceramics and books.",
+    supplies: ["good_japanese_gold"], demands: ["good_silk", "good_song_ceramics", "good_song_books", "good_tea", "good_frankincense"],
+    infrastructure: { docks: 1, warehouse: 1, administration: 1 }, default_access: "restricted", fee_modifier: 1.2, lane_nodes: ["kyushu_w"],
+    evidence_status: "established", sources: ["src_batten_2006"], size: "regional",
+  },
+  {
+    id: "port_vijaya_1087", name: "Thi Nai (Vijaya, Champa)", modern_reference_name: "Qui Nhon, Vietnam",
+    historical_names: ["Śrī Vinaya", "Xinzhou (Chinese sources)"], latitude: 13.78, longitude: 109.25, location_certainty: "approximate",
+    active_period: SONG_PERIOD, historical_polity: "Champa (kingdom of Vijaya)", polity_id: "civ_champa", country: "Vietnam",
+    historical_significance: "The harbour of the Cham capital, first foreign call on the southern route and the source of the finest aloeswood; Champa sent frequent embassies to the Song.",
+    supplies: ["good_gharuwood", "good_rhinoceros_horn", "good_ivory"], demands: ["good_song_ceramics", "good_silk", "good_chinese_iron"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["champa_coast"],
+    evidence_status: "scholarly_interpretation", sources: ["src_coedes_1968", "src_hirth_rockhill_1911"], size: "regional",
+  },
+  {
+    id: "port_jambi_1087", name: "Jambi (Srivijaya)", modern_reference_name: "Jambi, Sumatra, Indonesia",
+    historical_names: ["Malāyu", "Zhanbei", "Sanfoqi (the kingdom)"], latitude: -1.59, longitude: 103.61, location_certainty: "approximate",
+    active_period: SONG_PERIOD, historical_polity: "Srivijaya, whose court Chinese sources of the period place at Jambi", polity_id: "civ_srivijaya", country: "Indonesia",
+    historical_significance: "The seat of the Srivijayan maharaja in the later eleventh century, whose embassies reached the Song in 1077–1088 and who repaired the Taoist temple at Guangzhou in 1079; the Muara Jambi temples date from this age.",
+    supplies: ["good_pepper", "good_gharuwood", "good_frankincense", "good_rhinoceros_horn"], demands: ["good_song_ceramics", "good_silk", "good_chinese_iron", "good_copper_cash"],
+    infrastructure: { docks: 2, warehouse: 2, administration: 1 }, default_access: "open", fee_modifier: 0.9, lane_nodes: ["batanghari_mouth"],
+    evidence_status: "scholarly_interpretation", sources: ["src_wolters_1970", "src_heng_2009"], size: "major",
+  },
+  {
+    id: "port_palembang_1087", name: "Palembang (Old Srivijaya)", modern_reference_name: "Palembang, Sumatra, Indonesia",
+    historical_names: ["Śrīvijaya", "Jiuzhou (Old Port)"], latitude: -2.99, longitude: 104.76, location_certainty: "approximate",
+    active_period: SONG_PERIOD, historical_polity: "Srivijaya", polity_id: "civ_srivijaya", country: "Indonesia",
+    historical_significance: "The old capital on the Musi, still a port of the kingdom after the court's move to Jambi.",
+    supplies: ["good_pepper", "good_gharuwood"], demands: ["good_song_ceramics", "good_silk", "good_chinese_iron"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["palembang_mouth"],
+    evidence_status: "scholarly_interpretation", sources: ["src_wolters_1970"], size: "regional",
+  },
+  {
+    id: "port_hujung_galuh_1087", name: "Hujung Galuh (Brantas delta)", modern_reference_name: "Surabaya area, East Java, Indonesia",
+    historical_names: ["Ujung Galuh", "She-po (Java)"], latitude: -7.22, longitude: 112.7, location_certainty: "disputed",
+    active_period: SONG_PERIOD, historical_polity: "Kingdom of Kediri", polity_id: "civ_kediri", country: "Indonesia",
+    historical_significance: "The Brantas river port of eastern Java under Kediri, shipping rice, pepper and the eastern spices; its exact site is not known.",
+    supplies: ["good_pepper", "good_cloves"], demands: ["good_song_ceramics", "good_silk", "good_copper_cash", "good_chinese_iron"],
+    infrastructure: { docks: 1, warehouse: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["java_sea_e"],
+    evidence_status: "scholarly_interpretation", sources: ["src_hall_1985", "src_hirth_rockhill_1911"], size: "regional",
+  },
+  {
+    id: "port_puni_1087", name: "Puni (Boni)", modern_reference_name: "Brunei area, north-western Borneo",
+    historical_names: ["Boni", "P'o-ni"], latitude: 4.9, longitude: 114.9, location_certainty: "disputed",
+    active_period: SONG_PERIOD, historical_polity: "Puni, as described in the Song records", polity_id: "civ_puni", country: "Brunei (probable)",
+    historical_significance: "The Bornean kingdom whose embassy of 1082 reached the Song court; camphor and tortoiseshell for ceramics and silk.",
+    supplies: ["good_beeswax", "good_rhinoceros_horn"], demands: ["good_song_ceramics", "good_silk", "good_chinese_iron"],
+    infrastructure: { docks: 1 }, default_access: "open", fee_modifier: 0.9, lane_nodes: ["brunei_offshore"],
+    evidence_status: "uncertain", sources: ["src_hirth_rockhill_1911", "src_heng_2009"], size: "minor",
+  },
+  {
+    id: "port_mait", name: "Ma-i (Mindoro)", modern_reference_name: "Northern Mindoro, Philippines",
+    historical_names: ["Mayi", "Ma-i"], latitude: 13.5, longitude: 120.95, location_certainty: "disputed",
+    active_period: SONG_PERIOD, historical_polity: "Ma-i", polity_id: "civ_mait", country: "Philippines",
+    historical_significance: "The trading country of the Chinese records from 971, usually placed on Mindoro; Zhao Rukuo describes Chinese ships anchoring before its settlement and trading on credit for the island's wax, cotton and pearls.",
+    supplies: ["good_beeswax"], demands: ["good_song_ceramics", "good_chinese_iron", "good_silk"],
+    infrastructure: { docks: 1 }, default_access: "open", fee_modifier: 0.9, lane_nodes: ["verde_passage"],
+    evidence_status: "uncertain", sources: ["src_scott_1984", "src_hirth_rockhill_1911"], size: "minor",
+  },
+  {
+    id: "port_butuan", name: "Butuan", modern_reference_name: "Butuan, Agusan del Norte, Philippines",
+    historical_names: ["Puduan"], latitude: 8.95, longitude: 125.54, location_certainty: "approximate",
+    active_period: SONG_PERIOD, historical_polity: "Butuan", polity_id: "civ_butuan", country: "Philippines",
+    historical_significance: "The gold-working polity of the Agusan mouth that sent envoys to the Song court in 1001–1007 and whose balangay boats have been excavated.",
+    supplies: ["good_butuan_gold", "good_beeswax"], demands: ["good_song_ceramics", "good_silk", "good_chinese_iron"],
+    infrastructure: { docks: 1 }, default_access: "open", fee_modifier: 1, lane_nodes: ["mindanao_n"],
+    evidence_status: "uncertain", sources: ["src_scott_1984"], size: "minor",
+  },
+  {
+    id: "port_nagapattinam_1087", name: "Nagapattinam", modern_reference_name: "Nagapattinam, Tamil Nadu, India",
+    historical_names: ["Nāgapaṭṭinam"], latitude: 10.77, longitude: 79.84, location_certainty: "precise",
+    active_period: SONG_PERIOD, historical_polity: "Chola Empire under Kulottunga I", polity_id: "civ_chola", country: "India",
+    historical_significance: "The Chola port of the eastern trade and the site of the Srivijayan vihara whose lands Kulottunga confirmed about 1090; the Chola embassy of 1077 had reached the Song court by way of Srivijaya.",
+    supplies: ["good_ivory", "good_pepper"], demands: ["good_song_ceramics", "good_silk", "good_copper_cash", "good_gharuwood"],
+    infrastructure: { docks: 2, warehouse: 2, administration: 1 }, default_access: "open", fee_modifier: 1.1, lane_nodes: ["nagapattinam_roads"],
+    evidence_status: "established", sources: ["src_nilakanta_sastri_1955", "src_kulke_2009"], size: "major",
+  },
+];
+
 export const DUTCH_PORTS: PortRecord[] = [
   {
     id: "port_amsterdam", name: "Amsterdam", modern_reference_name: "Amsterdam, Netherlands",
@@ -1205,4 +1353,4 @@ export const DUTCH_PORTS: PortRecord[] = [
   },
 ];
 
-export const HISTORICAL_PORTS: PortRecord[] = [...SIRAF_PORTS, ...SRIVIJAYA_PORTS, ...MELAKA_PORTS, ...KILWA_PORTS, ...VENICE_PORTS, ...PORTUGAL_PORTS, ...DUTCH_PORTS, ...MING_PORTS, ...BRITAIN_PORTS];
+export const HISTORICAL_PORTS: PortRecord[] = [...SIRAF_PORTS, ...SRIVIJAYA_PORTS, ...MELAKA_PORTS, ...KILWA_PORTS, ...VENICE_PORTS, ...PORTUGAL_PORTS, ...DUTCH_PORTS, ...MING_PORTS, ...BRITAIN_PORTS, ...SONG_PORTS];
