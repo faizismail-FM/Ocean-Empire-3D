@@ -577,4 +577,71 @@ export const HISTORICAL_GOODS: TradeGood[] = [
     historical_availability: { start: 900, end: 1800 }, base_price: 55, cargo_space: 0.9,
     evidence_status: "established", sources: ["src_scott_1984", "src_hirth_rockhill_1911"],
   },
+  // The Roman Mediterranean and the Erythraean Sea
+  {
+    id: "good_wheat_egypt", name: "Egyptian wheat (annona)", category: "bulk",
+    description: "The grain of the Nile valley, shipped from Alexandria to Rome under the annona; the fleet's arrival was watched for at Puteoli and Portus every summer.",
+    historical_availability: { start: -300, end: 640 }, base_price: 25, cargo_space: 1,
+    evidence_status: "established", sources: ["src_rickman_1980", "src_casson_1971"],
+  },
+  {
+    id: "good_papyrus", name: "Papyrus", category: "luxury",
+    description: "Writing material from the Delta marshes, an Egyptian monopoly export to every city of the empire.",
+    historical_availability: { start: -3000, end: 900 }, base_price: 120, cargo_space: 0.5,
+    evidence_status: "established", sources: ["src_rickman_1980"],
+  },
+  {
+    id: "good_wine_italian", name: "Italian wine (amphorae)", category: "luxury",
+    description: "Campanian and Adriatic wine in amphorae, carried east to the Aegean and through Egypt to Arabia and India, where the Periplus lists it as a Roman export.",
+    historical_availability: { start: -200, end: 500 }, base_price: 90, cargo_space: 1.2, storage: "liquid",
+    evidence_status: "established", sources: ["src_casson_1989", "src_tomber_2008"],
+  },
+  {
+    id: "good_olive_oil", name: "Olive oil (Baetica and Africa)", category: "food",
+    description: "Oil from southern Spain and the African provinces in the great Dressel 20 amphorae, stacked in the warehouses of Portus and Rome.",
+    historical_availability: { start: -200, end: 700 }, base_price: 70, cargo_space: 1.2, storage: "liquid",
+    evidence_status: "established", sources: ["src_rickman_1980", "src_keay_2005"],
+  },
+  {
+    id: "good_garum", name: "Garum (fish sauce)", category: "food",
+    description: "Fermented fish sauce from the works of Gades and the Spanish coast, shipped in amphorae across the western sea.",
+    historical_availability: { start: -200, end: 500 }, base_price: 80, cargo_space: 1.1, storage: "liquid",
+    evidence_status: "established", sources: ["src_casson_1971"],
+  },
+  {
+    id: "good_glassware", name: "Glassware", category: "luxury",
+    description: "Blown and moulded glass from Alexandria and the Syrian coast, which the Periplus lists among the goods sold at Barygaza, Muza and Adulis.",
+    historical_availability: { start: -100, end: 700 }, base_price: 150, cargo_space: 0.6, storage: "fragile",
+    evidence_status: "established", sources: ["src_casson_1989", "src_tomber_2008"],
+  },
+  {
+    id: "good_purple_cloth", name: "Purple cloth of Tyre", category: "textile",
+    description: "Wool dyed with the murex purple of the Phoenician coast, the most expensive cloth of the empire.",
+    historical_availability: { start: -1200, end: 1200 }, base_price: 400, cargo_space: 0.4,
+    evidence_status: "established", sources: ["src_casson_1971"],
+  },
+  {
+    id: "good_myrrh", name: "Myrrh", category: "aromatic",
+    description: "Resin from the Arabian and Somali coasts, sold at Muza and Adulis for medicine, perfume and embalming.",
+    historical_availability: { start: -1500, end: null }, base_price: 260, cargo_space: 0.5,
+    evidence_status: "established", sources: ["src_casson_1989"],
+  },
+  {
+    id: "good_coral", name: "Mediterranean coral", category: "luxury",
+    description: "Red coral from the western Mediterranean, which the Periplus names among Roman exports to Barygaza and Muziris and the Tamil poems prize.",
+    historical_availability: { start: -300, end: null }, base_price: 220, cargo_space: 0.3,
+    evidence_status: "established", sources: ["src_casson_1989", "src_tomber_2008"],
+  },
+  {
+    id: "good_denarii", name: "Roman coin (denarii and aurei)", category: "metal",
+    description: "Silver and gold coin carried east to pay for pepper and silk; the hoards of southern India and Pliny's complaint about the drain of money attest it.",
+    historical_availability: { start: -100, end: 400 }, base_price: 380, cargo_space: 0.1,
+    evidence_status: "established", sources: ["src_tomber_2008", "src_young_2001"],
+  },
+  {
+    id: "good_muslin_india", name: "Indian cottons (Periplus)", category: "textile",
+    description: "Cotton cloth of every grade from Barygaza and the Ganges, which the Periplus lists as exports to Egypt and Arabia.",
+    historical_availability: { start: -200, end: 800 }, base_price: 110, cargo_space: 0.7,
+    evidence_status: "established", sources: ["src_casson_1989"],
+  },
 ];

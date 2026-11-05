@@ -23,7 +23,7 @@ const MenuScene = dynamic(() => import("@/components/three/MenuScene").then((m) 
 
 const ENTRIES = [
   { href: "/new", label: "New Game", icon: Play, description: "Choose a scenario and found your empire or company." },
-  { href: "/new?mode=historical", label: "Historical Campaigns", icon: Compass, description: "Siraf 850, Srivijaya 992, Song Quanzhou 1087, Kilwa 1330, the Ming fleets 1405, Venice 1423, Melaka 1460, the Carreira da Índia 1505, the Dutch Company 1602 and the East India Company 1757, with sources." },
+  { href: "/new?mode=historical", label: "Historical Campaigns", icon: Compass, description: "Roman Alexandria 112, Siraf 850, Srivijaya 992, Song Quanzhou 1087, Kilwa 1330, the Ming fleets 1405, Venice 1423, Melaka 1460, the Carreira da Índia 1505, the Dutch Company 1602 and the East India Company 1757, with sources." },
   { href: "/new?mode=modern", label: "Modern Shipping Empire", icon: Container, description: "Build a container line from a single feeder ship." },
   { href: "/guide", label: "How to Play", icon: BookOpenText, description: "The core loop, sailing controls, time, trade and ports." },
   { href: "/encyclopedia", label: "Civilization Encyclopedia", icon: BookOpen, description: "Ports, ships, goods, events and their evidence." },
@@ -214,6 +214,7 @@ export function MainMenu() {
 
 const CHIP_NAMES: Record<string, string> = {
   modern_shipping_2024: "Container line",
+  rome_112: "Roman Alexandria",
   siraf_850: "Siraf",
   srivijaya_992: "Srivijaya",
   song_1087: "Song Quanzhou",

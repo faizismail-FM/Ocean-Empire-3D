@@ -46,6 +46,8 @@ export function ProceduralShip({ model, length, sailYaw = 0, sailSet = 1, accent
       return <Caravel length={length} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />;
     case "ship_rigged":
       return <ShipRigged length={length} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />;
+    case "roman_merchant":
+      return <RomanMerchantman length={length} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />;
   }
 }
 
@@ -861,3 +863,71 @@ function DoubleSquareRig({ z, mastHeight, width, sailYaw, sailSet, accent, flag 
   );
 }
 
+
+
+// ---------------------------------------------------------------------------
+// Roman merchantman (navis oneraria): a broad round hull, a swan-neck stern post, two
+// steering oars at the quarters, a large square mainsail with a triangular topsail and a
+// small artemon on a raked foremast. No castles and no gun ports.
+
+function RomanMerchantman({ length, sailYaw, sailSet, accent }: { length: number; sailYaw: number; sailSet: number; accent: string }) {
+  const beam = length / 3.4;
+  const height = length / 6.5;
+  const draft = height * 0.5;
+  const hull = useMemo(() => hullGeometry(length, beam, height, 0.24, 0.22, true), [length, beam, height]);
+  const topsail = useMemo(() => {
+    const mastHeight = length * 0.85;
+    const apex = new THREE.Vector3(0, mastHeight * 0.98, 0.3);
+    const left = new THREE.Vector3(-beam * 0.8, mastHeight * 0.82, 0.3);
+    const right = new THREE.Vector3(beam * 0.8, mastHeight * 0.82, 0.3);
+    return sailGeometry(apex, apex.clone().add(new THREE.Vector3(0.01, 0, 0)), left, right, 0.6 * sailSet, 6);
+  }, [length, beam, sailSet]);
+  const visible = sailSet > 0.05 ? 1 : 0.02;
+  return (
+    <group>
+      <mesh geometry={hull} material={materials.wood} position={[0, -draft, 0]} castShadow receiveShadow />
+      {[0.35, 0.65].map((f) => (
+        <mesh key={f} position={[0, -draft + height * f, 0]}>
+          <boxGeometry args={[beam * 1.02, 0.12, length * 0.7]} />
+          <primitive object={materials.woodDark} attach="material" />
+        </mesh>
+      ))}
+      <mesh position={[0, height * 0.52, 0]} receiveShadow>
+        <boxGeometry args={[beam * 0.9, 0.3, length * 0.74]} />
+        <primitive object={materials.woodLight} attach="material" />
+      </mesh>
+      {/* deckhouse aft and the swan-neck stern post */}
+      <mesh position={[0, height * 0.8, length * 0.3]} castShadow>
+        <boxGeometry args={[beam * 0.6, height * 0.45, length * 0.16]} />
+        <primitive object={materials.woodLight} attach="material" />
+      </mesh>
+      <mesh position={[0, height * 1.1, length * 0.47]} rotation={[-0.5, 0, 0]}>
+        <cylinderGeometry args={[0.12, 0.2, height * 1.6, 6]} />
+        <primitive object={materials.woodDark} attach="material" />
+      </mesh>
+      <mesh position={[0, height * 1.75, length * 0.42]}>
+        <sphereGeometry args={[0.35, 8, 8]} />
+        <primitive object={materials.woodDark} attach="material" />
+      </mesh>
+      {/* steering oars at the quarters */}
+      {[1, -1].map((side) => (
+        <mesh key={side} position={[side * beam * 0.55, -draft * 0.2, length * 0.4]} rotation={[0.35, 0, side * 0.15]}>
+          <boxGeometry args={[0.25, height * 1.8, 0.9]} />
+          <primitive object={materials.woodDark} attach="material" />
+        </mesh>
+      ))}
+      {/* raked foremast with the artemon */}
+      <group position={[0, height * 0.6, -length * 0.4]} rotation={[-0.75, 0, 0]}>
+        <mesh position={[0, length * 0.14, 0]} castShadow>
+          <cylinderGeometry args={[0.1, 0.16, length * 0.28, 6]} />
+          <primitive object={materials.mast} attach="material" />
+        </mesh>
+        <SquareRig z={0} mastHeight={length * 0.3} width={beam * 0.9} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />
+      </group>
+      <SquareRig z={-length * 0.02} mastHeight={length * 0.85} width={beam * 2.3} sailYaw={sailYaw} sailSet={sailSet} accent={accent} />
+      <group position={[0, 0, -length * 0.02]} rotation={[0, (sailYaw * Math.PI) / 180, 0]}>
+        <mesh geometry={topsail} material={materials.sailDark} scale={[1, visible, 1]} castShadow />
+      </group>
+    </group>
+  );
+}

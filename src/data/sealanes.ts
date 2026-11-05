@@ -13,6 +13,8 @@ export interface LaneNode {
   lon: number;
   /** Only usable in scenarios whose start year is >= this (e.g. the Suez and Panama canals). */
   available_from_year?: number;
+  /** Only usable while the year is <= this (e.g. the Roman canal from the Nile to the Red Sea, silted by the eighth century). */
+  available_until_year?: number;
 }
 
 export const LANE_NODES: LaneNode[] = [
@@ -142,6 +144,11 @@ export const LANE_NODES: LaneNode[] = [
   { id: "verde_passage", name: "Verde Island Passage", lat: 13.75, lon: 120.5 },
   { id: "samar_e", name: "East of Samar", lat: 12.5, lon: 126.2 },
   { id: "mindanao_n", name: "North of Mindanao (Surigao)", lat: 9.5, lon: 125.6 },
+  { id: "tyrrhenian", name: "Tyrrhenian Sea", lat: 40.5, lon: 12.5 },
+  { id: "cyrenaica", name: "Off Cyrenaica", lat: 32.9, lon: 21.5 },
+  { id: "gulf_of_aqaba", name: "Gulf of Aqaba", lat: 28.6, lon: 34.6 },
+  { id: "nile_babylon", name: "Nile at Babylon (Trajan's canal)", lat: 30.05, lon: 31.25, available_from_year: 112, available_until_year: 767 },
+  { id: "clysma", name: "Clysma (head of the Gulf of Suez)", lat: 29.97, lon: 32.55, available_from_year: 112, available_until_year: 767 },
   { id: "texel_roads", name: "Texel roads", lat: 53.05, lon: 4.65 },
   { id: "southern_indian_ocean", name: "Southern Indian Ocean (roaring forties)", lat: -36.0, lon: 55.0 },
   { id: "sunda_w", name: "Sunda Strait approaches", lat: -7.5, lon: 103.5 },
@@ -233,6 +240,8 @@ export const LANE_EDGES: Array<[string, string]> = [
   ["bay_of_bengal", "ganges_mouth"],
   ["bangka", "batanghari_mouth"], ["riau", "batanghari_mouth"],
   ["dover", "thames_mouth"],
+  ["tyrrhenian", "sardinia_s"], ["tyrrhenian", "sicily_s"], ["cyrenaica", "levant"], ["cyrenaica", "sicily_s"],
+  ["gulf_of_aqaba", "red_sea_n"], ["nile_babylon", "clysma"], ["clysma", "red_sea_n"],
   ["east_china_sea", "korea_sw"], ["korea_sw", "yellow_sea"], ["korea_sw", "korea_strait"], ["yellow_sea", "jiaozhou_bay"],
   ["manila_bay", "verde_passage"], ["verde_passage", "mindoro_w"], ["luzon_strait", "samar_e"], ["samar_e", "mindanao_n"],
   ["atlantic_equator", "st_helena"], ["st_helena", "south_atlantic"],
