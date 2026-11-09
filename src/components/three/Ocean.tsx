@@ -19,6 +19,7 @@ uniform float uDisplace;
 varying vec3 vWorldPos;
 varying float vHeight;
 varying float vFade;
+varying float vDetail;
 void main() {
   vec4 world = modelMatrix * vec4(position, 1.0);
   // Displacement fades out with distance from the ship: beyond a few hundred metres the
@@ -32,6 +33,9 @@ void main() {
   vWorldPos = world.xyz;
   vHeight = h;
   vFade = fade;
+  // Short swells and ripples fade out toward the sheet's edge, where the far sheet (which
+  // does not compute them) takes over.
+  vDetail = 1.0 - smoothstep(${(INNER_HALF * 0.55).toFixed(1)}, ${(INNER_HALF * 0.97).toFixed(1)}, r);
   vec4 mvPosition = viewMatrix * world;
   gl_Position = projectionMatrix * mvPosition;
   #include <fog_vertex>
@@ -50,6 +54,7 @@ uniform float uSunStrength;
 varying vec3 vWorldPos;
 varying float vHeight;
 varying float vFade;
+varying float vDetail;
 
 void main() {
   vec3 toCam = cameraPosition - vWorldPos;
@@ -59,7 +64,7 @@ void main() {
   // Per-pixel normal from the analytic wave gradient, filtered by the pixel footprint
   // (metres per screen pixel) so sub-pixel waves do not shimmer as the camera moves.
   float px = max(fwidth(vWorldPos.x), fwidth(vWorldPos.z));
-  vec2 slope = waveSlope(vWorldPos.xz, px);
+  vec2 slope = waveSlope(vWorldPos.xz, px, vDetail);
   vec3 n = normalize(vec3(-slope.x, 1.0, -slope.y));
 
   float ndv = max(dot(n, viewDir), 0.0);
@@ -154,7 +159,8 @@ export function Ocean({ segments }: { segments: number }) {
   const outer = useRef<THREE.Mesh>(null);
   const innerMaterial = useMemo(() => new THREE.ShaderMaterial({ uniforms: makeUniforms(), vertexShader: VERTEX, fragmentShader: FRAGMENT, fog: true }), []);
   const outerMaterial = useMemo(() => {
-    const m = new THREE.ShaderMaterial({ uniforms: makeUniforms(), vertexShader: VERTEX, fragmentShader: FRAGMENT, fog: true });
+    // The far sheet is flat and shades with the four long swells only (WAVE_GLSL, WAVE_FAR).
+    const m = new THREE.ShaderMaterial({ uniforms: makeUniforms(), vertexShader: VERTEX, fragmentShader: FRAGMENT, fog: true, defines: { WAVE_FAR: 1 } });
     m.uniforms.uDisplace!.value = 0;
     return m;
   }, []);
