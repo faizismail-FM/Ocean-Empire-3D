@@ -25,6 +25,8 @@ import { parseState, serializeState, summarizeState } from "@/engine/save";
 import type { GameState } from "@/engine/state";
 import { validateAccept } from "@/engine/contracts";
 import { computeModifiers } from "@/engine/modifiers";
+import { headingDifference, initialBearing } from "@/engine/geo";
+import { berthHeading, fromHarbourLocal, GROUNDING_MARGIN_M, harbourClearance, harbourLayout, landBearing, seaBearing, toHarbourLocal } from "@/engine/harbour";
 
 const SEED = 12345;
 
@@ -179,6 +181,85 @@ describe("modern tutorial: Port Klang to Singapore", () => {
     expect(parseState("not json").ok).toBe(false);
     expect(parseState({ version: 99 }).ok).toBe(false);
     expect(parseState({ ...arrived, treasury: "lots" }).ok).toBe(false);
+  });
+
+  it("lies alongside the quay when docked and leaves pointing down the fairway", () => {
+    const catalog = getCatalog("modern_shipping_2024");
+    let s = newModern();
+    const ship = Object.values(s.ships)[0]!;
+    const klang = catalog.portMap.get("port_klang")!;
+    // Berthed: parallel to the quay (perpendicular to the sea bearing).
+    expect(Math.abs(headingDifference(ship.heading, seaBearing(klang)))).toBeCloseTo(90, 5);
+    expect(ship.aground).toBe(false);
+    s = setDestination(catalog, s, ship.id, "singapore");
+    const route = s.ships[ship.id]!.route;
+    expect(route[1]?.label).toBe("Port Klang fairway");
+    expect(route[route.length - 2]?.label).toBe("Singapore fairway");
+    s = departShip(catalog, s, ship.id);
+    const under = s.ships[ship.id]!;
+    expect(under.heading).toBeCloseTo(initialBearing(under.position, route[1]!), 5);
+    expect(Math.abs(headingDifference(under.heading, seaBearing(klang)))).toBeLessThan(0.01);
+    // The first hour out stays in open water: never inside the quay or the shore.
+    let t = s;
+    for (let i = 0; i < 6; i++) {
+      t = tickGame(catalog, t, 600).state;
+      const local = toHarbourLocal(klang, t.ships[ship.id]!.position);
+      expect(harbourClearance(harbourLayout(klang.size), local)).toBeGreaterThan(0);
+      expect(t.ships[ship.id]!.aground).toBe(false);
+    }
+    // Arrival comes alongside Singapore's quay.
+    const { state: arrived } = advance(s, catalog, 36 * 3600, 300);
+    const docked = arrived.ships[ship.id]!;
+    const singapore = catalog.portMap.get("singapore")!;
+    expect(docked.status).toBe("docked");
+    expect(Math.abs(headingDifference(docked.heading, seaBearing(singapore)))).toBeCloseTo(90, 5);
+    expect(docked.heading).toBeCloseTo(berthHeading(singapore, docked.heading), 5);
+  });
+
+  it("grounds a ship steered into the quay, holds it at the water's edge and swings it seaward", () => {
+    const catalog = getCatalog("modern_shipping_2024");
+    let s = newModern();
+    const ship = Object.values(s.ships)[0]!;
+    const klang = catalog.portMap.get("port_klang")!;
+    const layout = harbourLayout(klang.size);
+    s = setDestination(catalog, s, ship.id, "singapore");
+    s = departShip(catalog, s, ship.id);
+    // Take the helm 1.5 km off the berth and drive straight at the land.
+    s = {
+      ...s,
+      ships: {
+        ...s.ships,
+        [ship.id]: { ...s.ships[ship.id]!, autopilot: false, heading: landBearing(klang), position: fromHarbourLocal(klang, 0, -1500), speed_knots: 12, throttle: 1, rudder: 0 },
+      },
+    };
+    const conditionBefore = s.ships[ship.id]!.condition;
+    let grounded = false;
+    const events = [];
+    for (let i = 0; i < 20 && !grounded; i++) {
+      const r = tickGame(catalog, s, 120);
+      s = r.state;
+      events.push(...r.events);
+      grounded = s.ships[ship.id]!.aground;
+    }
+    expect(grounded).toBe(true);
+    const held = s.ships[ship.id]!;
+    expect(held.status).toBe("sailing");
+    expect(held.speed_knots).toBe(0);
+    expect(held.throttle).toBe(0);
+    const local = toHarbourLocal(klang, held.position);
+    expect(local.z).toBeLessThan(layout.quayNear); // never inside the quay
+    expect(harbourClearance(layout, local)).toBeGreaterThanOrEqual(GROUNDING_MARGIN_M - 0.05);
+    expect(held.condition).toBe(conditionBefore - 2);
+    expect(events.filter((e) => e.type === "grounded")).toHaveLength(1);
+    expect(s.notifications[0]?.title).toContain("run aground");
+    // Left alone the bow comes round toward open water, and the ship can then get off.
+    for (let i = 0; i < 10; i++) s = tickGame(catalog, s, 120).state;
+    expect(Math.abs(headingDifference(s.ships[ship.id]!.heading, seaBearing(klang)))).toBeLessThan(1);
+    expect(s.notifications.filter((n) => n.title.includes("run aground"))).toHaveLength(1);
+    s = { ...s, ships: { ...s.ships, [ship.id]: { ...s.ships[ship.id]!, throttle: 1 } } };
+    for (let i = 0; i < 10; i++) s = tickGame(catalog, s, 120).state;
+    expect(s.ships[ship.id]!.aground).toBe(false);
+    expect(toHarbourLocal(klang, s.ships[ship.id]!.position).z).toBeLessThan(-200);
   });
 
   it("charges daily maintenance, keeps the tutorial offer and expires old offers", () => {

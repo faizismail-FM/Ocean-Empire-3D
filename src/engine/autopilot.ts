@@ -5,9 +5,14 @@ import type { Waypoint } from "./state";
 import { maxTurnRate } from "./ship";
 import { isInIrons, type Wind } from "./wind";
 
-/** Distance at which a waypoint counts as reached. Ports use a wider radius. */
+/**
+ * Distance at which a waypoint counts as reached. A port is reached when the ship is within
+ * ARRIVAL_RADIUS_NM of its berth point (about 460 m); the ship then comes alongside. The
+ * radius is small enough to stay clear of the quay yet wide enough that the fastest class,
+ * slowed by the autopilot's final approach, cannot step across it in one 120 s substep.
+ */
 export const WAYPOINT_RADIUS_NM = 1.5;
-export const ARRIVAL_RADIUS_NM = 0.6;
+export const ARRIVAL_RADIUS_NM = 0.25;
 
 export interface AutopilotInput {
   rudder: number;

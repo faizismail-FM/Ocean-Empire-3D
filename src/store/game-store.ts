@@ -181,6 +181,7 @@ export const useGameStore = create<GameStore>()((set, get) => {
           if (e.type === "turning_point") get().pushToast({ kind: "event", title: "A turning point in history", message: `${e.event.title}. The game is paused until you decide what happens.` });
           if (e.type === "divergence") get().pushToast({ kind: "warning", title: "History diverges", message: `${e.event.title}: ${e.choice}, as you decided. This outcome is fiction.` });
           if (e.type === "endurance_empty") get().pushToast({ kind: "warning", title: "Endurance exhausted", message: "A ship has run out of fuel or provisions." });
+          if (e.type === "grounded") get().pushToast({ kind: "warning", title: "Aground", message: "The ship has struck the shore and is held at the water's edge. Swing the bow seaward and go ahead, or re-engage the autopilot." });
         }
       } else {
         set({ state: result.state });

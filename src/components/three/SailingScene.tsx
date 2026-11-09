@@ -5,7 +5,9 @@ import { Sky } from "@react-three/drei";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
 import type { VesselClass } from "@/data/schemas";
-import { distanceNm, headingDifference } from "@/engine/geo";
+import { distanceNm, headingDifference, normalizeHeading, type GeoPoint } from "@/engine/geo";
+import { harbourLayout, landBearing } from "@/engine/harbour";
+import type { ShipStatus } from "@/engine/state";
 import { windForDate } from "@/engine/wind";
 import { useGameStore } from "@/store/game-store";
 import { useSettingsStore } from "@/store/settings-store";
@@ -75,6 +77,11 @@ function FrameUpdater() {
   const sunWarm = useMemo(() => new THREE.Color("#ffb070"), []);
   const sunDay = useMemo(() => new THREE.Color("#fff3d6"), []);
   const started = useRef(false);
+  const rawPrev = useRef({ x: 0, z: 0 });
+  // Berthing and casting off change the ship's pose in one simulation step (alongside the
+  // quay, or pointed down the fairway). The drawn ship eases into the new pose instead.
+  const lastPose = useRef<{ status: ShipStatus; position: GeoPoint; heading: number } | null>(null);
+  const glide = useRef({ x: 0, z: 0, heading: 0 });
 
   useFrame((_, dt) => {
     const frame = getSceneFrame();
@@ -88,7 +95,7 @@ function FrameUpdater() {
 
     // Floating origin: keep scene coordinates small. The wave phases absorb the jump so
     // the water does not visibly snap when the origin moves.
-    const before = { x: frame.ship.x, z: frame.ship.z };
+    const before = { x: rawPrev.current.x, z: rawPrev.current.z };
     const local = geoToScene(frame.origin, ship.position);
     if (Math.hypot(local.x, local.z) > REBASE_DISTANCE_M || (frame.origin.lat === 0 && frame.origin.lon === 0)) {
       frame.origin = { ...ship.position };
@@ -96,6 +103,21 @@ function FrameUpdater() {
     const p = geoToScene(frame.origin, ship.position);
     const sceneDelta = started.current ? { x: p.x - before.x, z: p.z - before.z } : { x: 0, z: 0 };
     started.current = true;
+    rawPrev.current = { x: p.x, z: p.z };
+
+    // Ease the drawn ship through a berthing or casting-off jump (real time, so the
+    // animation completes even when arrival pauses the game).
+    const last = lastPose.current;
+    if (last && last.status !== ship.status && (ship.status === "docked" || last.status === "docked")) {
+      const was = geoToScene(frame.origin, last.position);
+      glide.current = { x: was.x - p.x, z: was.z - p.z, heading: headingDifference(ship.heading, last.heading) };
+    }
+    lastPose.current = { status: ship.status, position: ship.position, heading: ship.heading };
+    const ease = Math.exp(-dt * 1.8);
+    glide.current.x *= ease;
+    glide.current.z *= ease;
+    glide.current.heading *= ease;
+    if (Math.abs(glide.current.x) < 0.05 && Math.abs(glide.current.z) < 0.05 && Math.abs(glide.current.heading) < 0.05) glide.current = { x: 0, z: 0, heading: 0 };
 
     // Real-time step: what the ship would cover this frame at its actual speed. The wave
     // field and the wake move relative to the ship by this amount, whatever the time scale.
@@ -117,12 +139,12 @@ function FrameUpdater() {
     // Ride the waves: sample height and slope under the hull, damped by vessel size and
     // low-pass filtered so the hull answers the sea with some inertia.
     const length = cls?.length_m ?? 100;
-    const sample = waveSample(p.x, p.z, frame.wavePhases, frame.waveAmp);
+    const sample = waveSample(p.x + glide.current.x, p.z + glide.current.z, frame.wavePhases, frame.waveAmp);
     const damp = Math.min(1, 40 / length);
     const inertia = 1 - Math.exp(-realDt * (length > 120 ? 1.6 : 2.8));
-    frame.ship.x = p.x;
-    frame.ship.z = p.z;
-    frame.ship.heading = ship.heading;
+    frame.ship.x = p.x + glide.current.x;
+    frame.ship.z = p.z + glide.current.z;
+    frame.ship.heading = normalizeHeading(ship.heading + glide.current.heading);
     frame.ship.speed = ship.speed_knots;
     frame.ship.length = length;
     frame.ship.y += (sample.height * damp - frame.ship.y) * inertia;
@@ -254,9 +276,12 @@ function NavigationAids() {
   );
 }
 
-/** Ports within visual range of the active ship, re-evaluated once a second. */
+/**
+ * Ports within visual range of the active ship, re-evaluated once a second. Their land and
+ * quay placement is fixed by the harbour model, so the scenery never swings with the ship.
+ */
 function NearbyPorts() {
-  const [nearby, setNearby] = useState<Array<{ id: string; bearing: number }>>([]);
+  const [nearby, setNearby] = useState<string[]>([]);
   const catalog = useGameStore((s) => s.catalog);
   const era = catalog?.scenario.era ?? "modern";
   useEffect(() => {
@@ -267,48 +292,22 @@ function NearbyPorts() {
       if (!state || !cat || !state.active_ship_id) return;
       const ship = state.ships[state.active_ship_id];
       if (!ship) return;
-      const list: Array<{ id: string; bearing: number }> = [];
-      for (const port of cat.ports) {
-        const pp = { lat: port.latitude, lon: port.longitude };
-        const d = distanceNm(ship.position, pp);
-        if (d < 10) {
-          // The land lies on the side away from the sea lane. For an arriving ship that is the
-          // direction it approaches from (frozen at first sighting so the quay does not swing);
-          // for a docked ship it is opposite the first leg of its plotted route, or, with no
-          // route, along its starboard side.
-          const existing = nearby.find((n) => n.id === port.id);
-          let bearing: number;
-          if (d < 0.3 && ship.status === "docked") {
-            const next = ship.route[1];
-            bearing = next ? (bearingTo(pp, next) + 180) % 360 : (ship.heading + 90) % 360;
-          } else {
-            bearing = existing?.bearing ?? bearingTo(ship.position, pp);
-          }
-          list.push({ id: port.id, bearing });
-        }
-      }
-      if (list.length !== nearby.length || list.some((n, i) => n.id !== nearby[i]?.id || Math.abs(n.bearing - (nearby[i]?.bearing ?? 0)) > 0.5)) setNearby(list);
+      const list = cat.ports.filter((port) => distanceNm(ship.position, { lat: port.latitude, lon: port.longitude }) < 10);
+      getSceneFrame().harbours = list.map((port) => ({ lat: port.latitude, lon: port.longitude, landBearing: landBearing(port), layout: harbourLayout(port.size) }));
+      const ids = list.map((port) => port.id);
+      setNearby((prev) => (prev.length === ids.length && prev.every((id, i) => id === ids[i]) ? prev : ids));
     };
     update();
     const id = window.setInterval(update, 1000);
     return () => window.clearInterval(id);
-  }, [nearby]);
+  }, []);
   if (!catalog) return null;
   return (
     <>
-      {nearby.map((n) => {
-        const port = catalog.portMap.get(n.id);
-        return port ? <PortScenery key={n.id} port={port} era={era} approachBearing={n.bearing} /> : null;
+      {nearby.map((id) => {
+        const port = catalog.portMap.get(id);
+        return port ? <PortScenery key={id} port={port} era={era} /> : null;
       })}
     </>
   );
-}
-
-function bearingTo(from: { lat: number; lon: number }, to: { lat: number; lon: number }): number {
-  const dLon = ((to.lon - from.lon) * Math.PI) / 180;
-  const la1 = (from.lat * Math.PI) / 180;
-  const la2 = (to.lat * Math.PI) / 180;
-  const y = Math.sin(dLon) * Math.cos(la2);
-  const x = Math.cos(la1) * Math.sin(la2) - Math.sin(la1) * Math.cos(la2) * Math.cos(dLon);
-  return ((Math.atan2(y, x) * 180) / Math.PI + 360) % 360;
 }

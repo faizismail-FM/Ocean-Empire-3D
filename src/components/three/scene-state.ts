@@ -1,5 +1,6 @@
 import * as THREE from "three";
 import type { GeoPoint } from "@/engine/geo";
+import type { HarbourLayout } from "@/engine/harbour";
 import type { Wind } from "@/engine/wind";
 import { createWavePhases, type WavePhases } from "./waves";
 
@@ -33,6 +34,8 @@ export interface SceneFrame {
   paused: boolean;
   /** Simulated seconds, for effects that should age in game time (wake). */
   simSeconds: number;
+  /** Harbours within visual range: where their land lies, so traffic can keep off it. */
+  harbours: Array<{ lat: number; lon: number; landBearing: number; layout: HarbourLayout }>;
 }
 
 const frame: SceneFrame = {
@@ -51,6 +54,7 @@ const frame: SceneFrame = {
   timeScale: 1,
   paused: false,
   simSeconds: 0,
+  harbours: [],
 };
 
 export function getSceneFrame(): SceneFrame {

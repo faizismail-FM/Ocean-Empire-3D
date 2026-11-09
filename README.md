@@ -124,25 +124,29 @@ All controls are also available as on-screen buttons. Keys are ignored while typ
 
 1. **Trade**: accept a contract at a port where one of your ships is docked (capacity, origin and route are validated), or buy market cargo.
 2. **Destination**: choose the destination on the World map, the HUD or the contract card. Routes follow a sea-lane graph (`src/data/sealanes.ts`) so ships round peninsulas instead of crossing land; canal nodes are disabled before their opening years and, for Trajan's canal from the Nile to the Red Sea, after the year it silted.
-3. **Sail**: depart; the autopilot steers through the waypoints, slowing for the berth. Take the helm at any time. Sailing ships depend on the monsoon regime of their scenario and tack when headed.
-4. **Arrive**: within 0.6 nm of the port the ship docks automatically, port fees are charged, contract cargo for that port is delivered and paid exactly once (late deliveries are penalised, early ones get a small bonus), and a voyage report is shown.
+3. **Sail**: depart; the ship leaves its berth pointing down the port's fairway and the autopilot steers through the waypoints, slowing for the berth. Take the helm at any time. Sailing ships depend on the monsoon regime of their scenario and tack when headed.
+4. **Arrive**: the route comes in through the destination's fairway, straight in from the sea side; within 0.25 nm of the berth the ship docks automatically and comes alongside the quay, port fees are charged, contract cargo for that port is delivered and paid exactly once (late deliveries are penalised, early ones get a small bonus), and a voyage report is shown.
 5. **Grow**: refuel or provision, repair, invest in docks, warehouses, shipyards and more, acquire technologies, negotiate access, buy or build ships.
 
 Daily upkeep is charged per ship; a home-port customs house produces income. Prices drift deterministically per week from a seed, so a save always sees the same markets.
+
+### Harbours
+
+Every port has a quay and a landmass behind it, and they are solid. Their placement is a pure function of the port record (`src/engine/harbour.ts`): the sea lies toward the port's lane nodes (their mean bearing, or an explicit `sea_bearing` on the record), the quay runs across that direction and the land sits behind it, and the same shapes are drawn by the sailing scene and used by the simulation. Routes leave and enter every port through a fairway waypoint 3 nm out on the sea side, so the first and last legs are always in open water; a docked ship lies alongside the quay and a departing ship points down the fairway. A ship steered into the quay or the shore runs aground: it is held at the water's edge with its speed at zero, loses two points of condition, the crew swings the bow toward open water, and it gets off again under its own power or by re-engaging the autopilot (which plans from the ship's position through the fairway). Docked rival ships take berths along the quay and ambient traffic bears away from the shore. `tests/data.test.ts` checks that every planned route in every campaign clears every harbour's land, and `tests/harbour.test.ts` covers the geometry.
 
 ## Project layout
 
 ```
 src/data          Immutable reference database (Zod-validated): ports, ships, goods, technologies,
                   events, figures, routes, civilizations, sources, scenarios, sea lanes, infrastructure
-src/engine        Pure simulation rules: geo, kinematics, wind, autopilot, routing, economy, markets,
+src/engine        Pure simulation rules: geo, kinematics, wind, autopilot, routing, harbours, economy, markets,
                   contracts, port development, technology, objectives, events, game tick, save validation
 src/store         Zustand stores wrapping the engine (game, settings)
 src/persistence   Storage adapters: localStorage (default) + optional Supabase mirror
 src/components    UI primitives, game screens, the d3-geo world map, the R3F sailing scene and HUD
 src/app           Next.js routes: menu, new game, /play/* screens, /encyclopedia/*
 supabase          Optional database schema with RLS
-tests             Vitest suites (93 tests)
+tests             Vitest suites (116 tests)
 docs              Master design prompt and research notes
 ```
 
@@ -159,7 +163,7 @@ Quality presets (low / medium / high) control device pixel ratio, shadows and oc
 
 ## Verification
 
-`npm run check` (typecheck, lint, 93 unit/integration tests, production build) passes. The production build was also driven end to end in headless Chromium with Playwright: new game → accept the Port Klang→Singapore contract → depart → autopilot voyage at accelerated time → automatic docking, payment and voyage report → save restored after reload, plus the Roman, Siraf, Srivijaya, Song, Kilwa, Ming, Venice, Melaka, Carreira, Dutch Company and East India Company sailing scenes, diplomacy, history and encyclopedia pages.
+`npm run check` (typecheck, lint, 116 unit/integration tests, production build) passes. The production build was also driven end to end in headless Chromium with Playwright: new game → accept the Port Klang→Singapore contract → depart down the fairway → autopilot voyage at accelerated time → approach through the Singapore fairway, automatic docking alongside the quay, payment and voyage report → a manual run into the shore that grounds and refloats → save restored after reload, plus the Roman, Siraf, Srivijaya, Song, Kilwa, Ming, Venice, Melaka, Carreira, Dutch Company and East India Company sailing scenes, diplomacy, history and encyclopedia pages.
 
 ## Status and limitations
 

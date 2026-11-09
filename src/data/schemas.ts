@@ -115,6 +115,11 @@ export const PortRecordSchema = z.object({
   fee_modifier: z.number().default(1),
   /** Sea-lane nodes this port connects to for routing. */
   lane_nodes: z.array(z.string()),
+  /**
+   * Bearing from the port toward open water, for the harbour layout (quay and land placement,
+   * fairway, berth). Omitted, it is the mean bearing of the port's lane nodes (see engine/harbour.ts).
+   */
+  sea_bearing: z.number().min(0).max(360).optional(),
   evidence_status: EvidenceStatusSchema,
   sources: z.array(z.string()),
   size: z.enum(["minor", "regional", "major", "hub"]).default("regional"),

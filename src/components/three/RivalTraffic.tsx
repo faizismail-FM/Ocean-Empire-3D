@@ -5,6 +5,7 @@ import { useEffect, useRef, useState } from "react";
 import * as THREE from "three";
 import type { ShipModel } from "@/data/schemas";
 import { distanceNm } from "@/engine/geo";
+import { berthHeading, landBearing } from "@/engine/harbour";
 import { useGameStore } from "@/store/game-store";
 import { ProceduralShip } from "./ProceduralShip";
 import { geoToScene, getSceneFrame, headingToRotationY } from "./scene-state";
@@ -19,6 +20,8 @@ interface Nearby {
   length: number;
   color: string;
   name: string;
+  /** Berth slot along the quay when docked (the player's ship has the centre berth). */
+  slot: number;
 }
 
 /**
@@ -39,6 +42,7 @@ export function RivalTraffic() {
       const me = state.ships[state.active_ship_id];
       if (!me) return;
       const list: Nearby[] = [];
+      const berths = new Map<string, number>();
       for (const def of cat.scenario.rivals) {
         const rival = state.rivals[def.id];
         if (!rival) continue;
@@ -46,7 +50,12 @@ export function RivalTraffic() {
           if (distanceNm(me.position, ship.position) > VISIBLE_NM) continue;
           const cls = cat.ships.find((c) => c.id === ship.class_id);
           if (!cls) continue;
-          list.push({ key: `${def.id}:${ship.id}`, model: cls.model, length: cls.length_m, color: def.color, name: ship.name });
+          let slot = 0;
+          if (ship.status === "docked" && ship.docked_port_id) {
+            slot = berths.get(ship.docked_port_id) ?? 0;
+            berths.set(ship.docked_port_id, slot + 1);
+          }
+          list.push({ key: `${def.id}:${ship.id}`, model: cls.model, length: cls.length_m, color: def.color, name: ship.name, slot });
           if (list.length >= MAX_VISIBLE) break;
         }
       }
@@ -81,14 +90,24 @@ function RivalShipMesh({ info }: { info: Nearby }) {
       return;
     }
     const p = geoToScene(frame.origin, ship.position);
-    // Docked rivals sit a little off the quay so they never share the player's berth.
-    const offset = ship.status === "docked" ? info.length * 1.6 : 0;
-    const x = p.x + offset;
-    const z = p.z - offset * 0.4;
+    let x = p.x;
+    let z = p.z;
+    let heading = ship.heading;
+    // Docked rivals lie alongside the quay in their own berths, either side of the player's.
+    const port = ship.status === "docked" && ship.docked_port_id ? useGameStore.getState().catalog?.portMap.get(ship.docked_port_id) : undefined;
+    if (port) {
+      const b = (landBearing(port) * Math.PI) / 180;
+      const side = info.slot % 2 === 0 ? 1 : -1;
+      const rank = Math.floor(info.slot / 2) + 1;
+      const along = side * rank * (info.length * 1.3 + 50);
+      x += Math.cos(b) * along;
+      z += Math.sin(b) * along;
+      heading = berthHeading(port, ship.heading);
+    }
     const damp = Math.min(1, 40 / info.length);
     g.visible = true;
     g.position.set(x, waveHeight(x, z, frame.wavePhases, frame.waveAmp) * damp, z);
-    g.rotation.set(0, headingToRotationY(ship.heading), 0);
+    g.rotation.set(0, headingToRotationY(heading), 0);
   });
   return (
     <group ref={group}>
