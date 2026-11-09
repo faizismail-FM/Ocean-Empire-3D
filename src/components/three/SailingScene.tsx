@@ -1,6 +1,6 @@
 "use client";
 
-import { Canvas, useFrame } from "@react-three/fiber";
+import { Canvas, useFrame, useThree } from "@react-three/fiber";
 import { Sky } from "@react-three/drei";
 import { useEffect, useMemo, useRef, useState } from "react";
 import * as THREE from "three";
@@ -9,6 +9,7 @@ import { distanceNm, headingDifference, normalizeHeading, type GeoPoint } from "
 import { harbourLayout, landBearing } from "@/engine/harbour";
 import type { ShipStatus } from "@/engine/state";
 import { windForDate } from "@/engine/wind";
+import { DECISION_INTERVAL_SECONDS, nextQuality, perfSampler, recordFrame, resetSampler, sampleStats, SETTLE_SECONDS, type AdaptiveState, type EffectiveQuality } from "@/lib/perf";
 import { useGameStore } from "@/store/game-store";
 import { useSettingsStore } from "@/store/settings-store";
 import { CameraRig } from "./CameraRig";
@@ -22,16 +23,56 @@ import { advanceWavePhases, waveSample } from "./waves";
 
 const QUALITY = {
   // Ocean segments tessellate the 1.4 km sheet around the ship: 140 → 10 m cells, 280 → 5 m, 400 → 3.5 m.
+  // Shadow maps cover the 800 m around the ship: 1024 texels is 0.8 m per texel, 2048 is 0.4 m.
   low: { dpr: [1, 1] as [number, number], shadows: false, oceanSegments: 140, shadowMap: 1024 },
-  medium: { dpr: [1, 1.5] as [number, number], shadows: true, oceanSegments: 280, shadowMap: 2048 },
-  high: { dpr: [1, 2] as [number, number], shadows: true, oceanSegments: 400, shadowMap: 4096 },
+  medium: { dpr: [1, 1.5] as [number, number], shadows: true, oceanSegments: 280, shadowMap: 1024 },
+  high: { dpr: [1, 2] as [number, number], shadows: true, oceanSegments: 400, shadowMap: 2048 },
 };
+
+/**
+ * Resolves the graphics setting to a level. "auto" starts at medium and moves with the
+ * measured frame time (rule in lib/perf.ts); a fixed setting is used as it is.
+ */
+function useEffectiveQuality(): EffectiveQuality {
+  const setting = useSettingsStore((s) => s.quality);
+  const pushToast = useGameStore((s) => s.pushToast);
+  const [auto, setAuto] = useState<EffectiveQuality>("medium");
+  const adaptive = useRef<AdaptiveState>({ level: "medium", fastWindows: 0 });
+  const settledAt = useRef(0);
+
+  useEffect(() => {
+    if (setting !== "auto") return;
+    settledAt.current = performance.now() + SETTLE_SECONDS * 1000;
+    const id = window.setInterval(() => {
+      if (performance.now() < settledAt.current || document.visibilityState !== "visible") return;
+      const stats = sampleStats(perfSampler);
+      if (stats.frames < 30 || stats.fps === 0) return;
+      const next = nextQuality(adaptive.current, stats.avgMs);
+      const changed = next.level !== adaptive.current.level;
+      adaptive.current = next;
+      if (changed) {
+        settledAt.current = performance.now() + SETTLE_SECONDS * 1000;
+        resetSampler(perfSampler);
+        setAuto(next.level);
+        if (next.level === "low" || stats.avgMs > 1000 / 30) pushToast({ kind: "info", title: `Graphics set to ${next.level}`, message: `Frames were taking ${stats.avgMs.toFixed(0)} ms. Choose a fixed level in Settings to override.` });
+      }
+    }, DECISION_INTERVAL_SECONDS * 1000);
+    return () => window.clearInterval(id);
+  }, [setting, pushToast]);
+
+  const level = setting === "auto" ? auto : setting;
+  useEffect(() => {
+    perfSampler.level = level;
+    perfSampler.auto = setting === "auto";
+  }, [level, setting]);
+  return level;
+}
 
 const REBASE_DISTANCE_M = 15_000;
 
 /** Full-screen 3D sailing environment for the active ship. Rendered only on the client. */
 export function SailingScene() {
-  const quality = useSettingsStore((s) => s.quality);
+  const quality = useEffectiveQuality();
   const camera = useSettingsStore((s) => s.camera);
   const q = QUALITY[quality];
   const catalog = useGameStore((s) => s.catalog);
@@ -42,6 +83,8 @@ export function SailingScene() {
 
   return (
     <Canvas
+      // Remount on a level change so shadow setup and ocean tessellation take the new values.
+      key={quality}
       dpr={q.dpr}
       shadows={q.shadows ? { type: THREE.PCFSoftShadowMap } : false}
       camera={{ fov: 55, near: 1, far: 20000, position: [0, 60, 220] }}
@@ -53,6 +96,7 @@ export function SailingScene() {
       className="h-full w-full"
     >
       <FrameUpdater />
+      <FrameMeter />
       <Lighting shadowMap={q.shadowMap} shadows={q.shadows} />
       <SkyDome />
       <Ocean segments={q.oceanSegments} />
@@ -172,6 +216,17 @@ function FrameUpdater() {
     if (fog.current) fog.current.color.copy(frame.fogColor);
   });
   return <fog ref={fog} attach="fog" args={["#9fcbe6", 1500, 7500]} />;
+}
+
+/** Records each rendered frame's time and the renderer's draw-call and triangle counts. */
+function FrameMeter() {
+  const gl = useThree((s) => s.gl);
+  useFrame((_, dt) => {
+    recordFrame(perfSampler, dt * 1000);
+    perfSampler.drawCalls = gl.info.render.calls;
+    perfSampler.triangles = gl.info.render.triangles;
+  });
+  return null;
 }
 
 export function Lighting({ shadowMap, shadows }: { shadowMap: number; shadows: boolean }) {
