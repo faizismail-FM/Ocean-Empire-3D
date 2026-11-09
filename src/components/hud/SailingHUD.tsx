@@ -13,6 +13,7 @@ import { remainingDistanceNm } from "@/engine/routing";
 import { estimateVoyageSeconds } from "@/engine/ship";
 import type { GameState, ShipState } from "@/engine/state";
 import { windForDate } from "@/engine/wind";
+import { formatPerf, perfSampler, sampleStats } from "@/lib/perf";
 import { TIME_SCALES, timeScaleHint, timeScaleLabel } from "@/lib/time-scale";
 import { cn, formatMoney, formatNumber } from "@/lib/utils";
 import { useGameStore } from "@/store/game-store";
@@ -60,6 +61,7 @@ export function SailingHUD() {
   const router = useRouter();
   const state = useThrottledState();
   const catalog = useGameStore((s) => s.catalog);
+  const showFrameRate = useSettingsStore((s) => s.showFrameRate);
   const setControls = useGameStore((s) => s.setControls);
   const togglePaused = useGameStore((s) => s.togglePaused);
   const setTimeScale = useGameStore((s) => s.setTimeScale);
@@ -272,6 +274,7 @@ export function SailingHUD() {
         </div>
         <TimeScaleButtons value={state.time_scale} onChange={setTimeScale} className="mt-2" />
         <div className="mt-1 text-[0.68rem] text-foam/55">{state.paused ? "Paused" : timeScaleHint(state.time_scale)}</div>
+        {showFrameRate && <FrameRateReadout />}
         {wind && (
           <div className={cn("mt-2 flex items-center gap-2 rounded-md px-2 py-1", inIrons ? "bg-coral-400/15 text-coral-400" : "bg-white/5 text-foam/80")}>
             <Wind size={14} style={{ transform: `rotate(${wind.from + 180}deg)` }} />
@@ -528,4 +531,19 @@ function tutorialHint(state: GameState, ship: ShipState, mode: "historical" | "m
   }
   if (ship.autopilot) return { text: "Under way. Press C to change camera, + and − to zoom, or take the helm with W/S and A/D. Arrival docks the ship and pays the contract. Press ? for the guide." };
   return { text: "Manual control. Steer toward the buoy or re-engage the autopilot to follow the planned route." };
+}
+
+/** Frames per second, frame time and draw calls of the sailing scene, refreshed twice a second. */
+function FrameRateReadout() {
+  const [stats, setStats] = useState(() => sampleStats(perfSampler));
+  useEffect(() => {
+    const id = window.setInterval(() => setStats(sampleStats(perfSampler)), 500);
+    return () => window.clearInterval(id);
+  }, []);
+  return (
+    <div className="mt-1 font-mono text-[0.68rem] leading-4 text-foam/55" aria-label="Frame rate">
+      <div>{formatPerf(stats)}</div>
+      <div>{stats.fps > 0 ? `${stats.drawCalls} draws · ` : ""}{stats.auto ? `auto (${stats.level})` : stats.level}</div>
+    </div>
+  );
 }

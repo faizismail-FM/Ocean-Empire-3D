@@ -1,12 +1,13 @@
 "use client";
 
 import { useRouter } from "next/navigation";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Download, Save, Trash2 } from "lucide-react";
 import { serializeState } from "@/engine/save";
 import { getPersistence } from "@/persistence";
 import { useGameStore } from "@/store/game-store";
 import { useSettingsStore, type QualityLevel } from "@/store/settings-store";
+import { formatPerf, perfSampler, sampleStats } from "@/lib/perf";
 import { Button, ConfirmDialog, KeyValue, Panel } from "@/components/ui";
 import { AccountPanel } from "@/components/game/AccountPanel";
 import { HelpTip } from "@/components/game/Guide";
@@ -20,6 +21,11 @@ export default function SettingsPage() {
   const lastSavedAt = useGameStore((s) => s.lastSavedAt);
   const settings = useSettingsStore();
   const [confirmReset, setConfirmReset] = useState(false);
+  const [perf, setPerf] = useState(() => sampleStats(perfSampler));
+  useEffect(() => {
+    const id = window.setInterval(() => setPerf(sampleStats(perfSampler)), 1000);
+    return () => window.clearInterval(id);
+  }, []);
 
   const exportSave = () => {
     const blob = new Blob([serializeState(state)], { type: "application/json" });
@@ -37,7 +43,7 @@ export default function SettingsPage() {
       <div className="grid gap-4 md:grid-cols-2">
         <Panel title="Graphics" subtitle="Applies to the 3D sailing scene.">
           <div className="flex gap-2">
-            {(["low", "medium", "high"] as QualityLevel[]).map((q) => (
+            {(["auto", "low", "medium", "high"] as QualityLevel[]).map((q) => (
               <Button key={q} size="sm" variant={settings.quality === q ? "primary" : "secondary"} onClick={() => settings.setQuality(q)} className="capitalize">
                 {q}
               </Button>
@@ -46,12 +52,16 @@ export default function SettingsPage() {
           <KeyValue
             className="mt-3 text-xs"
             items={[
+              ["Auto", "Starts at medium; drops a level when frames take over 33 ms, rises after a few seconds under 12.5 ms"],
               ["Low", "No shadows, 10 m ocean mesh, pixel ratio 1"],
-              ["Medium", "Soft shadows, 5 m ocean mesh, pixel ratio up to 1.5"],
-              ["High", "Soft shadows, 3.5 m ocean mesh, pixel ratio up to 2"],
+              ["Medium", "Soft shadows (1024 map), 5 m ocean mesh, pixel ratio up to 1.5"],
+              ["High", "Soft shadows (2048 map), 3.5 m ocean mesh, pixel ratio up to 2"],
             ]}
           />
-          <p className="mt-2 text-xs text-foam/50">Frame rates depend on your hardware; no specific rate is guaranteed.</p>
+          <label className="mt-3 flex items-center gap-2 text-sm"><input type="checkbox" checked={settings.showFrameRate} onChange={(e) => settings.setShowFrameRate(e.target.checked)} /> Show frame rate in the sailing view</label>
+          <p className="mt-2 text-xs text-foam/50">
+            {perf.frames > 0 ? `Last measured in the sailing view: ${formatPerf(perf)}, ${perf.drawCalls} draw calls, at ${perf.auto ? `auto (${perf.level})` : perf.level}.` : "Open the sailing view to measure the frame rate on this device."} Frame rates depend on your hardware; no specific rate is guaranteed.
+          </p>
         </Panel>
         <Panel title="Sound" subtitle="Ocean, wind and a generative music bed, synthesised in the browser; no audio files are downloaded.">
           <label className="flex items-center gap-2 text-sm"><input type="checkbox" checked={settings.audio.enabled} onChange={(e) => settings.setAudio({ enabled: e.target.checked })} /> Sound on</label>

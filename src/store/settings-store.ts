@@ -3,12 +3,15 @@
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 
-export type QualityLevel = "low" | "medium" | "high";
+/** "auto" lets the sailing scene pick low, medium or high from the measured frame rate. */
+export type QualityLevel = "auto" | "low" | "medium" | "high";
 export type CameraMode = "chase" | "free" | "overhead";
 
 interface SettingsState {
   quality: QualityLevel;
   camera: CameraMode;
+  /** Show frames per second and frame time in the sailing view. */
+  showFrameRate: boolean;
   showTutorialHints: boolean;
   autosave: boolean;
   /** Procedural sound: ambience and music. Levels are 0..1. */
@@ -17,6 +20,7 @@ interface SettingsState {
   setQuality: (q: QualityLevel) => void;
   setCamera: (c: CameraMode) => void;
   cycleCamera: () => void;
+  setShowFrameRate: (v: boolean) => void;
   setShowTutorialHints: (v: boolean) => void;
   setAutosave: (v: boolean) => void;
   setUnits: (u: "nautical" | "metric") => void;
@@ -37,8 +41,9 @@ const CAMERA_ORDER: CameraMode[] = ["chase", "free", "overhead"];
 export const useSettingsStore = create<SettingsState>()(
   persist(
     (set, get) => ({
-      quality: "medium",
+      quality: "auto",
       camera: "chase",
+      showFrameRate: false,
       showTutorialHints: true,
       autosave: true,
       audio: DEFAULT_AUDIO,
@@ -49,6 +54,7 @@ export const useSettingsStore = create<SettingsState>()(
         const idx = CAMERA_ORDER.indexOf(get().camera);
         set({ camera: CAMERA_ORDER[(idx + 1) % CAMERA_ORDER.length] ?? "chase" });
       },
+      setShowFrameRate: (showFrameRate) => set({ showFrameRate }),
       setShowTutorialHints: (showTutorialHints) => set({ showTutorialHints }),
       setAutosave: (autosave) => set({ autosave }),
       setUnits: (units) => set({ units }),

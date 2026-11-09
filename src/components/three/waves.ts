@@ -141,9 +141,13 @@ const vec3 RIP_DX = ${vec3(RIPPLES.map((w) => w.direction[0]))};
 const vec3 RIP_DZ = ${vec3(RIPPLES.map((w) => w.direction[1]))};
 
 float waveHeight(vec2 p) {
+#ifdef WAVE_FAR
+  return 0.0;
+#else
   vec4 ph0 = (SWELL_DX0 * p.x + SWELL_DZ0 * p.y) * SWELL_K0 + uSwellPhase0;
   vec4 ph1 = (SWELL_DX1 * p.x + SWELL_DZ1 * p.y) * SWELL_K1 + uSwellPhase1;
   return (dot(SWELL_A0, sin(ph0)) + dot(SWELL_A1, sin(ph1))) * uAmp;
+#endif
 }
 
 /*
@@ -159,15 +163,24 @@ vec3 waveWeight3(vec3 len, float px) {
   return 1.0 - smoothstep(len * 0.12, len * 0.4, vec3(px));
 }
 
-vec2 waveSlope(vec2 p, float px) {
+/*
+ * detail (0..1) fades the four short swells and the ripples out with distance from the
+ * ship. Beyond a few hundred metres they are below the pixel footprint anyway; the far
+ * water sheet is compiled with WAVE_FAR and skips them altogether, which halves its
+ * per-pixel cost, and the near sheet fades them to zero at its edge so the two match.
+ */
+vec2 waveSlope(vec2 p, float px, float detail) {
   vec4 ph0 = (SWELL_DX0 * p.x + SWELL_DZ0 * p.y) * SWELL_K0 + uSwellPhase0;
-  vec4 ph1 = (SWELL_DX1 * p.x + SWELL_DZ1 * p.y) * SWELL_K1 + uSwellPhase1;
   vec4 d0 = SWELL_A0 * SWELL_K0 * cos(ph0) * waveWeight4(SWELL_LEN0, px);
-  vec4 d1 = SWELL_A1 * SWELL_K1 * cos(ph1) * waveWeight4(SWELL_LEN1, px);
-  vec2 slope = vec2(dot(d0, SWELL_DX0) + dot(d1, SWELL_DX1), dot(d0, SWELL_DZ0) + dot(d1, SWELL_DZ1));
+  vec2 slope = vec2(dot(d0, SWELL_DX0), dot(d0, SWELL_DZ0));
+#ifndef WAVE_FAR
+  vec4 ph1 = (SWELL_DX1 * p.x + SWELL_DZ1 * p.y) * SWELL_K1 + uSwellPhase1;
+  vec4 d1 = SWELL_A1 * SWELL_K1 * cos(ph1) * waveWeight4(SWELL_LEN1, px) * detail;
+  slope += vec2(dot(d1, SWELL_DX1), dot(d1, SWELL_DZ1));
   vec3 rphase = (RIP_DX * p.x + RIP_DZ * p.y) * RIP_K + uRipplePhase;
-  vec3 rd = RIP_A * RIP_K * cos(rphase) * waveWeight3(RIP_LEN, px);
+  vec3 rd = RIP_A * RIP_K * cos(rphase) * waveWeight3(RIP_LEN, px) * detail;
   slope += vec2(dot(rd, RIP_DX), dot(rd, RIP_DZ));
+#endif
   return slope * uAmp;
 }
 `;
