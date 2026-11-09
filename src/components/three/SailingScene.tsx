@@ -98,7 +98,7 @@ export function SailingScene() {
       <FrameUpdater />
       <FrameMeter />
       <Lighting shadowMap={q.shadowMap} shadows={q.shadows} />
-      {quality === "low" ? <SimpleSky /> : <SkyDome />}
+      <SkyDome />
       <Ocean segments={q.oceanSegments} />
       <PlayerShip />
       <Wake />
@@ -262,79 +262,6 @@ export function Lighting({ shadowMap, shadows }: { shadowMap: number; shadows: b
       />
       <primitive object={target} />
     </>
-  );
-}
-
-const SIMPLE_SKY_VERTEX = /* glsl */ `
-varying vec3 vDir;
-void main() {
-  vDir = normalize(position);
-  // Pin the dome to the far plane so it never clips and never writes depth.
-  vec4 clip = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
-  gl_Position = vec4(clip.xy, clip.w * 0.9999, clip.w);
-}
-`;
-const SIMPLE_SKY_FRAGMENT = /* glsl */ `
-uniform vec3 uHorizon;
-uniform vec3 uZenith;
-uniform vec3 uSunDir;
-uniform vec3 uSunColor;
-varying vec3 vDir;
-void main() {
-  vec3 d = normalize(vDir);
-  float up = clamp(d.y, 0.0, 1.0);
-  // Horizon haze at the fog colour, deepening toward the zenith.
-  vec3 color = mix(uHorizon, uZenith, pow(up, 0.45));
-  float cosSun = max(dot(d, uSunDir), 0.0);
-  // A soft glow around the sun and a small bright disc.
-  color += uSunColor * (0.18 * pow(cosSun, 8.0) + 0.6 * pow(cosSun, 400.0));
-  // Below the horizon the sea covers the dome; keep it the fog colour.
-  color = mix(uHorizon, color, smoothstep(-0.02, 0.02, d.y));
-  gl_FragColor = vec4(color, 1.0);
-}
-`;
-
-/**
- * The low preset's sky: a gradient dome with a sun glow, a handful of operations per
- * pixel against the Preetham scattering shader's dozen powers and exponentials. It
- * follows the same per-frame sun and sky colours as the full sky, so the lighting and
- * the fog still match.
- */
-function SimpleSky() {
-  const material = useMemo(
-    () =>
-      new THREE.ShaderMaterial({
-        vertexShader: SIMPLE_SKY_VERTEX,
-        fragmentShader: SIMPLE_SKY_FRAGMENT,
-        uniforms: {
-          uHorizon: { value: new THREE.Color("#9fcbe6") },
-          uZenith: { value: new THREE.Color("#2f6ea6") },
-          uSunDir: { value: new THREE.Vector3(0.3, 0.6, 0.4).normalize() },
-          uSunColor: { value: new THREE.Color("#fff1d0") },
-        },
-        side: THREE.BackSide,
-        depthWrite: false,
-        depthTest: false,
-        fog: false,
-      }),
-    [],
-  );
-  const mesh = useRef<THREE.Mesh>(null);
-  const zenithDay = useMemo(() => new THREE.Color("#2f6ea6"), []);
-  const zenithNight = useMemo(() => new THREE.Color("#0b1b33"), []);
-  useFrame(({ camera }) => {
-    const f = getSceneFrame();
-    if (mesh.current) mesh.current.position.copy(camera.position);
-    (material.uniforms.uHorizon!.value as THREE.Color).copy(f.fogColor);
-    const dayness = THREE.MathUtils.clamp((f.sunElevation - 5) / 30, 0, 1);
-    (material.uniforms.uZenith!.value as THREE.Color).copy(zenithNight).lerp(zenithDay, dayness);
-    (material.uniforms.uSunDir!.value as THREE.Vector3).copy(f.sunDir);
-    (material.uniforms.uSunColor!.value as THREE.Color).copy(f.sunColor);
-  });
-  return (
-    <mesh ref={mesh} material={material} frustumCulled={false} renderOrder={-1}>
-      <sphereGeometry args={[9000, 24, 12]} />
-    </mesh>
   );
 }
 
