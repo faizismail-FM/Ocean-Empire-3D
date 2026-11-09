@@ -103,7 +103,7 @@ export const perfSampler: PerfSampler = createSampler();
 
 export function formatPerf(stats: PerfStats): string {
   if (stats.fps === 0) return "measuring…";
-  return `${Math.round(stats.fps)} fps · ${stats.avgMs.toFixed(1)} ms (p95 ${stats.p95Ms.toFixed(0)}) · ${stats.drawCalls} draws`;
+  return `${Math.round(stats.fps)} fps · ${stats.avgMs.toFixed(1)} ms (p95 ${stats.p95Ms.toFixed(0)} ms)`;
 }
 
 declare global {

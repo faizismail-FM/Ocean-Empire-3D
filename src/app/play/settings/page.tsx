@@ -60,7 +60,7 @@ export default function SettingsPage() {
           />
           <label className="mt-3 flex items-center gap-2 text-sm"><input type="checkbox" checked={settings.showFrameRate} onChange={(e) => settings.setShowFrameRate(e.target.checked)} /> Show frame rate in the sailing view</label>
           <p className="mt-2 text-xs text-foam/50">
-            {perf.frames > 0 ? `Last measured in the sailing view: ${formatPerf(perf)} at ${perf.auto ? `auto (${perf.level})` : perf.level}.` : "Open the sailing view to measure the frame rate on this device."} Frame rates depend on your hardware; no specific rate is guaranteed.
+            {perf.frames > 0 ? `Last measured in the sailing view: ${formatPerf(perf)}, ${perf.drawCalls} draw calls, at ${perf.auto ? `auto (${perf.level})` : perf.level}.` : "Open the sailing view to measure the frame rate on this device."} Frame rates depend on your hardware; no specific rate is guaranteed.
           </p>
         </Panel>
         <Panel title="Sound" subtitle="Ocean, wind and a generative music bed, synthesised in the browser; no audio files are downloaded.">

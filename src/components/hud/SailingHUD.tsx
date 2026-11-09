@@ -541,8 +541,9 @@ function FrameRateReadout() {
     return () => window.clearInterval(id);
   }, []);
   return (
-    <div className="mt-1 font-mono text-[0.68rem] text-foam/55" aria-label="Frame rate">
-      {formatPerf(stats)} · {stats.auto ? `auto (${stats.level})` : stats.level}
+    <div className="mt-1 font-mono text-[0.68rem] leading-4 text-foam/55" aria-label="Frame rate">
+      <div>{formatPerf(stats)}</div>
+      <div>{stats.fps > 0 ? `${stats.drawCalls} draws · ` : ""}{stats.auto ? `auto (${stats.level})` : stats.level}</div>
     </div>
   );
 }
