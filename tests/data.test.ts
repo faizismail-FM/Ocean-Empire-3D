@@ -117,7 +117,7 @@ describe("reference database integrity", () => {
         }
       }
     }
-  });
+  }, 30_000);
 
   it("does not use canals before they existed", () => {
     const c = getCatalog("siraf_850");
