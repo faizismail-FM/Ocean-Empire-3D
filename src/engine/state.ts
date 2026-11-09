@@ -68,6 +68,8 @@ export const ShipStateSchema = z.object({
   voyage: ActiveVoyageSchema.nullable(),
   purchased_sim_seconds: z.number(),
   total_distance_nm: z.number(),
+  /** Held against a quay or the shore after steering into it (see engine/harbour.ts). */
+  aground: z.boolean().default(false),
 });
 export type ShipState = z.infer<typeof ShipStateSchema>;
 

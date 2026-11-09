@@ -3,6 +3,7 @@ import { ALL_CIVILIZATIONS, ALL_EVENTS, ALL_EXTENTS, ALL_FIGURES, ALL_GOODS, ALL
 import { LANE_EDGES, LANE_NODES } from "@/data/sealanes";
 import { planRoute } from "@/engine/routing";
 import { dateFromIso } from "@/engine/calendar";
+import { fairwayWaypoint, legClearsHarbour } from "@/engine/harbour";
 
 describe("reference database integrity", () => {
   it("loads every scenario catalog", () => {
@@ -85,6 +86,34 @@ describe("reference database integrity", () => {
           const route = planRoute(a, b, year);
           expect(route, `${s.id}: no route ${a.id} -> ${b.id}`).not.toBeNull();
           expect(route!.distance_nm).toBeGreaterThan(0);
+        }
+      }
+    }
+  });
+
+  it("routes leave and enter every port through its fairway and never cross a harbour's land", () => {
+    for (const s of ALL_SCENARIOS) {
+      const c = getCatalog(s.id);
+      const year = dateFromIso(s.start_date).year;
+      for (const a of c.ports) {
+        const outFairway = fairwayWaypoint(a);
+        for (const b of c.ports) {
+          if (a.id === b.id) continue;
+          const route = planRoute(a, b, year)!;
+          const wps = route.waypoints;
+          expect(wps.length, `${s.id}: ${a.id} -> ${b.id}`).toBeGreaterThanOrEqual(4);
+          expect(wps[0]?.port_id).toBe(a.id);
+          expect(wps[1]?.lat).toBeCloseTo(outFairway.lat, 9);
+          expect(wps[1]?.lon).toBeCloseTo(outFairway.lon, 9);
+          const inFairway = fairwayWaypoint(b);
+          expect(wps[wps.length - 2]?.lat).toBeCloseTo(inFairway.lat, 9);
+          expect(wps[wps.length - 2]?.lon).toBeCloseTo(inFairway.lon, 9);
+          expect(wps[wps.length - 1]?.port_id).toBe(b.id);
+          for (let i = 1; i < wps.length; i++) {
+            for (const port of c.ports) {
+              expect(legClearsHarbour(port, wps[i - 1]!, wps[i]!), `${s.id}: ${a.id} -> ${b.id} leg ${i} crosses the land of ${port.id}`).toBe(true);
+            }
+          }
         }
       }
     }

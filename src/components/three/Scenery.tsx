@@ -5,6 +5,8 @@ import { useFrame } from "@react-three/fiber";
 import { useMemo, useRef } from "react";
 import * as THREE from "three";
 import type { PortRecord, Era, ShipModel } from "@/data/schemas";
+import { headingDifference } from "@/engine/geo";
+import { harbourLayout, landBearing } from "@/engine/harbour";
 import { createRandom } from "@/engine/rng";
 import type { Waypoint } from "@/engine/state";
 import { geoToScene, getSceneFrame } from "./scene-state";
@@ -15,15 +17,20 @@ const PORT_VISIBLE_M = 16_000;
 
 /**
  * A port that comes into view: a quay oriented across the approach, warehouses or cranes
- * according to the era, and a low landmass behind it. Purely visual; arrival is detected by
- * the simulation using the port's real coordinates.
+ * according to the era, and a low landmass behind it. Its placement comes from the harbour
+ * model (engine/harbour.ts), the same shapes the simulation treats as solid, so the land is
+ * always behind the quay on the side away from the sea lanes and never in a ship's path.
+ * Arrival is detected by the simulation using the port's real coordinates.
  */
-export function PortScenery({ port, era, approachBearing }: { port: PortRecord; era: Era; approachBearing: number }) {
+export function PortScenery({ port, era }: { port: PortRecord; era: Era }) {
   const group = useRef<THREE.Group>(null);
   const modern = era === "modern";
   const rng = useMemo(() => createRandom(`scenery:${port.id}`), [port.id]);
-  const sizeFactor = { minor: 0.7, regional: 1, major: 1.3, hub: 1.6 }[port.size] ?? 1;
-  const quayLength = 520 * sizeFactor;
+  const layout = useMemo(() => harbourLayout(port.size), [port.size]);
+  // Local +z points landward, so the quay lies across the approach and the land sits behind it.
+  const rotationY = useMemo(() => Math.PI - (landBearing(port) * Math.PI) / 180, [port]);
+  const sizeFactor = layout.sizeFactor;
+  const quayLength = layout.quayLength;
   const buildings = useMemo(() => {
     const r = createRandom(`buildings:${port.id}`);
     return Array.from({ length: Math.round(8 * sizeFactor) }, (_, i) => ({
@@ -42,27 +49,25 @@ export function PortScenery({ port, era, approachBearing }: { port: PortRecord; 
     if (!g) return;
     const p = geoToScene(frame.origin, { lat: port.latitude, lon: port.longitude });
     g.position.set(p.x, 0, p.z);
-    // Local +z points along the approach bearing (away from the arriving ship), so the quay
-    // lies across the ship's path and the land sits behind the quay.
-    g.rotation.y = Math.PI - (approachBearing * Math.PI) / 180;
+    g.rotation.y = rotationY;
     const d = Math.hypot(p.x - frame.ship.x, p.z - frame.ship.z);
     g.visible = d < PORT_VISIBLE_M;
   });
 
   return (
     <group ref={group}>
-      {/* land behind the quay (local +z is away from the arriving ship) */}
-      <mesh position={[0, -6, 1250 * sizeFactor]} receiveShadow>
-        <cylinderGeometry args={[1000 * sizeFactor, 1100 * sizeFactor, 16, 28]} />
+      {/* land behind the quay (local +z is landward); the same disc the simulation treats as shore */}
+      <mesh position={[0, -6, layout.landCenter]} receiveShadow>
+        <cylinderGeometry args={[layout.landRadius - 100 * sizeFactor, layout.landRadius, 16, 28]} />
         <meshStandardMaterial color={modern ? "#5f7a5a" : "#7d8f5e"} roughness={1} />
       </mesh>
-      <mesh position={[0, 3, 1800 * sizeFactor]} receiveShadow>
-        <cylinderGeometry args={[400 * sizeFactor, 750 * sizeFactor, 70, 20]} />
+      <mesh position={[0, 3, layout.hillCenter]} receiveShadow>
+        <cylinderGeometry args={[400 * sizeFactor, layout.hillRadius, 70, 20]} />
         <meshStandardMaterial color={modern ? "#4f6b4b" : "#6b7f50"} roughness={1} />
       </mesh>
-      {/* quay: its face is 60 m beyond the berth position so a docked ship lies alongside */}
-      <mesh position={[0, 2, 60 + 130]} castShadow receiveShadow>
-        <boxGeometry args={[quayLength, 6, 260]} />
+      {/* quay: its face is quayNear metres landward of the berth point, so a docked ship lies alongside */}
+      <mesh position={[0, 2, (layout.quayNear + layout.quayFar) / 2]} castShadow receiveShadow>
+        <boxGeometry args={[quayLength, 6, layout.quayFar - layout.quayNear]} />
         <meshStandardMaterial color={modern ? "#8a8f94" : "#a89474"} roughness={0.95} />
       </mesh>
       {/* bollards / mooring posts */}
@@ -207,6 +212,7 @@ export function TrafficShips({ era, models, seed }: { era: Era; models: ShipMode
 function TrafficShip({ offsetX, offsetZ, heading, speed, length, model }: { offsetX: number; offsetZ: number; heading: number; speed: number; length: number; model: ShipModel }) {
   const group = useRef<THREE.Group>(null);
   const pos = useRef({ x: NaN, z: NaN });
+  const course = useRef(heading);
   useFrame((_, dt) => {
     const frame = getSceneFrame();
     const g = group.current;
@@ -214,7 +220,7 @@ function TrafficShip({ offsetX, offsetZ, heading, speed, length, model }: { offs
     if (Number.isNaN(pos.current.x)) {
       pos.current = { x: frame.ship.x + offsetX, z: frame.ship.z + offsetZ };
     }
-    const h = (heading * Math.PI) / 180;
+    const h = (course.current * Math.PI) / 180;
     const step = frame.paused ? 0 : speed * dt * Math.min(frame.timeScale, 10);
     pos.current.x += Math.sin(h) * step;
     pos.current.z -= Math.cos(h) * step;
@@ -223,8 +229,27 @@ function TrafficShip({ offsetX, offsetZ, heading, speed, length, model }: { offs
     const dz = pos.current.z - frame.ship.z;
     if (Math.abs(dx) > 7000) pos.current.x = frame.ship.x - Math.sign(dx) * 6500;
     if (Math.abs(dz) > 7000) pos.current.z = frame.ship.z - Math.sign(dz) * 6500;
+    // Keep off the land of any harbour in view: bear away from its shore, and a vessel that
+    // finds itself inside the shore (spawned or wrapped there) reappears across the player.
+    for (const harbour of frame.harbours) {
+      const hp = geoToScene(frame.origin, harbour);
+      const b = (harbour.landBearing * Math.PI) / 180;
+      const cx = hp.x + Math.sin(b) * harbour.layout.landCenter;
+      const cz = hp.z - Math.cos(b) * harbour.layout.landCenter;
+      const ox = pos.current.x - cx;
+      const oz = pos.current.z - cz;
+      const dist = Math.hypot(ox, oz);
+      if (dist < harbour.layout.landRadius + 60) {
+        pos.current.x = 2 * frame.ship.x - pos.current.x;
+        pos.current.z = 2 * frame.ship.z - pos.current.z;
+      } else if (dist < harbour.layout.landRadius + 900) {
+        const away = ((Math.atan2(ox, -oz) * 180) / Math.PI + 360) % 360;
+        const turn = Math.min(Math.abs(headingDifference(course.current, away)), 18 * dt);
+        course.current = (course.current + Math.sign(headingDifference(course.current, away)) * turn + 360) % 360;
+      }
+    }
     g.position.set(pos.current.x, waveHeight(pos.current.x, pos.current.z, frame.wavePhases, frame.waveAmp) * 0.4, pos.current.z);
-    g.rotation.y = -h;
+    g.rotation.y = -(course.current * Math.PI) / 180;
   });
   return (
     <group ref={group}>

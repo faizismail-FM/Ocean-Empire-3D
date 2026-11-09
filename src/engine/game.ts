@@ -9,7 +9,8 @@ import { applyEvent, dueEvents } from "./events";
 import { decideTurningPoint, holdTurningPoint, isTurningPoint, resolveTurningPoint } from "./alternate";
 import { createRivalStates, noteCompetition, reactToEvent, rivalFeeMultiplier, tickRivals, rivalDefinition } from "./rivals";
 import { ensureDemographics, initialDemographics, orderFeeMultiplier, prosperityFactor, tickDemographics } from "./demographics";
-import { distanceNm, type GeoPoint } from "./geo";
+import { distanceNm, headingDifference, initialBearing, normalizeHeading, type GeoPoint } from "./geo";
+import { AGROUND_CLEAR_M, berthHeading, nearestHarbour, seaBearing, sweepGrounding } from "./harbour";
 import { livePrice, liveStock, recordTrade } from "./market";
 import { computeModifiers, type Modifiers } from "./modifiers";
 import { evaluateObjectives } from "./objectives";
@@ -33,6 +34,7 @@ export type GameEvent =
   | { type: "historical_event"; event: HistoricalEvent }
   | { type: "campaign_ended"; status: GameState["campaign"]["status"] }
   | { type: "endurance_empty"; ship_id: string }
+  | { type: "grounded"; ship_id: string; port_id: string }
   | { type: "rival_contract_taken"; rival_id: string; contract_id: string; port_id: string }
   | { type: "rival_partnership_ended"; rival_id: string }
   | { type: "rival_charter_posted"; rival_id: string; contract_id: string; port_id: string }
@@ -95,7 +97,7 @@ export function createNewGame(options: NewGameOptions): GameState {
       class_id: cls.id,
       name: i === 0 && options.flagship_name?.trim() ? options.flagship_name.trim() : s.name,
       position: { lat: port.latitude, lon: port.longitude },
-      heading: 90,
+      heading: berthHeading(port),
       speed_knots: 0,
       throttle: 0,
       rudder: 0,
@@ -110,6 +112,7 @@ export function createNewGame(options: NewGameOptions): GameState {
       voyage: null,
       purchased_sim_seconds: 0,
       total_distance_nm: 0,
+      aground: false,
     };
   });
 
@@ -336,6 +339,9 @@ export function departShip(catalog: ScenarioCatalog, state: GameState, shipId: s
       contracts[item.contract_id] = { ...(contracts[item.contract_id] as Contract), status: "in_transit" };
     }
   }
+  // The ship leaves the berth pointing down the fairway (route[1] is the port's fairway
+  // waypoint), so it never has to turn through the quay while gathering way.
+  const first = ship.route[1] as GeoPoint;
   const updated: ShipState = {
     ...ship,
     status: "sailing",
@@ -343,6 +349,8 @@ export function departShip(catalog: ScenarioCatalog, state: GameState, shipId: s
     autopilot: true,
     throttle: 1,
     rudder: 0,
+    heading: initialBearing(ship.position, first),
+    aground: false,
     waypoint_index: 1,
     voyage: {
       origin_port_id: ship.docked_port_id,
@@ -473,6 +481,9 @@ export function dockShip(catalog: ScenarioCatalog, state: GameState, shipId: str
     status: "docked",
     docked_port_id: portId,
     position: { lat: port.latitude, lon: port.longitude },
+    // Alongside the quay, swung the shorter way from the approach heading.
+    heading: berthHeading(port, ship.heading),
+    aground: false,
     speed_knots: 0,
     throttle: 0,
     rudder: 0,
@@ -617,7 +628,7 @@ export function buyShip(catalog: ScenarioCatalog, state: GameState, classId: str
     class_id: cls.id,
     name: name.trim() || cls.name_or_class,
     position: { lat: port.latitude, lon: port.longitude },
-    heading: 90,
+    heading: berthHeading(port),
     speed_knots: 0,
     throttle: 0,
     rudder: 0,
@@ -632,6 +643,7 @@ export function buyShip(catalog: ScenarioCatalog, state: GameState, classId: str
     voyage: null,
     purchased_sim_seconds: state.sim_seconds,
     total_distance_nm: 0,
+    aground: false,
   };
   next = { ...next, ships: { ...next.ships, [id]: ship } };
   next = notify(next, "success", "New vessel", `${ship.name} (${cls.name_or_class}) joins the fleet at ${port.name}.`, "/play/fleet");
@@ -782,6 +794,7 @@ export function tickGame(catalog: ScenarioCatalog, state: GameState, dtSim: numb
     let remaining = dtSim;
     let arrivedAt: string | null = null;
     let enduranceEmptied = false;
+    let groundedAt: string | null = null;
 
     while (remaining > 0 && !arrivedAt) {
       const dt = Math.min(remaining, MAX_SUBSTEP_SECONDS);
@@ -801,30 +814,69 @@ export function tickGame(catalog: ScenarioCatalog, state: GameState, dtSim: numb
       const result = stepKinematics(cls, { position: ship.position, heading: ship.heading, speed_knots: ship.speed_knots, throttle, rudder }, dt, wind, mods, empty);
       const endurance = Math.max(0, ship.endurance - result.endurance_used);
       if (ship.endurance > 0 && endurance === 0) enduranceEmptied = true;
+      let moved = result.kinematics;
+      let aground: boolean = ship.aground;
+
+      // Arrival first: a ship that reaches its berth point comes alongside, whatever the step did.
+      const lastWp = ship.route[ship.route.length - 1];
+      let adv: ReturnType<typeof advanceWaypoint> | null = ship.route.length > 0 ? advanceWaypoint(moved.position, ship.route, ship.waypoint_index) : null;
+      const reachesPort = adv !== null && adv.index >= ship.route.length && lastWp?.port_id !== undefined;
+
+      if (reachesPort) {
+        aground = false;
+      } else {
+        // The quay and the shore are solid: a step into them stops at the water's edge.
+        const grounding = sweepGrounding(catalog.ports, ship.position, moved.position);
+        if (grounding) {
+          if (!aground) groundedAt = grounding.port.id;
+          aground = true;
+          throttle = 0;
+          // The crew warps the ship's head round toward open water so it can get off again.
+          const swing = cls.turn_rate_deg_per_s * dt;
+          const toSea = headingDifference(moved.heading, seaBearing(grounding.port));
+          moved = { ...moved, position: grounding.position, speed_knots: 0, heading: normalizeHeading(moved.heading + clamp(toSea, -swing, swing)) };
+          adv = ship.route.length > 0 ? advanceWaypoint(moved.position, ship.route, ship.waypoint_index) : null;
+        } else if (aground) {
+          // Still against the shore: keep swinging the bow seaward until the ship is well clear.
+          const near = nearestHarbour(catalog.ports, moved.position);
+          if (!near || near.clearance >= AGROUND_CLEAR_M) aground = false;
+          else {
+            const swing = cls.turn_rate_deg_per_s * dt;
+            const toSea = headingDifference(moved.heading, seaBearing(near.port));
+            moved = { ...moved, heading: normalizeHeading(moved.heading + clamp(toSea, -swing, swing)) };
+          }
+        }
+      }
+
       ship = {
         ...ship,
-        position: result.kinematics.position,
-        heading: result.kinematics.heading,
-        speed_knots: result.kinematics.speed_knots,
+        position: moved.position,
+        heading: moved.heading,
+        speed_knots: moved.speed_knots,
         throttle,
         rudder,
         endurance,
+        aground,
         status: endurance === 0 && cls.propulsion === "engine" ? "drifting" : "sailing",
         total_distance_nm: ship.total_distance_nm + result.distance_nm,
         voyage: ship.voyage ? { ...ship.voyage, distance_sailed_nm: ship.voyage.distance_sailed_nm + result.distance_nm, fuel_used: ship.voyage.fuel_used + result.endurance_used } : null,
       };
       distanceThisTick += result.distance_nm;
 
-      if (ship.route.length > 0) {
-        const adv = advanceWaypoint(ship.position, ship.route, ship.waypoint_index);
-        if (adv.index !== ship.waypoint_index) {
-          ship = { ...ship, waypoint_index: adv.index };
-          const last = adv.reached[adv.reached.length - 1];
-          if (adv.index >= ship.route.length && last?.port_id) arrivedAt = last.port_id;
-        }
+      if (adv && adv.index !== ship.waypoint_index) {
+        ship = { ...ship, waypoint_index: adv.index };
+        const last = adv.reached[adv.reached.length - 1];
+        if (adv.index >= ship.route.length && last?.port_id) arrivedAt = last.port_id;
       }
     }
 
+    if (groundedAt) {
+      // A grounding scrapes the hull; the ship is held at the water's edge until it backs off.
+      ship = { ...ship, condition: clamp(ship.condition - 2, 0, 100) };
+      const port = catalog.portMap.get(groundedAt);
+      events.push({ type: "grounded", ship_id: shipId, port_id: groundedAt });
+      next = notify({ ...next, ships: { ...ships, [shipId]: ship } }, "warning", `${ship.name} has run aground${port ? ` at ${port.name}` : ""}`, "The quay and the shore are solid. The crew is swinging the bow toward open water; put the helm over and go ahead to get off, or re-engage the autopilot.", "/play/sail");
+    }
     ships[shipId] = ship;
     if (enduranceEmptied) {
       events.push({ type: "endurance_empty", ship_id: shipId });

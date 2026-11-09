@@ -1,9 +1,9 @@
 import { describe, expect, it } from "vitest";
-import { requireShipClass } from "@/data";
+import { ALL_SHIPS, requireShipClass } from "@/data";
 import { stepKinematics, type Kinematics } from "@/engine/ship";
 import { sailEfficiency, isInIrons } from "@/engine/wind";
-import { computeAutopilot, advanceWaypoint, hasArrived } from "@/engine/autopilot";
-import { distanceNm } from "@/engine/geo";
+import { ARRIVAL_RADIUS_NM, computeAutopilot, advanceWaypoint, hasArrived } from "@/engine/autopilot";
+import { destinationPoint, distanceNm, initialBearing } from "@/engine/geo";
 
 const feeder = requireShipClass("feeder_1000");
 const sewn = requireShipClass("ship_sewn_ocean");
@@ -123,5 +123,35 @@ describe("autopilot", () => {
     expect(distanceNm(k.position, route[2]!)).toBeLessThan(1);
     // ~190 nm at up to 18 knots should take well under a day
     expect(seconds).toBeLessThan(20 * 3600);
+  });
+});
+
+describe("final approach", () => {
+  it("every vessel class reaches the berth radius at the coarsest substep without passing the berth", () => {
+    // The game integrates in substeps of at most 120 s. From a fairway 3 nm out, running
+    // straight at the berth at full speed, no class may jump across the arrival radius; and
+    // once arrived it must not have overrun the berth point by more than that radius.
+    const berth = { lat: 1.26, lon: 103.8 };
+    for (const cls of ALL_SHIPS) {
+      const start = destinationPoint(berth, 270, 3);
+      const route = [{ ...start, label: "fairway" }, { ...berth, port_id: "b" }];
+      let k: Kinematics = { position: start, heading: 90, speed_knots: cls.max_speed_knots, throttle: 1, rudder: 0 };
+      let index = 1;
+      let seconds = 0;
+      let maxOverrun = 0;
+      while (index < route.length && seconds < 12 * 3600) {
+        const ap = computeAutopilot(cls, k.position, k.heading, k.speed_knots, route[1]!, true, null, seconds, 120);
+        k = stepKinematics(cls, { ...k, throttle: ap.throttle, rudder: ap.rudder }, 120, null).kinematics;
+        const adv = advanceWaypoint(k.position, route, index);
+        index = adv.index;
+        seconds += 120;
+        // Overrun: how far past the berth the ship has gone along the approach line.
+        const bearingFromBerth = initialBearing(berth, k.position);
+        if (Math.abs(((bearingFromBerth - 90 + 540) % 360) - 180) < 90) maxOverrun = Math.max(maxOverrun, distanceNm(berth, k.position));
+      }
+      expect(index, `${cls.id} never arrived`).toBe(route.length);
+      expect(distanceNm(k.position, berth), `${cls.id} docked too far out`).toBeLessThanOrEqual(ARRIVAL_RADIUS_NM);
+      expect(maxOverrun, `${cls.id} overran the berth`).toBeLessThanOrEqual(ARRIVAL_RADIUS_NM);
+    }
   });
 });

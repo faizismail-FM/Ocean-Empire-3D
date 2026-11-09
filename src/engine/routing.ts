@@ -1,12 +1,20 @@
 import { LANE_EDGES, LANE_NODES, type LaneNode } from "@/data/sealanes";
 import type { PortRecord } from "@/data/schemas";
 import { distanceNm, pathLengthNm, type GeoPoint } from "./geo";
+import { fairwayWaypoint, inApproachCorridor } from "./harbour";
 import type { Waypoint } from "./state";
 
 /**
  * Route planning over the simplified sea-lane graph (Dijkstra). A route is a list of
- * waypoints from the origin port through lane nodes to the destination port.
+ * waypoints from the origin port, out through its fairway, through lane nodes, and in
+ * through the destination's fairway to the destination port. The fairway waypoints keep
+ * the first and last legs on the sea side of each harbour (see harbour.ts).
  */
+
+export interface RouteOptions {
+  /** Leave the origin through its fairway. False when the origin is a ship's position at sea. */
+  originFairway?: boolean;
+}
 
 interface Graph {
   nodes: Map<string, LaneNode>;
@@ -55,21 +63,21 @@ export interface PlannedRoute {
  * Plan a route between two ports. Returns null when no lane path exists.
  * `year` disables canal nodes that did not exist yet in the scenario period.
  */
-export function planRoute(origin: PortRecord, destination: PortRecord, year: number): PlannedRoute | null {
+export function planRoute(origin: PortRecord, destination: PortRecord, year: number, options: RouteOptions = {}): PlannedRoute | null {
   if (origin.id === destination.id) return null;
+  const originFairway = options.originFairway ?? true;
   const graph = buildGraph();
   const originPoint: GeoPoint = { lat: origin.latitude, lon: origin.longitude };
   const destPoint: GeoPoint = { lat: destination.latitude, lon: destination.longitude };
+  const departure: Waypoint[] = originFairway ? [portWaypoint(origin), fairwayWaypoint(origin)] : [portWaypoint(origin)];
+  const approach: Waypoint[] = [fairwayWaypoint(destination), portWaypoint(destination)];
 
   // Direct hop when the ports share a lane node and are close.
   const shared = origin.lane_nodes.filter((n) => destination.lane_nodes.includes(n));
   const direct = distanceNm(originPoint, destPoint);
   if (shared.length > 0 && direct < 120) {
-    return {
-      waypoints: [portWaypoint(origin), portWaypoint(destination)],
-      distance_nm: direct,
-      via: [],
-    };
+    const waypoints = [...departure, ...approach];
+    return { waypoints, distance_nm: pathLengthNm(waypoints), via: [] };
   }
 
   // Dijkstra from a virtual origin connected to the origin's lane nodes.
@@ -124,12 +132,12 @@ export function planRoute(origin: PortRecord, destination: PortRecord, year: num
     via.unshift(cursor);
     cursor = prev.get(cursor) ?? null;
   }
-  const waypoints: Waypoint[] = [portWaypoint(origin)];
+  const waypoints: Waypoint[] = [...departure];
   for (const id of via) {
     const node = graph.nodes.get(id);
     if (node) waypoints.push({ lat: node.lat, lon: node.lon, label: node.name });
   }
-  waypoints.push(portWaypoint(destination));
+  waypoints.push(...approach);
   return { waypoints, distance_nm: pathLengthNm(waypoints), via };
 }
 
@@ -163,8 +171,10 @@ export function nearestLaneNodes(position: GeoPoint, year: number, count = 2): L
 export function planRouteFromPosition(position: GeoPoint, destination: PortRecord, year: number): PlannedRoute | null {
   const direct = distanceNm(position, { lat: destination.latitude, lon: destination.longitude });
   if (direct < 60) {
-    const waypoints: Waypoint[] = [{ lat: position.lat, lon: position.lon, label: "Current position" }, portWaypoint(destination)];
-    return { waypoints, distance_nm: direct, via: [] };
+    // Head straight in only from the approach corridor; from anywhere else go round by the fairway.
+    const here: Waypoint = { lat: position.lat, lon: position.lon, label: "Current position" };
+    const waypoints: Waypoint[] = inApproachCorridor(destination, position) ? [here, portWaypoint(destination)] : [here, fairwayWaypoint(destination), portWaypoint(destination)];
+    return { waypoints, distance_nm: pathLengthNm(waypoints), via: [] };
   }
   const virtualOrigin: PortRecord = {
     ...destination,
@@ -174,7 +184,7 @@ export function planRouteFromPosition(position: GeoPoint, destination: PortRecor
     longitude: position.lon,
     lane_nodes: nearestLaneNodes(position, year, 3).map((n) => n.id),
   };
-  const planned = planRoute(virtualOrigin, destination, year);
+  const planned = planRoute(virtualOrigin, destination, year, { originFairway: false });
   if (!planned) return null;
   const first = planned.waypoints[0];
   if (first) planned.waypoints[0] = { lat: position.lat, lon: position.lon, label: "Current position" };
